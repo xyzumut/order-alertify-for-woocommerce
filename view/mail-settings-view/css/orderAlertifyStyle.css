@@ -1,0 +1,569 @@
+
+.dispnone{
+    display: none !important;
+}
+
+/* Ana Kısımlar */
+#oa_mainContainer{
+    width: 1200px;
+    min-height: 300px;
+    background-color: white;
+    margin: 20px auto;
+}
+#oa_header{
+    width: 100%;
+    height: 75px;
+    text-align: left;
+    padding-left: 30px;
+    box-sizing: border-box;
+    line-height: 75px;
+    background-color: #adc1df;
+    font-size: 24px;
+    font-weight: 500;
+}
+#oa_body{
+    width: 100%;
+    min-height: 225px;
+    padding: 0;
+    display: flex;
+    flex-direction: row;
+}
+#oa_body_left{
+    width: 250px;
+    min-height: 225px;
+    box-sizing: border-box;
+}
+#oa_body_right{
+    width: 950px;
+    min-height: 225px;
+    box-sizing: border-box;
+    padding: 0;
+}
+/* Ana Kısımlar */
+
+/* Sol Menü Kodlamaları */
+.mailSettingsButton{
+    font-size: 18px;
+    text-align: left;
+    width: 100%;
+    height: 75px;
+    box-sizing: border-box;
+    cursor: pointer;
+    margin-bottom: 3px;
+    line-height: 75px;
+    padding-left: 10px;
+    background-color: #5f85bd;
+    border-left: 3px solid #5f85bd;
+    color: white;
+}
+.mailSettingsButton-active{
+    color: #5f85bd;
+    border-left: 3px solid #5f85bd;
+    background-color: white;
+    font-weight: 700;
+    display: block !important;
+}
+.mailSettingsButton:hover{
+    opacity: .7;
+}
+#mailTempateSettingsButton{
+    display: none;
+}
+/* Sol Menü Kodlamaları */
+
+/* Sağ Menü Kodlamaları */
+.ou_body_right_item{
+    width: 950px;
+    min-height: 225px;
+    display: none;
+}
+.ou_body_right_item-active{
+    display: block;
+}
+/* Sağ Menü Kodlamaları */
+
+/* Mail Kurallarının Kodları */
+
+#mailTemplatesMainContainer{
+    min-height: 250px;
+    padding-top: 25px;
+    width: 950px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+#mailTemplatesLeftContainer{
+    width: 700px;
+    min-height: 250px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+}
+#mailTemplatesRightContainer{
+    width: 250px;
+    min-height: 250px;
+    margin-right: 10px;
+}
+#newMailMainContainer{
+    height: 100px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-direction: row;
+    border: 3px dashed #adc1df;
+    box-sizing: border-box;
+    padding: 0 10px;
+    min-width: 400px;
+}
+.mailBoxDrop{
+    min-width: 100px;
+    padding: 0 5px;
+    height: 40px;
+    border: 2px dashed #5F85BD;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #adc1df;
+}
+#statusesMiddleContainer{
+    width: 120px;
+    height: 40px;
+    font-size: 20px;
+    text-align: center;
+    line-height: 40px;
+    color: #91b0dd;
+    margin: 0 20px;
+}
+#woocommerceStatuesContainer{
+    width: 250px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+#definedRulesTemplates{
+    width: 100%;
+    min-height: 250px;
+    margin-top: 20px;
+}
+#definedRulesTemplatesHeader{
+    width: 90%;
+    height: 40px;
+    background-color: #91b0dd;
+    margin: 0 auto;
+    color: white;
+    font-size: 18px;
+    text-align: left;
+    padding-left: 10px;
+    box-sizing: border-box;
+    line-height: 40px;
+    font-weight: 700;
+}
+#definedRulesTemplatesBody{
+    width: 90%;
+    min-height: 100px;
+    background-color: #b0c2dd;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+}
+.definedRulesRows{
+    height: 50px;
+    width: 100%;
+    background-color: inherit;
+    padding-left: 20px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    box-sizing: border-box;
+}
+.definedGroup{
+    width: 200px;
+    height: 50px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+.definedGroupItem{
+    width: 130px;
+    text-align: center;
+    font-weight: 600;
+    color: white;
+    font-size: 16px;
+}
+.definedGroupItemArrow{
+    font-weight: 600;
+    color: white;
+    font-size: 16px;
+    width: 40px;
+}
+#definedGroupOptions{
+    width: 300px;
+    display: flex;
+    flex-direction: row;
+    height: 50px;
+    justify-content: flex-end;
+    padding-right: 10px;
+    box-sizing: border-box;
+    align-items: center;
+}
+.ruleButton{
+    min-width: 80px;
+    height: 36px;
+    font-size: 12px;
+    margin-left: 5px;
+}
+.deleteRule{
+    border: 1px solid red;
+    background-color: white;
+    color: red;
+}
+.deleteRule:hover{
+    background-color: red;
+    color: white;
+}
+.goRuleTemplate{
+    border: 1px solid green;
+    background-color: white;
+    color: green;
+}
+.goRuleTemplate:hover{
+    background-color: green;
+    color: white;
+}
+.goRuleTemplate:active, .deleteRule:active{
+    opacity: .7;
+}
+.woocommerceStatuesContainerItem, .definedNotifyContainerItem{
+    border: 2px dashed #5F85BD;
+    color: #adc1df;
+    min-width: 100px;
+    padding: 0 5px;
+    height: 40px;
+    font-size: 16px;
+    text-align: center;
+    line-height: 40px;
+    margin: 0 0 10px 3px;
+}
+.woocommerceStatuesContainerItem{
+    cursor: all-scroll;
+}
+.draggableActive{
+    border-color: chocolate;
+}
+.droppableActive{
+    border-color: chocolate;
+}
+.droppableOkey{
+    border-color: green;
+    color: green;
+    font-size: 18px;
+}
+#saveButtonDraggable{
+    width: 120px;
+    height: 40px;
+    background-color: #5F85BD;
+    border: 2px solid #5F85BD;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+#saveButtonDraggable:hover{
+    background-color: white;
+    color: #5F85BD;
+}
+#saveButtonDraggable:active{
+    background-color: #5d98f1;
+    color: white;
+}
+/* Mail Kurallarının Kodları */
+
+/* Mail Şablonunun Kodları */
+#mailTempalesEditMainContainer{
+    width: 950px;
+    min-height: 700px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    flex-wrap: nowrap;
+    padding: 20px;
+}
+#mailTemplateLeftColumn{
+    width: 600px;
+    min-height: 700px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+#mailTemplateRightColumn{
+    width: 350px;
+    min-height: 700px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#mailTemplateSubject{
+    width: 500px;
+    margin-top: 10px;
+}
+#editorMailTemplate{
+    width: 502px;
+    height: 450px;
+    margin-top: 10px;
+}
+#mailTemplateSubjectLabel{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    font-size: 18px;
+    font-weight: 700;
+    width: 500px;
+    color: #5F85BD;
+    position: relative;
+}
+#mailTemplateSubjectLabel::after{
+    position: absolute;
+    width: 50%;
+    height: 1px;
+    background-color: #5F85BD;
+    content: '';
+    top: 50%;
+    transform: translateY(-50%);
+    right: 0;
+}
+#mailTemplateRightColumnHeader{
+    width: 300px;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#mailRecipientsContainer{
+    width: 300px;
+    padding: 10px 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    margin-bottom: 30px;
+}
+.mailRecipientsItem{
+    width: 300px;
+    height: 40px;
+    line-height: 40px;
+    cursor: pointer;
+    position: relative;
+}
+.mailRecipientsItem:after{
+    content: 'X';
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 10px;
+    display: none;
+    font-size: 26px;
+}
+.mailRecipientsItem:hover{
+    color: red;
+}
+.mailRecipientsItem:hover:after{
+    display: block;
+}
+#mailRecipientsItems{
+    width: 300px;
+    min-height: 0;
+    padding: 10px 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    
+}
+#addRecipient{
+    width: 280px;
+    height: 40px;
+    border: 2px dashed orange;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+#mailRecipientsContainer{
+    width: 300px;
+    padding: 10px;
+    box-sizing: border-box ;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+.mailRecipientsItemDefault{
+  margin-bottom:10px;
+}
+#recipeAddContainer{
+    display:flex;
+    border: 2px dashed black;
+    justify-content:center;
+    align-items:center;
+    opacity:.5;
+    cursor:pointer;
+}
+#recipeAddContainer, #recipeInputContainer{
+    width:300px;
+    height:40px;
+    padding:0;
+}
+.mailRecipientsContainerHeader{
+    font-size: 20px;
+}
+.recipeAddPlus{
+    font-size:30px;
+    font-weight:900;
+}
+#recipeAddContainer:hover{
+    opacity:1;
+}
+
+#recipeInputContainer{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+}
+#recipeAddInput{
+    width: 270px;
+    box-sizing: border-box;
+    height: 100%;
+}
+#recideAddPlusContainer{
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: green;
+}
+#recideAddPlusContainer:hover{
+    background-color: green;
+    color: white;
+}
+#infoBoxForMailTemplate{
+    background-color:rgb(176,194,221);
+    width:250px;
+    padding:10px;
+    box-sizing:border-box;
+    color:white;
+    border-radius: 10px;
+}
+#infoBoxForMailTemplateHeader{
+    width:230px;
+    padding:0;
+    margin-bottom:20px;
+    font-size:14px;
+    font-weight:700;
+    text-align:center;
+}
+#infoBoxForMailTemplateBody{
+      width:230px;
+      padding:0;
+      text-align:left;
+    }
+.infoBoxItem{
+    width:230px;
+    display:flex;
+    height:22px;
+    align-items:center;
+    font-size:12px;
+}
+.infoBoxItemLeft{
+    width:120px;
+}
+.infoBoxItemRight{
+    width:110px;
+    font-weight:700;
+    cursor: grab;
+}
+.infoBoxItemRight:hover{
+    color: #5f85bd;
+    font-size: 13px;
+}
+/* Mail Şablonunun Kodları */
+
+/* Genel Mail Ayarları Kısmının Kodları */
+#generalSettingsMainContainer{
+    width: 900px;
+    margin: 20px auto;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+#availableMailServicesContainer{
+    width: 300px;
+    height: auto;
+}
+#availableMailServicesContainer-header{
+    margin: 20px 0;
+    font-size: 16px;
+}
+#availableMailServicesContainer-footer{
+    color: gray;
+    margin-top: 10px;
+}
+
+#availableMailSettingsContainer{
+    width: 600px;
+    background-color: #ADC1DF;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+#availableMailSettingsHeader{
+    font-size: 20px;
+    width: 100%;
+    height: 40px;
+    text-align: center;
+    padding-left: 20px;
+    color: white;
+    font-weight: 700;
+}
+.inputContainer{
+    /* width: ; */
+    display: flex;
+    flex-direction: row;
+    margin: 15px 0;
+    align-items: center;
+    font-size: 16px;
+}
+#mailAddressInput, #mailPasswordInput{
+    width: 250px;
+    height: 36px;
+    border: 1px solid #5f85bd;
+    padding: 2px ;
+    border-radius: 5px;
+    margin-left: 15px;
+}
+#mailAddressInputLabel, #mailPasswordInputLabel{
+    font-size: 16px;
+    color: white;
+    width: 100px;
+    display: block;
+}
+#saveMailAccountButton{
+
+}
+#inputsContainer{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    padding: 20px 0;
+}
+/* Genel Mail Ayarları Kısmının Kodları */

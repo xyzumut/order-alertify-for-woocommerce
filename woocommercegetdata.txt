@@ -1,0 +1,122 @@
+<?php 
+
+[
+   "id" => 204, 
+   "parent_id" => 0, 
+   "status" => "on-hold", 
+   "currency" => "TRY", 
+   "version" => "7.7.0", 
+   "prices_include_tax" => false, 
+   "date_created" => [
+         "date" => "2023-06-19 14:06:23.000000", 
+         "timezone_type" => 1, 
+         "timezone" => "+00:00" 
+      ], 
+   "date_modified" => [
+            "date" => "2023-07-04 12:36:48.000000", 
+            "timezone_type" => 1, 
+            "timezone" => "+00:00" 
+         ], 
+   "discount_total" => "0", 
+   "discount_tax" => "0", 
+   "shipping_total" => "0", 
+   "shipping_tax" => "0", 
+   "cart_tax" => "0", 
+   "total" => "85.00", 
+   "total_tax" => "0", 
+   "customer_id" => 1, 
+   "order_key" => "wc_order_8NDOX3CEWzrwX", 
+   "billing" => [
+               "first_name" => "umut", 
+               "last_name" => "gedik", 
+               "company" => "gri", 
+               "address_1" => "asddsa", 
+               "address_2" => "sadasda", 
+               "city" => "İlçe ve Semt", 
+               "state" => "TR07", 
+               "postcode" => "12122", 
+               "country" => "TR", 
+               "email" => "xyzumut06@gmail.com", 
+               "phone" => "05362871469" 
+            ], 
+   "shipping" => [
+                  "first_name" => "umut", 
+                  "last_name" => "gedik", 
+                  "company" => "gri", 
+                  "address_1" => "asddsa", 
+                  "address_2" => "sadasda", 
+                  "city" => "İlçe ve Semt", 
+                  "state" => "TR07", 
+                  "postcode" => "12122", 
+                  "country" => "TR", 
+                  "phone" => "" 
+               ], 
+   "payment_method" => "woomendo", 
+   "payment_method_title" => "WooMendo", 
+   "transaction_id" => "", 
+   "customer_ip_address" => "::1", 
+   "customer_user_agent" => "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36 Edg/114.0.1823.51", 
+   "created_via" => "checkout", 
+   "customer_note" => "", 
+   "date_completed" => null, 
+   "date_paid" => [
+                     "date" => "2023-07-04 12:34:59.000000", 
+                     "timezone_type" => 1, 
+                     "timezone" => "+00:00" 
+                  ], 
+   "cart_hash" => "2d0d12c0616e980417f68131d57c7b5e", 
+   "order_stock_reduced" => true, 
+   "download_permissions_granted" => true, 
+   "new_order_email_sent" => true, 
+   "recorded_sales" => true, 
+   "recorded_coupon_usage_counts" => true, 
+   "number" => "204", 
+   "meta_data" => [
+                        [
+                           "id" => 9827, 
+                           "key" => "is_vat_exempt", 
+                           "value" => "no" 
+                        ], 
+                        [
+                              "id" => 9828, 
+                              "key" => "woomendo_paymendo_payment_control_token", 
+                              "value" => "649060df82808" 
+                           ], 
+                        [
+                                 "id" => 9829, 
+                                 "key" => "woomendo_paymendo_payment_redirect_url", 
+                                 "value" => "http://localhost/wp/odeme/order-received/204/?key=wc_order_8NDOX3CEWzrwX" 
+                              ], 
+                        [
+                                    "id" => 9830, 
+                                    "key" => "woomendo_paymendo_payment_token_in_api", 
+                                    "value" => "4469623d692026891b87" 
+                                 ], 
+                        [
+                                       "id" => 9831, 
+                                       "key" => "woomendo_paymendo_payment_target_url_with_token", 
+                                       "value" => "http://api.tahsilatmerkezi.com/payment/make/4469623d692026891b87" 
+                                    ], 
+                        [
+                                          "id" => 9832, 
+                                          "key" => "woomendo_paymendo_payment_order_id_in_api", 
+                                          "value" => "899" 
+                                       ] 
+                     ], 
+   "line_items" => [
+                                             [
+                                             ] 
+                                          ], 
+   "tax_lines" => [
+                                                ], 
+   "shipping_lines" => [
+                                                      [
+                                                      ] 
+                                                   ], 
+   "fee_lines" => [
+                                                         ], 
+   "coupon_lines" => [
+                                                            ] 
+]; 
+ 
+ 

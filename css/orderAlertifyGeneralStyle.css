@@ -1,0 +1,122 @@
+/*@@@@@@@@@@ Modal @@@@@@@@@@*/
+#orderNotificationLoadingModal{
+    width: 85vw;
+    height: 85vh;
+    justify-content: center;
+    align-items: center;
+    display :none;
+    position: absolute;
+    top: 100px;
+    z-index: 999;
+}
+.orderNotificationLoadingModal-active{
+    display: flex !important;
+}
+#orderNotificationLoadingModalContainer{
+    width: 300px;
+    height: 150px;
+    background-color: white;
+    border-radius: 3px;
+    box-shadow: 5px 5px 10px 1px rgb(128, 128, 128);
+}
+#orderNotificationLoadingModalContainerHeader{
+    width: 300px;
+    height: 50px;
+    text-align: left;
+    text-align: center;
+    box-sizing: border-box;
+    color: #00d1b2;
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 50px;
+}
+#orderNotificationLoadingModalContainerBody{
+    width: 300px;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.spinnerNotifiaction {
+    width: 50px;
+    height: 60px;
+    text-align: center;
+    font-size: 10px;
+}
+.spinnerNotifiaction > div {
+    background-color: #00d1b2;
+    height: 100%;
+    width: 6px;
+    display: inline-block;
+    -webkit-animation: stretchDelay 1.2s infinite ease-in-out;
+    animation: stretchDelay 1.2s infinite ease-in-out;
+}
+.spinnerNotifiaction .rect2 {
+    -webkit-animation-delay: -1.1s;
+    animation-delay: -1.1s;
+}
+
+.spinnerNotifiaction .rect3 {
+    -webkit-animation-delay: -1s;
+    animation-delay: -1s;
+}
+.spinnerNotifiaction .rect4 {
+    -webkit-animation-delay: -0.9s;
+    animation-delay: -0.9s;
+}
+.spinnerNotifiaction .rect5 {
+    -webkit-animation-delay: -0.8s;
+    animation-delay: -0.8s;
+}
+@-webkit-keyframes stretchDelay {
+    0%,
+    40%,
+    100% {
+        -webkit-transform: scaleY(0.4);
+    }
+    20% {
+        -webkit-transform: scaleY(1);
+    }
+}
+@keyframes stretchDelay {
+    0%,
+    40%,
+    100% {
+        transform: scaleY(0.4);
+        -webkit-transform: scaleY(0.4);
+    }
+    20% {
+        transform: scaleY(1);
+        -webkit-transform: scaleY(1);
+    }
+}
+/*@@@@@@@@@@ Modal @@@@@@@@@@*/
+
+.btn-orderNotify{
+    width: 200px;
+    height: 40px;
+    border: none;
+    margin: 10px auto;
+    font-size: 20px;
+    border-radius: 10px;
+    color: white;
+    background-color: #1bd352;
+    border: 1px solid #1bd352;
+    transition: .5s all ease;
+    cursor: pointer;
+}
+.btn-orderNotify:focus-visible{
+    border-color: #00d1b2;
+    background-color: red;
+}
+.btn-orderNotify:hover{
+    background-color: white;
+    color: #1bd352;
+}
+input:focus-visible{
+    outline: none;
+}
+
+.w-full{
+    width: 1200px !important;
+}

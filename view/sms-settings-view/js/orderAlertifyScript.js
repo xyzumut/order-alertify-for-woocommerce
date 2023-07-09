@@ -1,0 +1,1 @@
+document.querySelector('.myClass').addEventListener('click', () => {alert('saglıcakla kal')})
