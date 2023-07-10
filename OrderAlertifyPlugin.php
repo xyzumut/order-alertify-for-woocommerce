@@ -33,7 +33,6 @@ Domain Path: /lang
         public $mailManager;
 
         public function __construct(){
-            add_action('init', [$this, 'init']);
             add_action('admin_menu', [$this, 'renderAllPages']);
             add_action(OrderAlertifyPlugin::EVENT, [$this, 'woocommerceListener'], 10, 3);
             add_action('wp_ajax_orderAlertifyAjaxListener', [$this, 'orderAlertifyAjaxListener']);
@@ -43,11 +42,6 @@ Domain Path: /lang
             // wp_localize_script( 'orderAlertifyScript', 'orderAlertifyScript', $this->returnLocalizeScript());
             wp_enqueue_style( 'orderNotificationGeneralStyle', plugin_dir_url(__FILE__).'css/orderAlertifyGeneralStyle.css');
             wp_enqueue_style( 'orderNotificationTailwindStyle', plugin_dir_url(__FILE__).'css/orderAlertifyTailwind.css');
-        }
-
-        public function init(){
-
-            $this->mailManager = new MailManager();
         }
 
         public function renderAllPages() {
@@ -78,15 +72,14 @@ Domain Path: /lang
         public function woocommerceListener($order_id, $old_status, $new_status){
             $old_status = 'wc-'.$old_status;
             $new_status = 'wc-'.$new_status;
-            update_option('[FB]DEBUG'.'1', 'DEBUG');
             $mailRuleLength = json_decode(get_option('mailRuleTemp'));
             if ($mailRuleLength === false || $mailRuleLength === 1) {
                 update_option('mailRuleTemp', 1);
                 return; // kural yoksa mailde atılmasın gerek yok
             }
-            $selectedMailOption = get_option('enableMailOpiton');
+            $selectedMailOption = get_option('enableMailOption');
             if ($selectedMailOption === false || $selectedMailOption === 'dontUseMail') {
-                update_option('enableMailOpiton', 'dontUseMail');
+                update_option('enableMailOption', 'dontUseMail');
                 return; // mail opsiyonu bilgisi yoksa veya mail kullanma dediysekte mail atmayacak
             }
             $orderRule = $old_status. ' > '. $new_status;
@@ -131,15 +124,39 @@ Domain Path: /lang
                 $recipients = explode('{|}', $recipients);
             }
 
-            update_option('[FB]subject', $mailSubject);
-            update_option('[FB]content', $mailContent);
-            update_option('[FB]rec1', $recipients[0]);
-            update_option('[FB]rec2', $recipients[1]);
-
             $order = wc_get_order( $order_id );
 
+            $shortCodes = [
+                '{customer_note}@customer_note', '{order_id}@id', '{customer_id}@customer_id', '{order_key}@order_key', 
+                '{bil_first}@billing@first_name', '{bil_last}@billing@last_name', '{bil_add1}@billing@address_1', '{bil_add2}@billing@address_2', '{bil_city}@billing@city',
+                '{bil_mail}@billing@email', '{bil_phone}@billing@phone', '{ship_first}@shipping@first_name', '{ship_last}@shipping@last_name', '{ship_add1}@shipping@address_1', 
+                '{ship_add2}@shipping@address_2', '{ship_city}@shipping@city', '{ship_phone}@shipping@phone'
+            ];
 
-            // $this->mailManager->sendMail();
+            foreach ($shortCodes as $shortCode) {
+                $shortCode = explode('@', $shortCode);
+                if (count($shortCode) === 3) {
+                    # short code + arrayindex1 + arrayindex2
+                    $mailContent = str_replace($shortCode[0], $order->get_data()[$shortCode[1]][$shortCode[2]], $mailContent);
+                }
+                else if (count($shortCode) === 2) {
+                    # short code + arrayindex1 
+                    $mailContent = str_replace($shortCode[0], $order->get_data()[$shortCode[1]], $mailContent);
+                }
+            }
+
+            array_push($recipients, $order->get_data()['billing']['email']);
+
+
+            // $mail, $password
+            $mailAddress = get_option('orderAlertifyMail');
+            $mailPassword = get_option('orderAlertifyPassword');
+            if ($mailAddress === false || $mailPassword === false) {
+                return;
+            }
+
+            $mailManager = new MailManager($selectedMailOption, $recipients, $mailSubject, $mailContent, $mailAddress, $mailPassword, 'Gri WooCommerce');
+            $mailManager->sendMail();
         }
 
         public function mailEditorFormatter(){
