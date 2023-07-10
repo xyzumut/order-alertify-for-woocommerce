@@ -1,283 +1,122 @@
+// window.addEventListener('load', () => {
+    class RuleGenerator{
 
-class RuleGenerator{
+        /* statuses */
+        definedStatusesInWoocommerce; // Localize Aracılığı ile gelen tanımlı woocommerce statülerini tutar
+        definedStatusesRenderTargetElement; // tanımlı sürüklenebilir statülerin içine render edileceği hedef element
+        definedRules;
+        /* statuses */
 
-    statusesContainerInit = '<div id="woocommerceStatuesContainer"><div draggable="true" class="woocommerceStatuesContainerItem" id="statusAll" status_slug="*">All</div></div>';
-    activeDraggableClassName = 'draggableActive';
-    activeDroppableClassName = 'droppableActive';
-    droppableOkeyClassName = 'droppableOkey';
-    slugAttributeKey = 'status_slug';
-    dispNoneClassName = 'dispnone';
-    allStatuses;
-    droppableMainContainer;
-    statuesDropZones;
-    dropSaveButton;
-    directionArrow;
-    definedRulesTemplatesBody;
-    deleteRuleButtons;
-    goRuleButtons;
-    recipeAddInput;
-    recideAddPlusContainer;
-    infoBoxItemRight;
+        /* dropZone */
+        definedRulesRenderTargetElement;
+        /* dropZone */
 
-    constructor(stasuses, statusesContainerRenderTarget, dropZoneContainerTarget, definedRulesTarget, orderAlertifyScript){
-        this.statuses = stasuses;
-        this.statusesContainerRenderTarget = statusesContainerRenderTarget;// statusesContainerInit'i içine atacağım daha sonra statusesContainerInit'in içine diğer statusesleri atacağız
-        this.dropZoneContainerTarget = dropZoneContainerTarget;
-        this.orderAlertifyScript = orderAlertifyScript;
-        this.ajaxUrl = this.orderAlertifyScript.adminUrl+'admin-ajax.php?action=orderAlertifyAjaxListener';
-    }
-
-    renderDropZones = () => {
-        let render = '<div id="newRuleMainContainer"><div id="oldStatusContainer" class="mailBoxDrop">Old Status</div><div id="statusesMiddleContainer">';
-        render = render + '<span id="directionArrow">></span><button id="saveButtonDraggable" class="dispnone">Save</button></div>';
-        render = render + '<div id="newStatusContainer" class="mailBoxDrop">New Status</div></div>';
-        this.dropZoneContainerTarget.innerHTML = render;
-        this.droppableMainContainer = document.getElementById('newRuleMainContainer');
-        this.statuesDropZones = document.querySelectorAll('.mailBoxDrop');
-        this.dropSaveButton = document.getElementById('saveButtonDraggable');
-        this.directionArrow = document.getElementById('directionArrow');
-        
-        this.statuesDropZones.forEach( dropZone => {
-       
-            dropZone.addEventListener('drop', (e) => {
-                // sürüklenen eleman alıcının üstüne bırakılınca tetikleniyor
-                const status = document.getElementsByClassName(this.activeDraggableClassName)[0];
-                e.target.innerHTML = status.innerHTML;
+        /* Genel Tanımlamalar */
+        activeDraggableClassName = 'draggableActive';
+        activeDroppableClassName = 'droppableActive';
+        droppableOkeyClassName = 'droppableOkey';
+        slugAttributeKey = 'status_slug';
+        /* Genel Tanımlamalar */
     
-                e.target.classList.add(droppableOkeyClassName)
-                e.target.setAttribute(slugAttributeKey, status.getAttribute(this.slugAttributeKey));
-    
-                temp = temp-1
-                if(temp === 0){
-                    // iki seçenekte işaretlenmiştir, kaydet butonunu çıkart
-                    this.dropSaveButton.classList.remove(this.dispNoneClassName);
-                    this.directionArrow.classList.add(this.dispNoneClassName);
-                    this.droppableMainContainer.style.borderColor = 'green';
-                    temp = this.statuesDropZones.length
-                }
-            });
-            dropZone.addEventListener('dragover', (e) => {
-                // dragover sürüklenen eleman hedefin üstündeyken anlık tetikleniyor, bunu sadece üstteki drop eventi tetiklensin diye tutuyoruz
-                e.preventDefault()
-            });
-        } )
-        // render rulesten önce çağrılmalı mutlaka
-    }
-
-    renderRules = () => {
-        // Statülerin içerisinde olacağı ana konteynırı hedef htmlin içine bastık
-        this.statusesContainerRenderTarget.innerHTML = this.statusesContainerInit;
-        // Statülerin içerisinde olacağı ana konteynırı hedef htmlin içine bastık
-        
-        // backendden gelen localize scripte göre bir önceki adımda render ettiğim konteynırın içerisine statüleri bastık
-        this.orderAlertifyScript.localizeStatuses.forEach( status => {
-            const render = '<div draggable="true" class="woocommerceStatuesContainerItem" status_slug="'+status.slug+'">'+status.view+'</div>'
-            statusesContainer.innerHTML = statusesContainer.innerHTML + render;
-        }); 
-        // backendden gelen localize scripte göre bir önceki adımda render ettiğim konteynırın içerisine statüleri bastık
-
-        // Statüleri Seçtik
-        this.allStatuses = document.querySelectorAll('.woocommerceStatuesContainerItem'); // Bir önceki adımda render edilenleri alıyor
-        // Statüleri Seçtik
-
-        this.allStatuses.forEach( status => {
-            status.addEventListener('dragstart', (e) => {
-                // Bu event sürüklenecek eleman sürüklenmeye başladığında tek seferlik çağrılıyor
-                e.target.classList.add(this.activeDraggableClassName)
-                this.statuesDropZones.forEach( item => {
-                    item.classList.add(this.activeDroppableClassName);
-                });
-            });
-            status.addEventListener('dragend', (e) => {
-                // Bu event sürüklenecek eleman sürüklenmeye başlayıp daha sonra herhangi bir şekilde bırakılınca çağrılıyor
-                e.target.classList.remove(this.activeDraggableClassName)
-                this.statuesDropZones.forEach( item => {
-                    item.classList.remove(this.activeDroppableClassName);
-                });
-            })
-        });
 
 
-
-
-    }
-
-    renderDefinedRules = () => {
-        let render = '<div id="definedRulesTemplates"><div id="definedRulesTemplatesHeader">Defined Rules</div>';
-        render = render + '<div id="definedRulesTemplatesBody"></div></div>';
-
-        this.definedRulesTemplatesBody = document.getElementById('definedRulesTemplatesBody');
-        this.definedRulesTemplatesBody.innerHTML = '';
-        if (this.orderAlertifyScript.adminRules.length === 0) {
-            return;
+        constructor({definedStatusesInWoocommerce, definedRules, definedStatusesRenderTargetElement, definedRulesRenderTargetElement}){
+            this.definedStatusesInWoocommerce = definedStatusesInWoocommerce;
+            this.definedStatusesRenderTargetElement = definedStatusesRenderTargetElement;
+            this.definedRulesRenderTargetElement = definedRulesRenderTargetElement;
+            this.definedRules = definedRules;
         }
 
-        this.orderAlertifyScript.adminRules.forEach( item => {
-
-            this.orderAlertifyScript.localizeStatuses.push({slug:'*', view: document.getElementById('statusAll').innerText});
-
-            const oldStatusSlug = item.split(' > ')[0];
-            const newStatusSlug = item.split(' > ')[1];
+        renderStasuses = () => { // Localize Aracılığı ile gelen tanımlı woocommerce statüleri ile all seçeneğini render eder
+            // 250 px genişlik gerek, yükseklik ihtiyaca göre uzuyor
+            const renderStasusesContainer = '<div id="woocommerceStatuesContainer"></div>'; // Statülerin Konteynırını Hazırladık
             
+            this.definedStatusesRenderTargetElement.innerHTML = renderStasusesContainer; // Statülerin konteynırını hedefe renderladık
 
-            const oldView = this.orderAlertifyScript.localizeStatuses.find(item => item.slug===oldStatusSlug).view;
-            const newView = this.orderAlertifyScript.localizeStatuses.find(item => item.slug===newStatusSlug).view;
+            const woocommerceStatuesContainer = document.getElementById('woocommerceStatuesContainer'); // Statülerin renderlanan konteynırını seçtik
 
+            // woocommerceStatuesContainer.innerHTML = '<div draggable="true" class="woocommerceStatuesContainerItem" status_slug="'+('*')+'">'+('All')+'</div>';
+            this.definedStatusesInWoocommerce.forEach( status => {
+                const temp = woocommerceStatuesContainer.innerHTML;
+                woocommerceStatuesContainer.innerHTML = temp + '<div draggable="true" class="woocommerceStatuesContainerItem" status_slug="'+status.slug+'">'+status.view+'</div>';
+            })
 
-            let render = '<div class="definedRulesRows">  <div class="definedGroup">';
-            render = render + '<div class="definedGroupItem">'+oldView+'</div> <div class="definedGroupItemArrow">></div> <div class="definedGroupItem">'+newView+'</div></div>';
-            render = render + ' <div id="definedGroupOptions"> <button class="ruleButton deleteRule"  newstatusslug="'+newStatusSlug+'" oldstatusslug="'+oldStatusSlug+'">Delete Rule</button> <button class="ruleButton goRuleTemplate"  newStatusSlug="'+newStatusSlug+'" oldStatusSlug="'+oldStatusSlug+'">Go Rule</button></div></div>';
-            this.definedRulesTemplatesBody.innerHTML = definedRulesTemplatesBody.innerHTML + render;
+            const allStatuses = document.querySelectorAll('.woocommerceStatuesContainerItem'); // Tüm statüleri seçtik
 
-        });
-
-        this.deleteRuleButtons = document.querySelectorAll('.deleteRule');
-
-        this.deleteRuleButtons.forEach( deleteButton => {
-
-            deleteButton.addEventListener('click', async () => {
-
-                const newSlug = deleteButton.getAttribute('newstatusslug');
-                const oldSlug = deleteButton.getAttribute('oldstatusslug');
-                const deleteRule = oldSlug + ' > ' + newSlug;
-
-                const formData = new FormData();
-                formData.append('_operation', 'deleteMailRule');
-                formData.append('rule', deleteRule);
-
-                const modalData = modalOpen();
-
-                const request = await fetch(this.ajaxUrl,{
-                    method:'POST',
-                    body:formData
+            allStatuses.forEach( status => {
+                status.addEventListener('dragstart', (e) => {
+                    // Bu event sürüklenecek eleman sürüklenmeye başladığında tek seferlik çağrılıyor
+                    e.target.classList.add(this.activeDraggableClassName)
+                    statuesDropZones.forEach( item => {
+                        item.classList.add(this.activeDroppableClassName);
+                    });
                 });
+                status.addEventListener('dragend', (e) => {
+                    // Bu event sürüklenecek eleman sürüklenmeye başlayıp daha sonra herhangi bir şekilde bırakılınca çağrılıyor
+                    e.target.classList.remove(this.activeDraggableClassName)
+                    statuesDropZones.forEach( item => {
+                        item.classList.remove(this.activeDroppableClassName);
+                    });
+                })
+            });
+            
+        }
 
-                const response = await request.json();
+        renderDefinedRules = (deleteCallback, goRuleCallback) => {
+            // 700 genişlik, min 250 yükseklik
+            const renderDefineRulesContainer = '<div id="definedRulesTemplates"><div id="definedRulesTemplatesHeader">Defined Rules</div><div id="definedRulesTemplatesBody"></div></div>';
 
-                modalClose(modalData);
+            this.definedRulesRenderTargetElement.innerHTML = renderDefineRulesContainer;
+            
+            const definedRulesTemplatesBody = document.getElementById('definedRulesTemplatesBody'); // üst satırlardan gelecek
+            
+            if (this.definedRules.length === 0) {
+                return;
+            }
 
-                if(response.status === true){
-                    sendNotification('success', response.message);
-                }
-                else{
-                    sendNotification('error', response.message);
-                }
 
-                this.orderAlertifyScript.adminRules = orderAlertifyScript.adminRules.filter( rule => rule !== deleteRule);
+            this.definedRules.forEach( item => {
+        
+                const oldStatusSlug = item.split(' > ')[0];
+                const newStatusSlug = item.split(' > ')[1];
                 
-                this.renderDefinedRules();
+                console.log('this.definedStatusesInWoocommerce : ', this.definedStatusesInWoocommerce)
+
+                const oldView = this.definedStatusesInWoocommerce.find(item => item.slug===oldStatusSlug).view;
+                const newView = this.definedStatusesInWoocommerce.find(item => item.slug===newStatusSlug).view;
+    
+                let render = '<div class="definedRulesRows">  <div class="definedGroup">';
+                render = render + '<div class="definedGroupItem">'+oldView+'</div> <div class="definedGroupItemArrow">></div> <div class="definedGroupItem">'+newView+'</div></div>';
+                render = render + ' <div id="definedGroupOptions"> <button class="ruleButton deleteRule"  newstatusslug="'+newStatusSlug+'" oldstatusslug="'+oldStatusSlug+'">Delete Rule</button> <button class="ruleButton goRule"  newStatusSlug="'+newStatusSlug+'" oldStatusSlug="'+oldStatusSlug+'">Go Rule</button></div></div>';
+                definedRulesTemplatesBody.innerHTML = definedRulesTemplatesBody.innerHTML + render;
+    
+            });
+
+            const deleteButtons = document.querySelectorAll('.deleteRule'); 
+            const goRuleButtons = document.querySelectorAll('.goRule'); 
+
+            deleteButtons.forEach( button => {
+                button.addEventListener('click', () => {deleteCallback();})
             })
-        });
 
-        // Bunları al ne yaparsan yap
-        const editor = document.getElementById('content_ifr').contentDocument.getElementById('tinymce') || document.getElementById('content_ifr').contentWindow.document.getElementById('tinymce');
-        const subjectInput = document.getElementById('mailTemplateSubject');
-        // Bunları al ne yaparsan yap
-
-        this.goRuleButtons = document.querySelectorAll('.goRuleTemplate');
-
-        this.goRuleButtons.forEach( goRulebutton  =>  {
-            goRulebutton.addEventListener('click', async (e) => {
-
-                recipeAddInput.value=' ';
-                recipeAddContainer.classList.remove(dispNoneClassName);
-                recipeInputContainer.classList.add(dispNoneClassName);
-
-
-                const newSlug = goRulebutton.getAttribute('newstatusslug');
-                const oldSlug = goRulebutton.getAttribute('oldstatusslug');
-                const target = oldSlug + ' > ' + newSlug;
-
-                const formData = new FormData();
-                formData.append('_operation', 'getMailTemplate');
-                formData.append('rule', target);
-
-                const modalData = modalOpen('Yükleniyor. . .');
-
-                const request = await fetch(orderAlertifyScript.adminUrl+'admin-ajax.php?action=orderAlertifyAjaxListener',{
-                    method:'POST',
-                    body:formData
-                });
-
-                const response = await request.json();
-
-                const templateData = response.data;
-                const recipients = templateData.recipients !== 'false' ? templateData.recipients.split('{|}') : null;
-                mailRecipientsItems.innerHTML = '';
-                if (recipients !== null) {
-                    recipients.forEach( recipient => {
-                        if (recipient !== '') {
-                            mailRecipientsItems.innerHTML = mailRecipientsItems.innerHTML + '<div class="mailRecipientsItem">'+recipient+'</div>';
-                            recipentInit();
-                        }
-                    });
-                }
-
-
-                editor.innerHTML = templateData.mailContent.replaceAll('\\', '');
-                subjectInput.value = templateData.mailSubject;
-
-
-                const saveButton = document.getElementById('saveMailTemplateBtn');
-                const temp_text = saveButton.innerText ;
-                const saveButtonCopy = saveButton.cloneNode(false);
-                saveButtonCopy.innerText = temp_text; 
-                saveButton.remove();
-                document.getElementById('mailTemplateRightColumnHeader').insertAdjacentElement('afterbegin', saveButtonCopy)
-
-                document.getElementById('saveMailTemplateBtn').addEventListener('click', async () => {
-
-                    const newContent = editor.innerHTML;
-                    const newSubject = subjectInput.value;
-    
-                    const modalData = modalOpen();
-    
-                    this.recipientsContainer = document.querySelectorAll('.mailRecipientsItem');
-                    this.recipientValues = [];
-                    
-                    this.recipientsContainer.forEach( element => {
-                        this.recipientValues.push(element.innerText);
-                    })
-                    const recipientsFinal = recipientValues.join('{|}');
-
-                    const formData = new FormData();
-                    formData.append('_operation', 'saveMailTemplate');
-                    formData.append('newContent', newContent);
-                    formData.append('newSubject', newSubject);
-                    formData.append('recipients', recipientsFinal)
-                    formData.append('target', target);
-    
-                    const request = await fetch(orderAlertifyScript.adminUrl+'admin-ajax.php?action=orderAlertifyAjaxListener',{
-                        method:'POST',
-                        body:formData
-                    });
-
-                    const response = await request.json();
-
-                    modalClose(modalData)
-
-                    console.log(response)
-
-                    if(response.status === true){
-                        sendNotification('success', response.message);
-                    }
-                    else{
-                        sendNotification('error', response.message);
-                    }
-                });
-
-                await handleMenuSwitch(mailTemplateButton, mailTemplatePage, 'Edit of : '+'[ '+target+' ]');
-
-                modalClose(modalData);
-
-                if(response.status === true){
-                    sendNotification('success', response.message);
-                }
-                else{
-                    sendNotification('error', response.message);
-                }
+            goRuleButtons.forEach( button => {
+                button.addEventListener('click', () => {goRuleCallback();})
             })
-        })
+        }
 
+        renderDropZones = () => {
+            // <div id="newMailMainContainer">
+            //     <div id="oldStatusContainer" class="mailBoxDrop">
+            //         Old Status                </div>
+
+            //     <div id="statusesMiddleContainer">
+            //         <span id="directionArrow">&gt;</span>
+            //         <button id="saveButtonDraggable" class="dispnone">Save</button>
+            //     </div>
+
+            //     <div id="newStatusContainer" class="mailBoxDrop">
+            //         New Status                </div>
+            // </div>
+        }
     }
-}
+// })

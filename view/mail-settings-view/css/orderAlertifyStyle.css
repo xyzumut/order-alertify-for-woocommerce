@@ -141,11 +141,16 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
+    min-height: 50px;
 }
-#definedRulesTemplates{
+#definedMailRulesContainer{
     width: 100%;
     min-height: 250px;
     margin-top: 20px;
+}
+#definedRulesTemplates{
+    width: 700px;
+    min-height: 250px;
 }
 #definedRulesTemplatesHeader{
     width: 90%;
@@ -225,16 +230,16 @@
     background-color: red;
     color: white;
 }
-.goRuleTemplate{
+.goRule{
     border: 1px solid green;
     background-color: white;
     color: green;
 }
-.goRuleTemplate:hover{
+.goRule:hover{
     background-color: green;
     color: white;
 }
-.goRuleTemplate:active, .deleteRule:active{
+.goRule:active, .deleteRule:active{
     opacity: .7;
 }
 .woocommerceStatuesContainerItem, .definedNotifyContainerItem{

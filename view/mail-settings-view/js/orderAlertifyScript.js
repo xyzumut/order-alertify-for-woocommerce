@@ -92,8 +92,6 @@ window.addEventListener('load', async  () => {
     }
 
     initGeneralMailSettings();
-    
-
     const droppableMainContainer = document.getElementById('newRuleMainContainer');
     const dropSaveButton = document.getElementById('saveButtonDraggable');
     const statusesContainer = document.getElementById('woocommerceStatuesContainer');
@@ -103,7 +101,7 @@ window.addEventListener('load', async  () => {
     const activeDroppableClassName = 'droppableActive';
     const droppableOkeyClassName = 'droppableOkey';
     const slugAttributeKey = 'status_slug';
-    const droppableMainContainerBaseborderColor = droppableMainContainer.style.borderColor;
+    // const droppableMainContainerBaseborderColor = droppableMainContainer.style.borderColor;
     const recipeAddContainer = document.getElementById('recipeAddContainer');
     const recipeInputContainer = document.getElementById('recipeInputContainer');
     const mailRecipientsItems = document.getElementById('mailRecipientsItems');
@@ -155,301 +153,11 @@ window.addEventListener('load', async  () => {
         firstContainer.classList.add(activeContainerClassName);
         oaHeader.innerText = oaHeaderBasePath + ' > ' + firstPath
     }
-
     menuInit();
-
-    // Sürükle bırak kodları render yeri
-    orderAlertifyScript.localizeStatuses.forEach( status => {
-        const render = '<div draggable="true" class="woocommerceStatuesContainerItem" status_slug="'+status.slug+'">'+status.view+'</div>'
-        statusesContainer.innerHTML = statusesContainer.innerHTML + render;
-    }); 
-    const allStatuses = document.querySelectorAll('.woocommerceStatuesContainerItem'); // Bir önceki adımda render edilenleri alıyor
-    allStatuses.forEach( status => {
-        status.addEventListener('dragstart', (e) => {
-            // Bu event sürüklenecek eleman sürüklenmeye başladığında tek seferlik çağrılıyor
-            e.target.classList.add(activeDraggableClassName)
-            statuesDropZones.forEach( item => {
-                item.classList.add(activeDroppableClassName);
-            });
-        });
-        status.addEventListener('dragend', (e) => {
-            // Bu event sürüklenecek eleman sürüklenmeye başlayıp daha sonra herhangi bir şekilde bırakılınca çağrılıyor
-            e.target.classList.remove(activeDraggableClassName)
-            statuesDropZones.forEach( item => {
-                item.classList.remove(activeDroppableClassName);
-            });
-        })
-    });
-    // Sürükle bırak kodları render yeri
-
-    let temp = statuesDropZones.length
-
-    statuesDropZones.forEach( dropZone => {
-       
-        dropZone.addEventListener('drop', (e) => {
-            // sürüklenen eleman alıcının üstüne bırakılınca tetikleniyor
-            const status = document.getElementsByClassName(activeDraggableClassName)[0];
-            e.target.innerHTML = status.innerHTML;
-
-            e.target.classList.add(droppableOkeyClassName)
-            e.target.setAttribute(slugAttributeKey, status.getAttribute(slugAttributeKey));
-
-            temp = temp-1
-            if(temp === 0){
-                // iki seçenekte işaretlenmiştir, kaydet butonunu çıkart
-                dropSaveButton.classList.remove(dispNoneClassName);
-                directionArrow.classList.add(dispNoneClassName);
-                droppableMainContainer.style.borderColor = 'green';
-                temp = statuesDropZones.length
-            }
-        });
-        dropZone.addEventListener('dragover', (e) => {
-            // dragover sürüklenen eleman hedefin üstündeyken anlık tetikleniyor, bunu sadece üstteki drop eventi tetiklensin diye tutuyoruz
-            e.preventDefault()
-        });
-    } )
-
-
-    const ruleRender = () => {
-
-        const definedRulesTemplatesBody = document.getElementById('definedRulesTemplatesBody');
-
-        definedRulesTemplatesBody.innerHTML = '';
-        
-        if (orderAlertifyScript.adminRules.length === 0) {
-            return;
-        }
-
-        orderAlertifyScript.adminRules.forEach( item => {
-
-            orderAlertifyScript.localizeStatuses.push({slug:'*', view: document.getElementById('statusAll').innerText});
-
-            const oldStatusSlug = item.split(' > ')[0];
-            const newStatusSlug = item.split(' > ')[1];
-            
-
-            const oldView = orderAlertifyScript.localizeStatuses.find(item => item.slug===oldStatusSlug).view;
-            const newView = orderAlertifyScript.localizeStatuses.find(item => item.slug===newStatusSlug).view;
-
-
-            let render = '<div class="definedRulesRows">  <div class="definedGroup">';
-            render = render + '<div class="definedGroupItem">'+oldView+'</div> <div class="definedGroupItemArrow">></div> <div class="definedGroupItem">'+newView+'</div></div>';
-            render = render + ' <div id="definedGroupOptions"> <button class="ruleButton deleteRule"  newstatusslug="'+newStatusSlug+'" oldstatusslug="'+oldStatusSlug+'">Delete Rule</button> <button class="ruleButton goRuleTemplate"  newStatusSlug="'+newStatusSlug+'" oldStatusSlug="'+oldStatusSlug+'">Go Rule</button></div></div>';
-            definedRulesTemplatesBody.innerHTML = definedRulesTemplatesBody.innerHTML + render;
-
-        });
-
-        const deleteRuleButtons = document.querySelectorAll('.deleteRule');
-        deleteRuleButtons.forEach( deleteButton => {
-
-            deleteButton.addEventListener('click', async (e) => {
-
-                const newSlug = deleteButton.getAttribute('newstatusslug');
-                const oldSlug = deleteButton.getAttribute('oldstatusslug');
-                const deleteRule = oldSlug + ' > ' + newSlug;
-
-                const formData = new FormData();
-                formData.append('_operation', 'deleteMailRule');
-                formData.append('rule', deleteRule);
-
-                const modalData = modalOpen();
-
-                const request = await fetch(orderAlertifyScript.adminUrl+'admin-ajax.php?action=orderAlertifyAjaxListener',{
-                    method:'POST',
-                    body:formData
-                });
-
-                const response = await request.json();
-
-                modalClose(modalData);
-
-                if(response.status === true){
-                    sendNotification('success', response.message);
-                }
-                else{
-                    sendNotification('error', response.message);
-                }
-
-                orderAlertifyScript.adminRules = orderAlertifyScript.adminRules.filter( rule => rule !== deleteRule);
-                ruleRender();
-            })
-        });
-
-        const editor = document.getElementById('content_ifr').contentDocument.getElementById('tinymce') || document.getElementById('content_ifr').contentWindow.document.getElementById('tinymce');
-        const subjectInput = document.getElementById('mailTemplateSubject');
-
-        
-        const goRuleButtons = document.querySelectorAll('.goRuleTemplate');
-
-        goRuleButtons.forEach( goRulebutton  =>  {
-            goRulebutton.addEventListener('click', async (e) => {
-
-                recipeAddInput.value=' ';
-                recipeAddContainer.classList.remove(dispNoneClassName);
-                recipeInputContainer.classList.add(dispNoneClassName);
-
-
-                const newSlug = goRulebutton.getAttribute('newstatusslug');
-                const oldSlug = goRulebutton.getAttribute('oldstatusslug');
-                const target = oldSlug + ' > ' + newSlug;
-
-                const formData = new FormData();
-                formData.append('_operation', 'getMailTemplate');
-                formData.append('rule', target);
-
-                const modalData = modalOpen('Yükleniyor. . .');
-
-                const request = await fetch(orderAlertifyScript.adminUrl+'admin-ajax.php?action=orderAlertifyAjaxListener',{
-                    method:'POST',
-                    body:formData
-                });
-
-                const response = await request.json();
-
-                const templateData = response.data;
-                const recipients = templateData.recipients !== 'false' ? templateData.recipients.split('{|}') : null;
-                mailRecipientsItems.innerHTML = '';
-                if (recipients !== null) {
-                    recipients.forEach( recipient => {
-                        if (recipient !== '') {
-                            mailRecipientsItems.innerHTML = mailRecipientsItems.innerHTML + '<div class="mailRecipientsItem">'+recipient+'</div>';
-                            recipentInit();
-                        }
-                    });
-                }
-
-
-                editor.innerHTML = templateData.mailContent.replaceAll('\\', '');
-                subjectInput.value = templateData.mailSubject;
-
-
-                const saveButton = document.getElementById('saveMailTemplateBtn');
-                const temp_text = saveButton.innerText ;
-                const saveButtonCopy = saveButton.cloneNode(false);
-                saveButtonCopy.innerText = temp_text; 
-                saveButton.remove();
-                document.getElementById('mailTemplateRightColumnHeader').insertAdjacentElement('afterbegin', saveButtonCopy)
-
-                document.getElementById('saveMailTemplateBtn').addEventListener('click', async () => {
-
-                    const newContent = editor.innerHTML;
-                    const newSubject = subjectInput.value;
-    
-                    const modalData = modalOpen();
-    
-                    const recipientsContainer = document.querySelectorAll('.mailRecipientsItem');
-                    const recipientValues = [];
-                    recipientsContainer.forEach( element => {
-                        recipientValues.push(element.innerText);
-                    })
-                    const recipientsFinal = recipientValues.join('{|}');
-                    console.log('resipientsFinal : ', recipientsFinal)
-                    const formData = new FormData();
-                    formData.append('_operation', 'saveMailTemplate');
-                    formData.append('newContent', newContent);
-                    formData.append('newSubject', newSubject);
-                    formData.append('recipients', recipientsFinal)
-                    formData.append('target', target);
-    
-                    const request = await fetch(orderAlertifyScript.adminUrl+'admin-ajax.php?action=orderAlertifyAjaxListener',{
-                        method:'POST',
-                        body:formData
-                    });
-
-                    const response = await request.json();
-
-                    modalClose(modalData)
-
-                    console.log(response)
-
-                    if(response.status === true){
-                        sendNotification('success', response.message);
-                    }
-                    else{
-                        sendNotification('error', response.message);
-                    }
-                });
-
-                await handleMenuSwitch(mailTemplateButton, mailTemplatePage, 'Edit of : '+'[ '+target+' ]');
-
-                modalClose(modalData);
-
-                if(response.status === true){
-                    sendNotification('success', response.message);
-                }
-                else{
-                    sendNotification('error', response.message);
-                }
-            })
-        })
-    }
-
-    dropSaveButton.addEventListener('click', async () => {
-        const oldStatusElement = document.getElementById('oldStatusContainer');
-        const newStatusElement = document.getElementById('newStatusContainer');
-
-        if (oldStatusElement.innerHTML === newStatusElement.innerHTML) {
-            sendNotification('warning', 'Önceki ve Sonraki Statü Aynı Olamaz')            
-            return;
-        }
-
-        const newStatusSlug = newStatusElement.getAttribute('status_slug');
-        const oldStatusSlug = oldStatusElement.getAttribute('status_slug');
-
-
-        /* Araylama ve İstek İşleri Bitti */
-
-        const formData = new FormData();
-
-        formData.append('newStatusSlug' , newStatusSlug );
-        formData.append('oldStatusSlug' , oldStatusSlug );
-        formData.append('_operation', 'addMailRule')
-
-        const modalData = modalOpen();
-
-        const request = await fetch(orderAlertifyScript.adminUrl+'admin-ajax.php?action=orderAlertifyAjaxListener',{
-            method:'POST',
-            body:formData
-        });
-
-        const response = await request.json();
-
-        modalClose(modalData);
-
-        if(response.status === true){
-            sendNotification('success', response.message);
-        }
-        else{
-            sendNotification('error', response.message);
-        }
-
-        if (response.status === true) {
-            orderAlertifyScript.adminRules.push(response.data)
-            ruleRender();
-        }
-
-
-        /* Araylama ve İstek İşleri Bitti */
-
-        droppableMainContainer.style.borderColor = droppableMainContainerBaseborderColor
-        statuesDropZones.forEach( item => {
-            item.classList.remove(droppableOkeyClassName);
-            item.removeAttribute(slugAttributeKey);
-        });
-        statuesDropZones[0].innerHTML = 'Old Status'
-        statuesDropZones[1].innerHTML = 'New Status'
-        
-        directionArrow.classList.remove(dispNoneClassName);
-        dropSaveButton.classList.add(dispNoneClassName);
-    })
-
-    ruleRender();
-
     recipeAddContainer.addEventListener('click', () => {
         recipeAddContainer.classList.add(dispNoneClassName);
         recipeInputContainer.classList.remove(dispNoneClassName);
     })
-
     recideAddPlusContainer.addEventListener('click', () => {
 
         if (recipeAddInput.value.length < 5) {
@@ -469,4 +177,16 @@ window.addEventListener('load', async  () => {
         recipeAddInput.value=' ';
 
     });
+
+    /*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
+    const ruleGenerator = new RuleGenerator({
+        definedRules: orderAlertifyScript.adminRules, 
+        definedStatusesInWoocommerce: orderAlertifyScript.localizeStatuses, 
+        definedRulesRenderTargetElement: document.getElementById('definedMailRulesContainer'), 
+        definedStatusesRenderTargetElement:document.getElementById('mailTemplatesRightContainer')
+    });
+    ruleGenerator.renderStasuses();
+    ruleGenerator.renderDefinedRules(() => {alert('Delete')}, () => {alert('GoRule!!!')});
+
+    /*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
 })
