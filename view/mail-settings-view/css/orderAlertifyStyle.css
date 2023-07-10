@@ -106,7 +106,7 @@
     min-height: 250px;
     margin-right: 10px;
 }
-#newMailMainContainer{
+#newRuleMainContainer{
     height: 100px;
     display: flex;
     justify-content: space-around;

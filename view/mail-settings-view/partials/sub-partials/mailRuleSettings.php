@@ -1,7 +1,7 @@
     <div id="mailTemplatesMainContainer">
 
         <div id="mailTemplatesLeftContainer">
-            <div id="newMailMainContainer">
+            <div id="newRuleMainContainer">
                 <div id="oldStatusContainer" class="mailBoxDrop">
                     <?php _e('Old Status', '@@@'); ?>
                 </div>

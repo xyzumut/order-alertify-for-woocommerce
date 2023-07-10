@@ -1,7 +1,5 @@
 window.addEventListener('load', async  () => {
 
-
-
     const recipentInit = () => { document.querySelectorAll('.mailRecipientsItem').forEach(element => element.addEventListener('click', () => {element.remove()})) }
 
     const dispNoneClassName = 'dispnone';
@@ -96,7 +94,7 @@ window.addEventListener('load', async  () => {
     initGeneralMailSettings();
     
 
-    const droppableMainContainer = document.getElementById('newMailMainContainer');
+    const droppableMainContainer = document.getElementById('newRuleMainContainer');
     const dropSaveButton = document.getElementById('saveButtonDraggable');
     const statusesContainer = document.getElementById('woocommerceStatuesContainer');
     const statuesDropZones = document.querySelectorAll('.mailBoxDrop'); 
@@ -165,7 +163,7 @@ window.addEventListener('load', async  () => {
         const render = '<div draggable="true" class="woocommerceStatuesContainerItem" status_slug="'+status.slug+'">'+status.view+'</div>'
         statusesContainer.innerHTML = statusesContainer.innerHTML + render;
     }); 
-    const allStatuses = document.querySelectorAll('.woocommerceStatuesContainerItem');
+    const allStatuses = document.querySelectorAll('.woocommerceStatuesContainerItem'); // Bir önceki adımda render edilenleri alıyor
     allStatuses.forEach( status => {
         status.addEventListener('dragstart', (e) => {
             // Bu event sürüklenecek eleman sürüklenmeye başladığında tek seferlik çağrılıyor
@@ -183,7 +181,9 @@ window.addEventListener('load', async  () => {
         })
     });
     // Sürükle bırak kodları render yeri
+
     let temp = statuesDropZones.length
+
     statuesDropZones.forEach( dropZone => {
        
         dropZone.addEventListener('drop', (e) => {
@@ -193,6 +193,7 @@ window.addEventListener('load', async  () => {
 
             e.target.classList.add(droppableOkeyClassName)
             e.target.setAttribute(slugAttributeKey, status.getAttribute(slugAttributeKey));
+
             temp = temp-1
             if(temp === 0){
                 // iki seçenekte işaretlenmiştir, kaydet butonunu çıkart
@@ -367,7 +368,6 @@ window.addEventListener('load', async  () => {
                     else{
                         sendNotification('error', response.message);
                     }
-    
                 });
 
                 await handleMenuSwitch(mailTemplateButton, mailTemplatePage, 'Edit of : '+'[ '+target+' ]');
@@ -380,11 +380,7 @@ window.addEventListener('load', async  () => {
                 else{
                     sendNotification('error', response.message);
                 }
-
             })
-
-
-
         })
     }
 
@@ -473,14 +469,4 @@ window.addEventListener('load', async  () => {
         recipeAddInput.value=' ';
 
     });
-
-
-    
-    
-
-
-
-
-
-
 })
