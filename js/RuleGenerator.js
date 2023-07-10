@@ -1,30 +1,43 @@
 // window.addEventListener('load', () => {
     class RuleGenerator{
 
-        /* statuses */
-        definedStatusesInWoocommerce; // Localize Aracılığı ile gelen tanımlı woocommerce statülerini tutar
-        definedStatusesRenderTargetElement; // tanımlı sürüklenebilir statülerin içine render edileceği hedef element
-        definedRules;
-        /* statuses */
-
-        /* dropZone */
-        definedRulesRenderTargetElement;
-        /* dropZone */
-
         /* Genel Tanımlamalar */
         activeDraggableClassName = 'draggableActive';
         activeDroppableClassName = 'droppableActive';
         droppableOkeyClassName = 'droppableOkey';
         slugAttributeKey = 'status_slug';
+        dispNoneClassName = 'dispnone';
+        oldStatusString = 'Old Status';
+        newStatusString = 'New Status'
         /* Genel Tanımlamalar */
-    
+
+        // localize
+        definedStatusesInWoocommerce; // Localize Aracılığı ile gelen tanımlı woocommerce statülerini tutar
+        // localize
+
+        /* statuses */
+        definedStatusesRenderTargetElement; // tanımlı sürüklenebilir statülerin içine render edileceği hedef element
+        definedRules;
+        /* statuses */
+
+        /* defined rule */
+        definedRulesRenderTargetElement;
+        /* defined rule */
+
+        /* dropzone */
+        dropzoneRenderTargetElement;
+        statuesDropZones;
+        /* dropzone */
 
 
-        constructor({definedStatusesInWoocommerce, definedRules, definedStatusesRenderTargetElement, definedRulesRenderTargetElement}){
+        
+
+        constructor({definedStatusesInWoocommerce, definedRules, definedStatusesRenderTargetElement, definedRulesRenderTargetElement, dropzoneRenderTargetElement}){
             this.definedStatusesInWoocommerce = definedStatusesInWoocommerce;
             this.definedStatusesRenderTargetElement = definedStatusesRenderTargetElement;
             this.definedRulesRenderTargetElement = definedRulesRenderTargetElement;
             this.definedRules = definedRules;
+            this.dropzoneRenderTargetElement = dropzoneRenderTargetElement;
         }
 
         renderStasuses = () => { // Localize Aracılığı ile gelen tanımlı woocommerce statüleri ile all seçeneğini render eder
@@ -47,14 +60,14 @@
                 status.addEventListener('dragstart', (e) => {
                     // Bu event sürüklenecek eleman sürüklenmeye başladığında tek seferlik çağrılıyor
                     e.target.classList.add(this.activeDraggableClassName)
-                    statuesDropZones.forEach( item => {
+                    this.statuesDropZones.forEach( item => {
                         item.classList.add(this.activeDroppableClassName);
                     });
                 });
                 status.addEventListener('dragend', (e) => {
                     // Bu event sürüklenecek eleman sürüklenmeye başlayıp daha sonra herhangi bir şekilde bırakılınca çağrılıyor
                     e.target.classList.remove(this.activeDraggableClassName)
-                    statuesDropZones.forEach( item => {
+                    this.statuesDropZones.forEach( item => {
                         item.classList.remove(this.activeDroppableClassName);
                     });
                 })
@@ -62,8 +75,9 @@
             
         }
 
-        renderDefinedRules = (deleteCallback, goRuleCallback) => {
+        renderDefinedRules = ({deleteCallback, goRuleCallback}) => {
             // 700 genişlik, min 250 yükseklik
+
             const renderDefineRulesContainer = '<div id="definedRulesTemplates"><div id="definedRulesTemplatesHeader">Defined Rules</div><div id="definedRulesTemplatesBody"></div></div>';
 
             this.definedRulesRenderTargetElement.innerHTML = renderDefineRulesContainer;
@@ -80,8 +94,6 @@
                 const oldStatusSlug = item.split(' > ')[0];
                 const newStatusSlug = item.split(' > ')[1];
                 
-                console.log('this.definedStatusesInWoocommerce : ', this.definedStatusesInWoocommerce)
-
                 const oldView = this.definedStatusesInWoocommerce.find(item => item.slug===oldStatusSlug).view;
                 const newView = this.definedStatusesInWoocommerce.find(item => item.slug===newStatusSlug).view;
     
@@ -89,34 +101,103 @@
                 render = render + '<div class="definedGroupItem">'+oldView+'</div> <div class="definedGroupItemArrow">></div> <div class="definedGroupItem">'+newView+'</div></div>';
                 render = render + ' <div id="definedGroupOptions"> <button class="ruleButton deleteRule"  newstatusslug="'+newStatusSlug+'" oldstatusslug="'+oldStatusSlug+'">Delete Rule</button> <button class="ruleButton goRule"  newStatusSlug="'+newStatusSlug+'" oldStatusSlug="'+oldStatusSlug+'">Go Rule</button></div></div>';
                 definedRulesTemplatesBody.innerHTML = definedRulesTemplatesBody.innerHTML + render;
-    
+                
             });
 
             const deleteButtons = document.querySelectorAll('.deleteRule'); 
             const goRuleButtons = document.querySelectorAll('.goRule'); 
 
-            deleteButtons.forEach( button => {
-                button.addEventListener('click', () => {deleteCallback();})
+            deleteButtons.forEach((button) => {
+                button.addEventListener('click', async () => {
+                    const newStatusSlug = button.getAttribute('newstatusslug');
+                    const oldStatusSlug = button.getAttribute('oldstatusslug');
+                    const response = await deleteCallback({oldStatusSlug, newStatusSlug});
+                    if (response === true) {
+                        button.parentNode.parentNode.remove();   
+                    }
+                })
             })
 
-            goRuleButtons.forEach( button => {
-                button.addEventListener('click', () => {goRuleCallback();})
+            goRuleButtons.forEach( (button) => {
+                button.addEventListener('click', async () => {
+                    const newStatusSlug = button.getAttribute('newstatusslug');
+                    const oldStatusSlug = button.getAttribute('oldstatusslug');
+                    await goRuleCallback({oldStatusSlug, newStatusSlug});
+                })
             })
         }
 
-        renderDropZones = () => {
-            // <div id="newMailMainContainer">
-            //     <div id="oldStatusContainer" class="mailBoxDrop">
-            //         Old Status                </div>
+        renderDropZones = ({saveCallback}) => {
+            // min 400 genişlik ve 100 statik yükseklik
+            let renderDropZoneContainer = '<div id="newRuleMainContainer"><div id="oldStatusContainer" class="dropZones">'+(this.oldStatusString)+'</div>';
+            renderDropZoneContainer = renderDropZoneContainer + '<div id="statusesMiddleContainer"><span id="directionArrow">&gt;</span>';
+            renderDropZoneContainer = renderDropZoneContainer + '<button id="saveButtonDraggable" class="dispnone">Save</button></div>';
+            renderDropZoneContainer = renderDropZoneContainer + '<div id="newStatusContainer" class="dropZones">'+(this.newStatusString)+'</div></div>';                        
+            
+            this.dropzoneRenderTargetElement.innerHTML = renderDropZoneContainer;
+            
+            const droppableMainContainer = document.getElementById('newRuleMainContainer');
+            const droppableMainContainerBaseBorderColor = droppableMainContainer.style.borderColor;
+            const dropSaveButton = document.getElementById('saveButtonDraggable');
 
-            //     <div id="statusesMiddleContainer">
-            //         <span id="directionArrow">&gt;</span>
-            //         <button id="saveButtonDraggable" class="dispnone">Save</button>
-            //     </div>
+            this.statuesDropZones = document.querySelectorAll('.dropZones');
 
-            //     <div id="newStatusContainer" class="mailBoxDrop">
-            //         New Status                </div>
-            // </div>
+            let temp = this.statuesDropZones.length
+
+            this.statuesDropZones.forEach( dropZone => {
+               
+                dropZone.addEventListener('drop', (e) => {
+                    // sürüklenen eleman alıcının üstüne bırakılınca tetikleniyor
+                    const status = document.getElementsByClassName(this.activeDraggableClassName)[0];
+                    e.target.innerHTML = status.innerHTML;
+        
+                    e.target.classList.add(this.droppableOkeyClassName)
+                    e.target.setAttribute(this.slugAttributeKey, status.getAttribute(this.slugAttributeKey));
+                    
+                    temp = temp-1
+                    if(temp === 0){
+                        // iki seçenekte işaretlenmiştir, kaydet butonunu çıkart
+                        dropSaveButton.classList.remove(this.dispNoneClassName);
+                        directionArrow.classList.add(this.dispNoneClassName);
+                        droppableMainContainer.style.borderColor = 'green';
+                        temp = this.statuesDropZones.length
+                    }
+                });
+                dropZone.addEventListener('dragover', (e) => {
+                    // dragover sürüklenen eleman hedefin üstündeyken anlık tetikleniyor, bunu sadece üstteki drop eventi tetiklensin diye tutuyoruz
+                    e.preventDefault()
+                });
+            })
+
+            dropSaveButton.addEventListener('click', async () => {
+                const oldStatusElement = document.getElementById('oldStatusContainer');
+                const newStatusElement = document.getElementById('newStatusContainer');
+        
+                const newStatusSlug = newStatusElement.getAttribute('status_slug');
+                const oldStatusSlug = oldStatusElement.getAttribute('status_slug');
+
+                const response = await saveCallback({oldStatusSlug: oldStatusSlug, newStatusSlug: newStatusSlug});
+
+                if (response === true) {
+                    const newView = this.definedStatusesInWoocommerce.find(item => item.slug === newStatusSlug).view;
+                    const oldView = this.definedStatusesInWoocommerce.find(item => item.slug === oldStatusSlug).view;
+
+                    const definedRulesTemplatesBody = document.getElementById('definedRulesTemplatesBody');
+                    let render = '<div class="definedRulesRows">  <div class="definedGroup">';
+                    render = render + '<div class="definedGroupItem">'+oldView+'</div> <div class="definedGroupItemArrow">></div> <div class="definedGroupItem">'+newView+'</div></div>';
+                    render = render + ' <div id="definedGroupOptions"> <button class="ruleButton deleteRule"  newstatusslug="'+newStatusSlug+'" oldstatusslug="'+oldStatusSlug+'">Delete Rule</button> <button class="ruleButton goRule"  newStatusSlug="'+newStatusSlug+'" oldStatusSlug="'+oldStatusSlug+'">Go Rule</button></div></div>';
+                    definedRulesTemplatesBody.innerHTML = definedRulesTemplatesBody.innerHTML + render; 
+
+                    this.dropZoneClear(dropSaveButton, directionArrow, droppableMainContainer, droppableMainContainerBaseBorderColor);
+                }
+            })
+
+        }
+
+        dropZoneClear(dropSaveButton, directionArrow, droppableMainContainer, droppableMainContainerBaseBorderColor){
+            dropSaveButton.classList.add(this.dispNoneClassName);
+            directionArrow.classList.remove(this.dispNoneClassName);
+            droppableMainContainer.style.borderColor = droppableMainContainerBaseBorderColor;
         }
     }
 // })

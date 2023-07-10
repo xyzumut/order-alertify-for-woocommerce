@@ -183,10 +183,52 @@ window.addEventListener('load', async  () => {
         definedRules: orderAlertifyScript.adminRules, 
         definedStatusesInWoocommerce: orderAlertifyScript.localizeStatuses, 
         definedRulesRenderTargetElement: document.getElementById('definedMailRulesContainer'), 
-        definedStatusesRenderTargetElement:document.getElementById('mailTemplatesRightContainer')
+        definedStatusesRenderTargetElement:document.getElementById('mailTemplatesRightContainer'),
+        dropzoneRenderTargetElement: document.getElementById('newMailRuleContainer')
     });
-    ruleGenerator.renderStasuses();
-    ruleGenerator.renderDefinedRules(() => {alert('Delete')}, () => {alert('GoRule!!!')});
 
+    ruleGenerator.renderDropZones({saveCallback:({oldStatusSlug, newStatusSlug})=>{
+        alert('Save: '+oldStatusSlug+' - '+newStatusSlug);
+        return true;
+    }});
+
+    ruleGenerator.renderStasuses();
+
+    ruleGenerator.renderDefinedRules({
+        deleteCallback: async ({oldStatusSlug, newStatusSlug}) => {
+
+            const deleteRule = oldStatusSlug + ' > ' + newStatusSlug;
+
+            const formData = new FormData();
+            formData.append('_operation', 'deleteMailRule');
+            formData.append('rule', deleteRule);
+
+            const modalData = modalOpen();
+
+            const request = await fetch(orderAlertifyScript.adminUrl+'admin-ajax.php?action=orderAlertifyAjaxListener',{
+                method:'POST',
+                body:formData
+            });
+
+            const response = await request.json();
+
+            modalClose(modalData);
+
+            if(response.status === true){
+                sendNotification('success', response.message);
+                return true;
+            }
+            else{
+                sendNotification('error', response.message);
+                return false;
+            }
+
+        },
+        goRuleCallback: async ({oldStatusSlug, newStatusSlug}) => {
+            alert('Go Rule : '+oldStatusSlug+' - '+newStatusSlug);
+        }
+    });
+    
+    // newMailRuleContainer
     /*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
 })

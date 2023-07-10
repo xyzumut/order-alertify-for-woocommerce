@@ -106,6 +106,9 @@
     min-height: 250px;
     margin-right: 10px;
 }
+#newMailRuleContainer{
+    height: 100px;
+}
 #newRuleMainContainer{
     height: 100px;
     display: flex;
@@ -117,7 +120,7 @@
     padding: 0 10px;
     min-width: 400px;
 }
-.mailBoxDrop{
+.dropZones{
     min-width: 100px;
     padding: 0 5px;
     height: 40px;
