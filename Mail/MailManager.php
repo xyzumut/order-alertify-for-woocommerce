@@ -64,10 +64,6 @@
         
             $mail->CharSet = "utf-8";
 
-
-            // print_r(['mail' => $mail]);
-            // die;
-
             $mail->send();
         }  
     }

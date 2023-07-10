@@ -40,8 +40,10 @@ Domain Path: /lang
             $this->mailEditorFormatter();
             // wp_enqueue_script( 'orderAlertifyScript', plugin_dir_url(__FILE__).'js/orderAlertifyScript.js', array(), '', true);
             // wp_localize_script( 'orderAlertifyScript', 'orderAlertifyScript', $this->returnLocalizeScript());
-            wp_enqueue_style( 'orderNotificationGeneralStyle', plugin_dir_url(__FILE__).'css/orderAlertifyGeneralStyle.css');
-            wp_enqueue_style( 'orderNotificationTailwindStyle', plugin_dir_url(__FILE__).'css/orderAlertifyTailwind.css');
+            wp_enqueue_style( 'orderAlertifyGeneralStyle', plugin_dir_url(__FILE__).'css/orderAlertifyGeneralStyle.css');
+            wp_enqueue_style( 'orderAlertifyTailwindStyle', plugin_dir_url(__FILE__).'css/orderAlertifyTailwind.css');
+            wp_enqueue_script( 'orderAlertifyGeneralScript', plugin_dir_url(__FILE__).'js/orderAlertifyGeneralScript.js', array(), '', true);
+
         }
 
         public function renderAllPages() {
