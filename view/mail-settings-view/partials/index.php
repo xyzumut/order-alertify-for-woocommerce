@@ -9,28 +9,20 @@
     <div id="oa_body">
 
         <div id="oa_body_left">
-            <div id="mailGeneralSettingsButton" class="mailSettingsButton">
-                <?php _e('General Mail Settings', '@@@') ?>
-            </div>
-            <div id="mailRulesSettingsButton" class="mailSettingsButton">
-                <?php _e('Mail Rules', '@@@') ?>
-            </div>
-            <div id="mailTempateSettingsButton" class="mailSettingsButton">
-                <?php _e('Mail Edit', '@@@') ?>
-            </div>
+            <!-- Burası oa_body_right'a göre kendi gelecek -->
         </div>
 
         <div id="oa_body_right">
 
-            <div id="mailGeneralSettingsContainer" class="ou_body_right_item">
+            <div id="mailGeneralSettingsContainer" buttonText="General Settings" class="ou_body_right_item">
                 <?php include (__DIR__.'/sub-partials/').'generalSettings.php'; ?>
             </div>
 
-            <div id="mailRuleSettingsContainer" class="ou_body_right_item">
+            <div id="mailRuleSettingsContainer" buttonText="Mail Rule Settings" class="ou_body_right_item">
                 <?php include (__DIR__.'/sub-partials/').'mailRuleSettings.php'; ?>
             </div>
 
-            <div id="mailTemplateSettingsContainer" class="ou_body_right_item">
+            <div id="mailTemplateSettingsContainer" buttonText="Edit Rule Settings" class="ou_body_right_item privateMenuItem">
                 <?php include (__DIR__.'/sub-partials/').'mailTemplatePage.php'; ?>
             </div>
 

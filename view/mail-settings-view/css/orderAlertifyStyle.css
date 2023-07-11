@@ -40,7 +40,7 @@
 /* Ana Kısımlar */
 
 /* Sol Menü Kodlamaları */
-.mailSettingsButton{
+.settingsButton{
     font-size: 18px;
     text-align: left;
     width: 100%;
@@ -54,17 +54,17 @@
     border-left: 3px solid #5f85bd;
     color: white;
 }
-.mailSettingsButton-active{
+.settingsButton-active{
     color: #5f85bd;
     border-left: 3px solid #5f85bd;
     background-color: white;
     font-weight: 700;
     display: block !important;
 }
-.mailSettingsButton:hover{
+.settingsButton:hover{
     opacity: .7;
 }
-#mailTempateSettingsButton{
+#mailTemplateSettingsContainerButton{
     display: none;
 }
 /* Sol Menü Kodlamaları */

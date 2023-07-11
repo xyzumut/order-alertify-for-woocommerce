@@ -1,7 +1,7 @@
 window.addEventListener('load', async  () => {
 
+    // Alanın Kendi Özel Scripti 
     const recipentInit = () => { document.querySelectorAll('.mailRecipientsItem').forEach(element => element.addEventListener('click', () => {element.remove()})) }
-
 
     const generalMailSettingsMailInput = document.getElementById('mailAddressInput');
     const generalMailSettingsPasswordInput = document.getElementById('mailPasswordInput');
@@ -45,10 +45,7 @@ window.addEventListener('load', async  () => {
                 selectedOption = radioBtn.value;
             })
             if (radioBtn.value === selectedOption) {
-                console.log([radioBtn.value, selectedOption, oldSelectedOption])
                 radioBtn.checked = true;
-                console.log(radioBtn.value)
-                console.log(radioBtn)
             }
         });
 
@@ -91,55 +88,12 @@ window.addEventListener('load', async  () => {
     }
 
     initGeneralMailSettings();
+    
     const recipeAddContainer = document.getElementById('recipeAddContainer');
     const recipeInputContainer = document.getElementById('recipeInputContainer');
     const mailRecipientsItems = document.getElementById('mailRecipientsItems');
     const recipeAddInput = document.getElementById('recipeAddInput');
     const recideAddPlusContainer = document.getElementById('recideAddPlusContainer');
-
-
-    const oaHeader = document.getElementById('oa_header');
-    const oaHeaderBasePath = document.getElementById('oa_header').innerText;
-
-    const mailGeneralSettingsButton = document.getElementById('mailGeneralSettingsButton');
-    const mailRulesSettingsButton = document.getElementById('mailRulesSettingsButton');
-    const activeButtonClassName = 'mailSettingsButton-active';
-
-    const mailGeneralSettingsContainer = document.getElementById('mailGeneralSettingsContainer');
-    const mailRuleSettingsContainer = document.getElementById('mailRuleSettingsContainer');
-    const activeContainerClassName = 'ou_body_right_item-active';
-
-    const mailTemplatePage = document.querySelectorAll('.ou_body_right_item')[document.querySelectorAll('.ou_body_right_item').length-1]
-    const mailTemplateButton = document.getElementById('mailTempateSettingsButton');
-
-    mailGeneralSettingsButton.addEventListener('click', () => { handleMenuSwitch(mailGeneralSettingsButton, mailGeneralSettingsContainer); });
-    mailRulesSettingsButton.addEventListener('click', () => { handleMenuSwitch(mailRulesSettingsButton, mailRuleSettingsContainer); });
-
-    const handleMenuSwitch = async (newActiveButon, newActiveContainer, menuSlug=null) => {
-
-        const newPath = newActiveButon.innerText;
-
-        const oldActiveButon = document.getElementsByClassName(activeButtonClassName)[0];
-        const oldActiveContainer = document.getElementsByClassName(activeContainerClassName)[0];
-
-        oldActiveButon.classList.remove(activeButtonClassName);
-        oldActiveContainer.classList.remove(activeContainerClassName);
-        newActiveButon.classList.add(activeButtonClassName);
-        newActiveContainer.classList.add(activeContainerClassName);
-
-        oaHeader.innerText = oaHeaderBasePath + ' > ' + (menuSlug || newPath)
-    }   
-
-    const menuInit = () => {
-        const firstButton = document.querySelectorAll('.mailSettingsButton')[0];
-        const firstContainer = document.querySelectorAll('.ou_body_right_item')[0];
-        const firstPath = firstButton.innerText;
-        firstButton.classList.add(activeButtonClassName);
-        firstContainer.classList.add(activeContainerClassName);
-        oaHeader.innerText = oaHeaderBasePath + ' > ' + firstPath
-    }
-
-    menuInit();
 
     recipeAddContainer.addEventListener('click', () => {
         recipeAddContainer.classList.add(dispNoneClassName);
@@ -166,6 +120,21 @@ window.addEventListener('load', async  () => {
 
     });
 
+
+    // Alanın Kendi Özel Scripti 
+
+
+    // Menü Scripti
+    const oaHeader = document.getElementById('oa_header'); // duracak
+    const oaBodyLeft = document.getElementById('oa_body_left');
+    const oaBodyRight = document.getElementById('oa_body_right');
+
+    const menugenerator = new MenuGenerator({oaHeader:oaHeader, oaBodyLeftElement:oaBodyLeft, oaBodyRightElement:oaBodyRight});
+    menugenerator.render();
+    // Menü Scripti
+
+
+    // Kural Tanımlama Scripti
     const ruleGenerator = new RuleGenerator({
         definedRules: orderAlertifyScript.adminRules, 
         definedStatusesInWoocommerce: orderAlertifyScript.localizeStatuses, 
@@ -297,7 +266,6 @@ window.addEventListener('load', async  () => {
                     recipientValues.push(element.innerText);
                 })
                 const recipientsFinal = recipientValues.join('{|}');
-                console.log('resipientsFinal : ', recipientsFinal)
                 const formData = new FormData();
                 formData.append('_operation', 'saveMailTemplate');
                 formData.append('newContent', newContent);
@@ -314,8 +282,6 @@ window.addEventListener('load', async  () => {
 
                 modalClose(modalData)
 
-                console.log(response)
-
                 if(response.status === true){
                     sendNotification('success', response.message);
                 }
@@ -324,7 +290,7 @@ window.addEventListener('load', async  () => {
                 }
             });
 
-            await handleMenuSwitch(mailTemplateButton, mailTemplatePage, 'Edit of : '+'[ '+target+' ]');
+            menugenerator.handleMenuSwitch({newActiveButon: menugenerator.privateButtons[0], newActiveContainer: menugenerator.privateContainers[0], menuSlug:'Edit of : '+'[ '+target+' ]'});
 
             modalClose(modalData);
 
@@ -336,8 +302,11 @@ window.addEventListener('load', async  () => {
             }
         }
     });
-    
+    // Kural Tanımlama Scripti
 
+    // Short Code Scripti
     const shortCodesGenerator = new ShortCodes({data:shordCodes, header:shortCodesGeneratorMailHeaderText, targetContainer:document.getElementById('infoBoxContainer')});
     shortCodesGenerator.render({copyText:copyText});
+    // Short Code Scripti
+
 })
