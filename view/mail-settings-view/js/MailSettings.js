@@ -60,8 +60,8 @@ window.addEventListener('load', async  () => {
     
             saveButton.addEventListener('click', async () => {
                 const enableMailOpiton = selectedOption;
-                const orderAlertifyMail = generalMailSettingsMailInput.value;
-                const orderAlertifyPassword = generalMailSettingsPasswordInput.value;
+                const orderAlertifyMail = this.generalMailSettingsMailInput.value;
+                const orderAlertifyPassword = this.generalMailSettingsPasswordInput.value;
                 
                 const modalData = modalOpen();
     

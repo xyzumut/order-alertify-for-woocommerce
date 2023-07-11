@@ -52,6 +52,8 @@ class MenuGenerator{
             const newActiveContainer = document.getElementById(newActiveContainerId);
             this.handleMenuSwitch({newActiveButon:menuButton, newActiveContainer:newActiveContainer});
         })});
+
+        this.oaHeader.innerHTML = this.oaHeaderBasePath + ' > ' + document.querySelector('.'+this.activeButtonClassName).innerText;
     }
 
     handleMenuSwitch = async ({newActiveButon, newActiveContainer, menuSlug=null}) => {

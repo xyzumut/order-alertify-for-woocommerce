@@ -1,9 +1,9 @@
 window.addEventListener('load', () => {
 
-    class SMSSettings{
+    class TelegramSettings{
 
         render(){
-            alert('SMS Render Oldu');
+            alert('Telegram Render Oldu');
         }
     }
 
