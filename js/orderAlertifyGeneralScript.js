@@ -1,3 +1,12 @@
+const shordCodes = orderAlertifyGeneralScript.shortcodes;
+const copyText = orderAlertifyGeneralScript.copyToText;
+const shortCodesGeneratorMailHeaderText = orderAlertifyGeneralScript.shortCodesGeneratorMailHeaderText;
+const dragAndDropChooseDifferentOptionText = orderAlertifyGeneralScript.dragAndDropChooseDifferentOptionText;
+const mailRecipeWarningMessageText = orderAlertifyGeneralScript.mailRecipeWarningMessageText;
+const loadingText = orderAlertifyGeneralScript.loadingText;
+
+const dispNoneClassName = 'dispnone';
+
 function sendNotification(type, text) {
 
     let notificationBox = document.querySelector(".notification-box");
@@ -65,6 +74,6 @@ const modalOpen = (custom = null) => {
 const modalClose = ({'modal': modal, 'modalActiveClass': modalActiveClass, 'message':message}) => {
     modal.classList.remove(modalActiveClass);
     if (message!==null) {
-        document.getElementById('orderNotificationLoadingModalContainerHeader').innerHTML = message;
+      document.getElementById('orderNotificationLoadingModalContainerHeader').innerHTML = message;
     }
 }

@@ -43,7 +43,40 @@ Domain Path: /lang
             wp_enqueue_style( 'orderAlertifyGeneralStyle', plugin_dir_url(__FILE__).'css/orderAlertifyGeneralStyle.css');
             wp_enqueue_style( 'orderAlertifyTailwindStyle', plugin_dir_url(__FILE__).'css/orderAlertifyTailwind.css');
             wp_enqueue_script( 'orderAlertifyGeneralScript', plugin_dir_url(__FILE__).'js/orderAlertifyGeneralScript.js', array(), '', true);
+            wp_localize_script( 'orderAlertifyGeneralScript', 'orderAlertifyGeneralScript', $this->returnLocalizeScript());
+            
+            wp_enqueue_script( 'orderAlertifyRuleGenerator', plugin_dir_url(__FILE__).'js/RuleGenerator.js', array(), '', true);
+            wp_enqueue_script( 'orderAlertifyShortCodes', plugin_dir_url(__FILE__).'js/ShortCodes.js', array(), '', true);
+        }
 
+        public function returnLocalizeScript(){
+            $shordCodes = [
+                ['shortCode' => '{customer_note}', 'view' => __('Customer Note', '@@@')],
+                ['shortCode' => '{order_id}'     , 'view' => __('Order ID', '@@@')],
+                ['shortCode' => '{customer_id}'  , 'view' => __('Customer ID', '@@@')],
+                ['shortCode' => '{order_key}'    , 'view' => __('Order Key', '@@@')],
+                ['shortCode' => '{bil_first}'    , 'view' => __('Billing First Name', '@@@')],
+                ['shortCode' => '{bil_last}'     , 'view' => __('Billing Last Name', '@@@')],
+                ['shortCode' => '{bil_add1}'     , 'view' => __('Billing Address 1', '@@@')],
+                ['shortCode' => '{bil_add2}'     , 'view' => __('Billing Address 2', '@@@')],
+                ['shortCode' => '{bil_city}'     , 'view' => __('Billing City', '@@@')],
+                ['shortCode' => '{bil_mail}'     , 'view' => __('Billing Email', '@@@')],
+                ['shortCode' => '{bil_phone}'    , 'view' => __('Billing Phone', '@@@')],
+                ['shortCode' => '{ship_first}'   , 'view' => __('Shipping First Name', '@@@')],
+                ['shortCode' => '{ship_last}'    , 'view' => __('Shipping Last Name', '@@@')],
+                ['shortCode' => '{ship_add1}'    , 'view' => __('Shipping Address 1', '@@@')],
+                ['shortCode' => '{ship_add2}'    , 'view' => __('Shipping Address 2', '@@@')],
+                ['shortCode' => '{ship_city}'    , 'view' => __('Shipping City', '@@@')],
+                ['shortCode' => '{ship_phone}'   , 'view' => __('Shipping Phone', '@@@')],
+            ];
+            return [
+                'shortcodes' => $shordCodes,
+                'copyToText' => __('Copy to Clipboard', '@@@'),
+                'loadingText' => __('Loading . . .', '@@@'),
+                'shortCodesGeneratorMailHeaderText' => __('Short Codes For Mail Templates', '@@@'),
+                'dragAndDropChooseDifferentOptionText' => __('Choose Different Options', '@@@'),
+                'mailRecipeWarningMessageText' => __('Please Enter the Appropriate Value', '@@@')
+            ];  
         }
 
         public function renderAllPages() {

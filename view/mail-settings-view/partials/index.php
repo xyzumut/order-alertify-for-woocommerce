@@ -42,7 +42,7 @@
 <div id="orderNotificationLoadingModal">
     <div id="orderNotificationLoadingModalContainer">
         <div id="orderNotificationLoadingModalContainerHeader">
-            Ayarlar Kaydediliyor . . .
+            <?php _e('Saving Settings . . .'); ?>
         </div>
         <div id="orderNotificationLoadingModalContainerBody">
             <div v-if="loading" class="spinnerNotifiaction">

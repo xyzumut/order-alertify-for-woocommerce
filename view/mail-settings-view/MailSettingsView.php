@@ -41,6 +41,7 @@ class MailSettingsView{
             $statuses[$i]['slug'] = $status_slugs[$i];
             $statuses[$i]['view'] = $status_views[$i];
         }
+        $statuses[count($statuses)] = ['slug' => '*', 'view' => __('All', '@@@')];
         return $statuses;
     }
 
