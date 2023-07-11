@@ -396,6 +396,7 @@ window.addEventListener('load', async  () => {
                 else{
                     sendNotification('error', response.message);
                 }
+            
             })
         })
     }

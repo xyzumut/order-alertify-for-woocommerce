@@ -2,7 +2,6 @@ window.addEventListener('load', async  () => {
 
     const recipentInit = () => { document.querySelectorAll('.mailRecipientsItem').forEach(element => element.addEventListener('click', () => {element.remove()})) }
 
-    const dispNoneClassName = 'dispnone';
 
     const generalMailSettingsMailInput = document.getElementById('mailAddressInput');
     const generalMailSettingsPasswordInput = document.getElementById('mailPasswordInput');
@@ -92,28 +91,12 @@ window.addEventListener('load', async  () => {
     }
 
     initGeneralMailSettings();
-    const droppableMainContainer = document.getElementById('newRuleMainContainer');
-    const dropSaveButton = document.getElementById('saveButtonDraggable');
-    const statusesContainer = document.getElementById('woocommerceStatuesContainer');
-    const statuesDropZones = document.querySelectorAll('.mailBoxDrop'); 
-    const directionArrow = document.getElementById('directionArrow');
-    const activeDraggableClassName = 'draggableActive';
-    const activeDroppableClassName = 'droppableActive';
-    const droppableOkeyClassName = 'droppableOkey';
-    const slugAttributeKey = 'status_slug';
-    // const droppableMainContainerBaseborderColor = droppableMainContainer.style.borderColor;
     const recipeAddContainer = document.getElementById('recipeAddContainer');
     const recipeInputContainer = document.getElementById('recipeInputContainer');
     const mailRecipientsItems = document.getElementById('mailRecipientsItems');
     const recipeAddInput = document.getElementById('recipeAddInput');
     const recideAddPlusContainer = document.getElementById('recideAddPlusContainer');
-    const infoBoxItemRight = document.querySelectorAll('.infoBoxItemRight');
 
-    infoBoxItemRight.forEach( item => item.addEventListener('click', async () => {
-        const value = item.innerText.replace(': ', '');
-        await navigator.clipboard.writeText(value);
-        sendNotification('info', value +' '+ 'Copy to Clipboard');
-    }))
 
     const oaHeader = document.getElementById('oa_header');
     const oaHeaderBasePath = document.getElementById('oa_header').innerText;
@@ -131,6 +114,7 @@ window.addEventListener('load', async  () => {
 
     mailGeneralSettingsButton.addEventListener('click', () => { handleMenuSwitch(mailGeneralSettingsButton, mailGeneralSettingsContainer); });
     mailRulesSettingsButton.addEventListener('click', () => { handleMenuSwitch(mailRulesSettingsButton, mailRuleSettingsContainer); });
+
     const handleMenuSwitch = async (newActiveButon, newActiveContainer, menuSlug=null) => {
 
         const newPath = newActiveButon.innerText;
@@ -145,6 +129,7 @@ window.addEventListener('load', async  () => {
 
         oaHeader.innerText = oaHeaderBasePath + ' > ' + (menuSlug || newPath)
     }   
+
     const menuInit = () => {
         const firstButton = document.querySelectorAll('.mailSettingsButton')[0];
         const firstContainer = document.querySelectorAll('.ou_body_right_item')[0];
@@ -153,15 +138,18 @@ window.addEventListener('load', async  () => {
         firstContainer.classList.add(activeContainerClassName);
         oaHeader.innerText = oaHeaderBasePath + ' > ' + firstPath
     }
+
     menuInit();
+
     recipeAddContainer.addEventListener('click', () => {
         recipeAddContainer.classList.add(dispNoneClassName);
         recipeInputContainer.classList.remove(dispNoneClassName);
     })
+
     recideAddPlusContainer.addEventListener('click', () => {
 
         if (recipeAddInput.value.length < 5) {
-            sendNotification('warning', 'Lütfen Değer Giriniz');
+            sendNotification(mailRecipeWarningMessageText);
             return;
         }
 
@@ -178,7 +166,6 @@ window.addEventListener('load', async  () => {
 
     });
 
-    /*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
     const ruleGenerator = new RuleGenerator({
         definedRules: orderAlertifyScript.adminRules, 
         definedStatusesInWoocommerce: orderAlertifyScript.localizeStatuses, 
@@ -187,10 +174,39 @@ window.addEventListener('load', async  () => {
         dropzoneRenderTargetElement: document.getElementById('newMailRuleContainer')
     });
 
-    ruleGenerator.renderDropZones({saveCallback:({oldStatusSlug, newStatusSlug})=>{
-        alert('Save: '+oldStatusSlug+' - '+newStatusSlug);
-        return true;
-    }});
+    ruleGenerator.renderDropZones({
+        saveCallback:async ({oldStatusSlug, newStatusSlug}) => {
+            if (oldStatusSlug === newStatusSlug) {
+                sendNotification('warning', dragAndDropChooseDifferentOptionText);
+                return false;
+            }
+
+            const formData = new FormData();
+
+            formData.append('oldStatusSlug' , oldStatusSlug );
+            formData.append('newStatusSlug' , newStatusSlug );
+            formData.append('_operation', 'addMailRule')
+    
+            const modalData = modalOpen();
+    
+            const request = await fetch(orderAlertifyScript.adminUrl+'admin-ajax.php?action=orderAlertifyAjaxListener',{
+                method:'POST',
+                body:formData
+            });
+    
+            const response = await request.json();
+    
+            modalClose(modalData);
+    
+            if(response.status === true){
+                sendNotification('success', response.message);
+                return true;
+            }
+
+            sendNotification('error', response.message);
+            return false;
+        }
+    });
 
     ruleGenerator.renderStasuses();
 
@@ -218,17 +234,110 @@ window.addEventListener('load', async  () => {
                 sendNotification('success', response.message);
                 return true;
             }
-            else{
-                sendNotification('error', response.message);
-                return false;
-            }
+            sendNotification('error', response.message);
+            return false;
 
         },
         goRuleCallback: async ({oldStatusSlug, newStatusSlug}) => {
-            alert('Go Rule : '+oldStatusSlug+' - '+newStatusSlug);
+
+            recipeAddInput.value=' ';
+            recipeAddContainer.classList.remove(dispNoneClassName);
+            recipeInputContainer.classList.add(dispNoneClassName);
+
+            const target = oldStatusSlug + ' > ' + newStatusSlug;
+
+            const formData = new FormData();
+            formData.append('_operation', 'getMailTemplate');
+            formData.append('rule', target);
+
+            const modalData = modalOpen(loadingText);
+
+            const request = await fetch(orderAlertifyScript.adminUrl+'admin-ajax.php?action=orderAlertifyAjaxListener',{
+                method:'POST',
+                body:formData
+            });
+
+            const response = await request.json();
+
+            const templateData = response.data;
+            const recipients = templateData.recipients !== 'false' ? templateData.recipients.split('{|}') : null;
+            mailRecipientsItems.innerHTML = '';
+            if (recipients !== null) {
+                recipients.forEach( recipient => {
+                    if (recipient !== '') {
+                        mailRecipientsItems.innerHTML = mailRecipientsItems.innerHTML + '<div class="mailRecipientsItem">'+recipient+'</div>';
+                        recipentInit();
+                    }
+                });
+            }
+            
+            const editor = document.getElementById('content_ifr').contentDocument.getElementById('tinymce') || document.getElementById('content_ifr').contentWindow.document.getElementById('tinymce');
+            const subjectInput = document.getElementById('mailTemplateSubject');
+
+            editor.innerHTML = templateData.mailContent.replaceAll('\\', '');
+            subjectInput.value = templateData.mailSubject;
+
+            const saveButton = document.getElementById('saveMailTemplateBtn');
+            const temp_text = saveButton.innerText ;
+            const saveButtonCopy = saveButton.cloneNode(false);
+            saveButtonCopy.innerText = temp_text; 
+            saveButton.remove();
+            document.getElementById('mailTemplateRightColumnHeader').insertAdjacentElement('afterbegin', saveButtonCopy)
+
+            document.getElementById('saveMailTemplateBtn').addEventListener('click', async () => {
+
+                const newContent = editor.innerHTML;
+                const newSubject = subjectInput.value;
+
+                const modalData = modalOpen();
+
+                const recipientsContainer = document.querySelectorAll('.mailRecipientsItem');
+                const recipientValues = [];
+                recipientsContainer.forEach( element => {
+                    recipientValues.push(element.innerText);
+                })
+                const recipientsFinal = recipientValues.join('{|}');
+                console.log('resipientsFinal : ', recipientsFinal)
+                const formData = new FormData();
+                formData.append('_operation', 'saveMailTemplate');
+                formData.append('newContent', newContent);
+                formData.append('newSubject', newSubject);
+                formData.append('recipients', recipientsFinal)
+                formData.append('target', target);
+
+                const request = await fetch(orderAlertifyScript.adminUrl+'admin-ajax.php?action=orderAlertifyAjaxListener',{
+                    method:'POST',
+                    body:formData
+                });
+
+                const response = await request.json();
+
+                modalClose(modalData)
+
+                console.log(response)
+
+                if(response.status === true){
+                    sendNotification('success', response.message);
+                }
+                else{
+                    sendNotification('error', response.message);
+                }
+            });
+
+            await handleMenuSwitch(mailTemplateButton, mailTemplatePage, 'Edit of : '+'[ '+target+' ]');
+
+            modalClose(modalData);
+
+            if(response.status === true){
+                sendNotification('success', response.message);
+            }
+            else{
+                sendNotification('error', response.message);
+            }
         }
     });
     
-    // newMailRuleContainer
-    /*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
+
+    const shortCodesGenerator = new ShortCodes({data:shordCodes, header:shortCodesGeneratorMailHeaderText, targetContainer:document.getElementById('infoBoxContainer')});
+    shortCodesGenerator.render({copyText:copyText});
 })

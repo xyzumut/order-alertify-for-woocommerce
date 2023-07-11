@@ -29,9 +29,9 @@
         statuesDropZones;
         /* dropzone */
 
-
+        deleteCallback
+        goRuleCallback  
         
-
         constructor({definedStatusesInWoocommerce, definedRules, definedStatusesRenderTargetElement, definedRulesRenderTargetElement, dropzoneRenderTargetElement}){
             this.definedStatusesInWoocommerce = definedStatusesInWoocommerce;
             this.definedStatusesRenderTargetElement = definedStatusesRenderTargetElement;
@@ -78,8 +78,12 @@
         renderDefinedRules = ({deleteCallback, goRuleCallback}) => {
             // 700 genişlik, min 250 yükseklik
 
+            this.deleteCallback = deleteCallback;
+            this.goRuleCallback = goRuleCallback;
+
             const renderDefineRulesContainer = '<div id="definedRulesTemplates"><div id="definedRulesTemplatesHeader">Defined Rules</div><div id="definedRulesTemplatesBody"></div></div>';
 
+            this.definedRulesRenderTargetElement.innerHTML = '';
             this.definedRulesRenderTargetElement.innerHTML = renderDefineRulesContainer;
             
             const definedRulesTemplatesBody = document.getElementById('definedRulesTemplatesBody'); // üst satırlardan gelecek
@@ -87,7 +91,6 @@
             if (this.definedRules.length === 0) {
                 return;
             }
-
 
             this.definedRules.forEach( item => {
         
@@ -179,14 +182,10 @@
                 const response = await saveCallback({oldStatusSlug: oldStatusSlug, newStatusSlug: newStatusSlug});
 
                 if (response === true) {
-                    const newView = this.definedStatusesInWoocommerce.find(item => item.slug === newStatusSlug).view;
-                    const oldView = this.definedStatusesInWoocommerce.find(item => item.slug === oldStatusSlug).view;
 
-                    const definedRulesTemplatesBody = document.getElementById('definedRulesTemplatesBody');
-                    let render = '<div class="definedRulesRows">  <div class="definedGroup">';
-                    render = render + '<div class="definedGroupItem">'+oldView+'</div> <div class="definedGroupItemArrow">></div> <div class="definedGroupItem">'+newView+'</div></div>';
-                    render = render + ' <div id="definedGroupOptions"> <button class="ruleButton deleteRule"  newstatusslug="'+newStatusSlug+'" oldstatusslug="'+oldStatusSlug+'">Delete Rule</button> <button class="ruleButton goRule"  newStatusSlug="'+newStatusSlug+'" oldStatusSlug="'+oldStatusSlug+'">Go Rule</button></div></div>';
-                    definedRulesTemplatesBody.innerHTML = definedRulesTemplatesBody.innerHTML + render; 
+                    this.definedRules.push(oldStatusSlug+' > '+newStatusSlug)
+
+                    this.renderDefinedRules({deleteCallback:this.deleteCallback, goRuleCallback:this.goRuleCallback});
 
                     this.dropZoneClear(dropSaveButton, directionArrow, droppableMainContainer, droppableMainContainerBaseBorderColor);
                 }
@@ -198,6 +197,8 @@
             dropSaveButton.classList.add(this.dispNoneClassName);
             directionArrow.classList.remove(this.dispNoneClassName);
             droppableMainContainer.style.borderColor = droppableMainContainerBaseBorderColor;
+            document.querySelectorAll('.'+this.droppableOkeyClassName).forEach( el => { el.classList.remove(this.droppableOkeyClassName);});
+            document.getElementById('oldStatusContainer').innerHTML = this.oldStatusString;
+            document.getElementById('newStatusContainer').innerHTML = this.newStatusString;
         }
     }
-// })
