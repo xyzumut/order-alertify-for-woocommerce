@@ -20,9 +20,9 @@ class MailSettingsView{
     }
 
     public function loadJsAndCSS(){
-        wp_enqueue_script( 'orderAlertifyScript', plugin_dir_url(__FILE__).'js/orderAlertifyScript.js', array(), '', true);
-        wp_localize_script( 'orderAlertifyScript', 'orderAlertifyScript', $this->returnLocalizeScript());
-        wp_enqueue_style( 'orderNotificationStyle', plugin_dir_url(__FILE__).'css/orderAlertifyStyle.css');
+        wp_enqueue_script( 'mailSettingsScript', plugin_dir_url(__FILE__).'js/MailSettings.js', array(), '', true);
+        wp_localize_script( 'mailSettingsScript', 'mailSettingsScript', $this->returnLocalizeScript());
+        wp_enqueue_style( 'orderNotificationStyle', plugin_dir_url(__FILE__).'css/MailSettingsStyle.css');
     }
 
     public function returnLocalizeScript(){

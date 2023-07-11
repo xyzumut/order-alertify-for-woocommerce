@@ -83,7 +83,6 @@
 
             const renderDefineRulesContainer = '<div id="definedRulesTemplates"><div id="definedRulesTemplatesHeader">Defined Rules</div><div id="definedRulesTemplatesBody"></div></div>';
 
-            this.definedRulesRenderTargetElement.innerHTML = '';
             this.definedRulesRenderTargetElement.innerHTML = renderDefineRulesContainer;
             
             const definedRulesTemplatesBody = document.getElementById('definedRulesTemplatesBody'); // üst satırlardan gelecek
@@ -118,6 +117,7 @@
                     if (response === true) {
                         button.parentNode.parentNode.remove();   
                     }
+                    this.definedRules = this.definedRules.filter( item => item !== oldStatusSlug+' > '+newStatusSlug);
                 })
             })
 
