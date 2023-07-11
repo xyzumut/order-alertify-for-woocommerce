@@ -38,15 +38,13 @@ Domain Path: /lang
             add_action('wp_ajax_orderAlertifyAjaxListener', [$this, 'orderAlertifyAjaxListener']);
             add_action('wp_ajax_nopriv_orderAlertifyAjaxListener', [$this, 'orderAlertifyAjaxListener']);
             $this->mailEditorFormatter();
-            // wp_enqueue_script( 'orderAlertifyScript', plugin_dir_url(__FILE__).'js/orderAlertifyScript.js', array(), '', true);
-            // wp_localize_script( 'orderAlertifyScript', 'orderAlertifyScript', $this->returnLocalizeScript());
             wp_enqueue_style( 'orderAlertifyGeneralStyle', plugin_dir_url(__FILE__).'css/orderAlertifyGeneralStyle.css');
             wp_enqueue_style( 'orderAlertifyTailwindStyle', plugin_dir_url(__FILE__).'css/orderAlertifyTailwind.css');
             wp_enqueue_script( 'orderAlertifyGeneralScript', plugin_dir_url(__FILE__).'js/orderAlertifyGeneralScript.js', array(), '', true);
             wp_localize_script( 'orderAlertifyGeneralScript', 'orderAlertifyGeneralScript', $this->returnLocalizeScript());
-            
             wp_enqueue_script( 'orderAlertifyRuleGenerator', plugin_dir_url(__FILE__).'js/RuleGenerator.js', array(), '', true);
             wp_enqueue_script( 'orderAlertifyShortCodes', plugin_dir_url(__FILE__).'js/ShortCodes.js', array(), '', true);
+            wp_enqueue_script( 'menuGenerator', plugin_dir_url(__FILE__).'js/MenuGenerator.js', array(), '', true);
         }
 
         public function returnLocalizeScript(){
