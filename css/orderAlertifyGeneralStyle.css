@@ -3,7 +3,7 @@
 }
 /*@@@@@@@@@@ Modal @@@@@@@@@@*/
 #orderNotificationLoadingModal{
-    width: 85vw;
+    width: 75vw;
     height: 85vh;
     justify-content: center;
     align-items: center;
@@ -380,7 +380,7 @@ input:focus-visible{
     display: none;
 }
 .ou_body_right_item-active{
-    display: block;
+    display: block !important;
 }
 #oa_mainContainer{
     width: 1200px;
