@@ -1,1 +1,0 @@
-document.querySelector('.myClass').addEventListener('click', () => {alert('hoşgeldin')})

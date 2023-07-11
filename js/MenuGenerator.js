@@ -42,9 +42,6 @@ class MenuGenerator{
         this.privateButtons = document.querySelectorAll('.'+this.oaBodyLeftButtonsClassName+'.'+this.privateClassName);
         this.privateContainers = document.querySelectorAll('.'+this.oaBodyRightContainerClassName+'.'+this.privateClassName);
 
-        console.log(this.privateButtons)
-        console.log(this.privateContainers);
-
         const buttons = document.querySelectorAll('.'+this.oaBodyLeftButtonsClassName);
         
         buttons.forEach( menuButton => { menuButton.addEventListener('click', () => {
@@ -53,10 +50,10 @@ class MenuGenerator{
             }
             const newActiveContainerId = menuButton.id.split('Button')[0];
             const newActiveContainer = document.getElementById(newActiveContainerId);
-            console.log(menuButton);
-            console.log(menuButton.innerText);
             this.handleMenuSwitch({newActiveButon:menuButton, newActiveContainer:newActiveContainer});
         })});
+
+        this.oaHeader.innerHTML = this.oaHeaderBasePath + ' > ' + document.querySelector('.'+this.activeButtonClassName).innerText;
     }
 
     handleMenuSwitch = async ({newActiveButon, newActiveContainer, menuSlug=null}) => {
@@ -66,7 +63,6 @@ class MenuGenerator{
         }    
         else{
             newPath = menuSlug;
-            console.log(menuSlug);
         }
         const oldActiveButon = document.getElementsByClassName(this.activeButtonClassName)[0];
         const oldActiveContainer = document.getElementsByClassName(this.activeContainerClassName)[0];

@@ -103,6 +103,20 @@ Domain Path: /lang
         }
 
         public function woocommerceListener($order_id, $old_status, $new_status){
+            
+            $order = wc_get_order( $order_id );
+            $shortCodes = [
+                '{customer_note}@customer_note', '{order_id}@id', '{customer_id}@customer_id', '{order_key}@order_key', 
+                '{bil_first}@billing@first_name', '{bil_last}@billing@last_name', '{bil_add1}@billing@address_1', '{bil_add2}@billing@address_2', '{bil_city}@billing@city',
+                '{bil_mail}@billing@email', '{bil_phone}@billing@phone', '{ship_first}@shipping@first_name', '{ship_last}@shipping@last_name', '{ship_add1}@shipping@address_1', 
+                '{ship_add2}@shipping@address_2', '{ship_city}@shipping@city', '{ship_phone}@shipping@phone'
+            ];
+
+            $this->woocommerceListenerMail($order_id, $old_status, $new_status, $shortCodes, $order);
+
+        } 
+
+        public function woocommerceListenerMail($order_id, $old_status, $new_status, $shortCodes, $order){
             $old_status = 'wc-'.$old_status;
             $new_status = 'wc-'.$new_status;
             $mailRuleLength = json_decode(get_option('mailRuleTemp'));
@@ -157,14 +171,6 @@ Domain Path: /lang
                 $recipients = explode('{|}', $recipients);
             }
 
-            $order = wc_get_order( $order_id );
-
-            $shortCodes = [
-                '{customer_note}@customer_note', '{order_id}@id', '{customer_id}@customer_id', '{order_key}@order_key', 
-                '{bil_first}@billing@first_name', '{bil_last}@billing@last_name', '{bil_add1}@billing@address_1', '{bil_add2}@billing@address_2', '{bil_city}@billing@city',
-                '{bil_mail}@billing@email', '{bil_phone}@billing@phone', '{ship_first}@shipping@first_name', '{ship_last}@shipping@last_name', '{ship_add1}@shipping@address_1', 
-                '{ship_add2}@shipping@address_2', '{ship_city}@shipping@city', '{ship_phone}@shipping@phone'
-            ];
 
             foreach ($shortCodes as $shortCode) {
                 $shortCode = explode('@', $shortCode);

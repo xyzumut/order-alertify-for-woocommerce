@@ -1,148 +1,147 @@
 window.addEventListener('load', async  () => {
 
-    // Alanın Kendi Özel Scripti 
-    const recipentInit = () => { document.querySelectorAll('.mailRecipientsItem').forEach(element => element.addEventListener('click', () => {element.remove()})) }
-
-    const generalMailSettingsMailInput = document.getElementById('mailAddressInput');
-    const generalMailSettingsPasswordInput = document.getElementById('mailPasswordInput');
-
-    const initGeneralMailSettings = async () => {
-        const generalSettingsMainContainer = document.getElementById('generalSettingsMainContainer');
-        const tempHTML = generalSettingsMainContainer.innerHTML;
-
-        const modalData = modalOpen('Veriler Getiriliyor . . .');
-
-        const formData = new FormData();
-        formData.append('_operation', 'generalMailSettingsInit');
-
-
-        const request = await fetch(orderAlertifyScript.adminUrl+'admin-ajax.php?action=orderAlertifyAjaxListener',{
-            method:'POST',
-            body:formData
-        });
-
-        const response = await request.json();        
-
-        // backendden gelecek
-        const oldSelectedOption = response.data.selectedMailOption;
-        const email = response.data.mail;
-        const password = response.data.password;
-        // backendden gelecek
-
-        modalClose(modalData)
-
-        if(response.status === true){
-            sendNotification('success', response.message);
-        }
-        else{
-            sendNotification('error', response.message);
+    class MailSettings{
+        constructor(){
+            this.generalMailSettingsMailInput = document.getElementById('mailAddressInput');
+            this.generalMailSettingsPasswordInput = document.getElementById('mailPasswordInput');
+            this.recipeAddContainer = document.getElementById('recipeAddContainer');
+            this.recipeInputContainer = document.getElementById('recipeInputContainer');
+            this.mailRecipientsItems = document.getElementById('mailRecipientsItems');
+            this.recipeAddInput = document.getElementById('recipeAddInput');
+            this.recideAddPlusContainer = document.getElementById('recideAddPlusContainer');
         }
 
-        const availableMailRadios = document.querySelectorAll('.availableMailRadio');
-        let selectedOption = oldSelectedOption;
-        availableMailRadios.forEach( radioBtn => { 
-            radioBtn.addEventListener('click', (e) => {
-                selectedOption = radioBtn.value;
-            })
-            if (radioBtn.value === selectedOption) {
-                radioBtn.checked = true;
-            }
-        });
+        recipentInit = () => { document.querySelectorAll('.mailRecipientsItem').forEach(element => element.addEventListener('click', () => {element.remove()})) }
 
-        generalMailSettingsMailInput.value = email;
-        generalMailSettingsPasswordInput.value = password;
-
-        const saveButton = document.getElementById('saveMailAccountButton');
-
-        saveButton.addEventListener('click', async () => {
-            const enableMailOpiton = selectedOption;
-            const orderAlertifyMail = generalMailSettingsMailInput.value;
-            const orderAlertifyPassword = generalMailSettingsPasswordInput.value;
-            
-            const modalData = modalOpen();
-
+        render = async () => {
+    
+            const modalData = modalOpen(orderAlertifyGeneralScript.loadingText);
+    
             const formData = new FormData();
-            formData.append('_operation', 'generalMailSettingsUpdate');
-            formData.append('enableMailOption', enableMailOpiton);
-            formData.append('orderAlertifyMail', orderAlertifyMail);
-            formData.append('orderAlertifyPassword', orderAlertifyPassword);
-
-
-            const request = await fetch(orderAlertifyScript.adminUrl+'admin-ajax.php?action=orderAlertifyAjaxListener',{
+            formData.append('_operation', 'generalMailSettingsInit');
+    
+            const request = await fetch(mailSettingsScript.adminUrl+'admin-ajax.php?action=orderAlertifyAjaxListener',{
                 method:'POST',
                 body:formData
             });
-
-            const response = await request.json();  
-            
-            modalClose(modalData);
-
+    
+            const response = await request.json();        
+    
+            // backendden gelecek
+            const oldSelectedOption = response.data.selectedMailOption;
+            const email = response.data.mail;
+            const password = response.data.password;
+            // backendden gelecek
+    
+            modalClose(modalData)
+    
             if(response.status === true){
                 sendNotification('success', response.message);
             }
             else{
                 sendNotification('error', response.message);
             }
+    
+            const availableMailRadios = document.querySelectorAll('.availableMailRadio');
+            let selectedOption = oldSelectedOption;
+            availableMailRadios.forEach( radioBtn => { 
+                radioBtn.addEventListener('click', (e) => {
+                    selectedOption = radioBtn.value;
+                })
+                if (radioBtn.value === selectedOption) {
+                    radioBtn.checked = true;
+                }
+            });
+    
+            this.generalMailSettingsMailInput.value = email;
+            this.generalMailSettingsPasswordInput.value = password;
+    
+            const saveButton = document.getElementById('saveMailAccountButton');
+    
+            saveButton.addEventListener('click', async () => {
+                const enableMailOpiton = selectedOption;
+                const orderAlertifyMail = this.generalMailSettingsMailInput.value;
+                const orderAlertifyPassword = this.generalMailSettingsPasswordInput.value;
+                
+                const modalData = modalOpen();
+    
+                const formData = new FormData();
+                formData.append('_operation', 'generalMailSettingsUpdate');
+                formData.append('enableMailOption', enableMailOpiton);
+                formData.append('orderAlertifyMail', orderAlertifyMail);
+                formData.append('orderAlertifyPassword', orderAlertifyPassword);
+    
+    
+                const request = await fetch(mailSettingsScript.adminUrl+'admin-ajax.php?action=orderAlertifyAjaxListener',{
+                    method:'POST',
+                    body:formData
+                });
+    
+                const response = await request.json();  
+                
+                modalClose(modalData);
+    
+                if(response.status === true){
+                    sendNotification('success', response.message);
+                }
+                else{
+                    sendNotification('error', response.message);
+                }
+    
+            })
 
-        })
+            this.recipeAddContainer.addEventListener('click', () => {
+                recipeAddContainer.classList.add(dispNoneClassName);
+                recipeInputContainer.classList.remove(dispNoneClassName);
+            })
+
+            this.recideAddPlusContainer.addEventListener('click', () => {
+
+                if (recipeAddInput.value.length < 5) {
+                    sendNotification(mailRecipeWarningMessageText);
+                    return;
+                }
+        
+                const newItem = '<div class="mailRecipientsItem" >'+recipeAddInput.value+'</div>';
+        
+                mailRecipientsItems.innerHTML = mailRecipientsItems.innerHTML + newItem; 
+        
+                this.recipentInit();
+
+                recipeAddContainer.classList.remove(dispNoneClassName);
+                recipeInputContainer.classList.add(dispNoneClassName);
+        
+                recipeAddInput.value=' ';
+        
+            });
+        }
     }
 
-    initGeneralMailSettings();
-    
-    const recipeAddContainer = document.getElementById('recipeAddContainer');
-    const recipeInputContainer = document.getElementById('recipeInputContainer');
-    const mailRecipientsItems = document.getElementById('mailRecipientsItems');
-    const recipeAddInput = document.getElementById('recipeAddInput');
-    const recideAddPlusContainer = document.getElementById('recideAddPlusContainer');
+    // Sayfanın Kendi Kodları
+    const mailSettingsPage = new MailSettings();
+    mailSettingsPage.render();
+    // Sayfanın Kendi Kodları
 
-    recipeAddContainer.addEventListener('click', () => {
-        recipeAddContainer.classList.add(dispNoneClassName);
-        recipeInputContainer.classList.remove(dispNoneClassName);
-    })
-
-    recideAddPlusContainer.addEventListener('click', () => {
-
-        if (recipeAddInput.value.length < 5) {
-            sendNotification(mailRecipeWarningMessageText);
-            return;
-        }
-
-        const newItem = '<div class="mailRecipientsItem" >'+recipeAddInput.value+'</div>';
-
-        mailRecipientsItems.innerHTML = mailRecipientsItems.innerHTML + newItem; 
-
-        recipentInit();
-
-        recipeAddContainer.classList.remove(dispNoneClassName);
-        recipeInputContainer.classList.add(dispNoneClassName);
-
-        recipeAddInput.value=' ';
-
-    });
-
-
-    // Alanın Kendi Özel Scripti 
 
 
     // Menü Scripti
     const oaHeader = document.getElementById('oa_header'); // duracak
     const oaBodyLeft = document.getElementById('oa_body_left');
     const oaBodyRight = document.getElementById('oa_body_right');
-
     const menugenerator = new MenuGenerator({oaHeader:oaHeader, oaBodyLeftElement:oaBodyLeft, oaBodyRightElement:oaBodyRight});
     menugenerator.render();
     // Menü Scripti
 
 
+
     // Kural Tanımlama Scripti
     const ruleGenerator = new RuleGenerator({
-        definedRules: orderAlertifyScript.adminRules, 
-        definedStatusesInWoocommerce: orderAlertifyScript.localizeStatuses, 
+        definedRules: mailSettingsScript.adminRules, 
+        definedStatusesInWoocommerce: mailSettingsScript.localizeStatuses, 
         definedRulesRenderTargetElement: document.getElementById('definedMailRulesContainer'), 
         definedStatusesRenderTargetElement:document.getElementById('mailTemplatesRightContainer'),
         dropzoneRenderTargetElement: document.getElementById('newMailRuleContainer')
     });
-
     ruleGenerator.renderDropZones({
         saveCallback:async ({oldStatusSlug, newStatusSlug}) => {
             if (oldStatusSlug === newStatusSlug) {
@@ -158,7 +157,7 @@ window.addEventListener('load', async  () => {
     
             const modalData = modalOpen();
     
-            const request = await fetch(orderAlertifyScript.adminUrl+'admin-ajax.php?action=orderAlertifyAjaxListener',{
+            const request = await fetch(mailSettingsScript.adminUrl+'admin-ajax.php?action=orderAlertifyAjaxListener',{
                 method:'POST',
                 body:formData
             });
@@ -176,9 +175,7 @@ window.addEventListener('load', async  () => {
             return false;
         }
     });
-
     ruleGenerator.renderStasuses();
-
     ruleGenerator.renderDefinedRules({
         deleteCallback: async ({oldStatusSlug, newStatusSlug}) => {
 
@@ -190,7 +187,7 @@ window.addEventListener('load', async  () => {
 
             const modalData = modalOpen();
 
-            const request = await fetch(orderAlertifyScript.adminUrl+'admin-ajax.php?action=orderAlertifyAjaxListener',{
+            const request = await fetch(mailSettingsScript.adminUrl+'admin-ajax.php?action=orderAlertifyAjaxListener',{
                 method:'POST',
                 body:formData
             });
@@ -221,7 +218,7 @@ window.addEventListener('load', async  () => {
 
             const modalData = modalOpen(loadingText);
 
-            const request = await fetch(orderAlertifyScript.adminUrl+'admin-ajax.php?action=orderAlertifyAjaxListener',{
+            const request = await fetch(mailSettingsScript.adminUrl+'admin-ajax.php?action=orderAlertifyAjaxListener',{
                 method:'POST',
                 body:formData
             });
@@ -235,7 +232,7 @@ window.addEventListener('load', async  () => {
                 recipients.forEach( recipient => {
                     if (recipient !== '') {
                         mailRecipientsItems.innerHTML = mailRecipientsItems.innerHTML + '<div class="mailRecipientsItem">'+recipient+'</div>';
-                        recipentInit();
+                        mailSettingsPage.recipentInit();
                     }
                 });
             }
@@ -251,6 +248,7 @@ window.addEventListener('load', async  () => {
             const saveButtonCopy = saveButton.cloneNode(false);
             saveButtonCopy.innerText = temp_text; 
             saveButton.remove();
+            
             document.getElementById('mailTemplateRightColumnHeader').insertAdjacentElement('afterbegin', saveButtonCopy)
 
             document.getElementById('saveMailTemplateBtn').addEventListener('click', async () => {
@@ -273,7 +271,7 @@ window.addEventListener('load', async  () => {
                 formData.append('recipients', recipientsFinal)
                 formData.append('target', target);
 
-                const request = await fetch(orderAlertifyScript.adminUrl+'admin-ajax.php?action=orderAlertifyAjaxListener',{
+                const request = await fetch(mailSettingsScript.adminUrl+'admin-ajax.php?action=orderAlertifyAjaxListener',{
                     method:'POST',
                     body:formData
                 });
@@ -290,7 +288,7 @@ window.addEventListener('load', async  () => {
                 }
             });
 
-            menugenerator.handleMenuSwitch({newActiveButon: menugenerator.privateButtons[0], newActiveContainer: menugenerator.privateContainers[0], menuSlug:'Edit of : '+'[ '+target+' ]'});
+            menugenerator.handleMenuSwitch({newActiveButon: menugenerator.privateButtons[0], newActiveContainer: menugenerator.privateContainers[0], menuSlug:'Edit of rule'});
 
             modalClose(modalData);
 
@@ -304,9 +302,10 @@ window.addEventListener('load', async  () => {
     });
     // Kural Tanımlama Scripti
 
+
+
     // Short Code Scripti
     const shortCodesGenerator = new ShortCodes({data:shordCodes, header:shortCodesGeneratorMailHeaderText, targetContainer:document.getElementById('infoBoxContainer')});
     shortCodesGenerator.render({copyText:copyText});
     // Short Code Scripti
-
 })
