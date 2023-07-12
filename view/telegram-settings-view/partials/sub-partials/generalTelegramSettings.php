@@ -44,13 +44,13 @@
                     <div class="telegramBodyCol"></div>
                 </div>
 
-                <div class="activeTelegramUsersBodyRow">
+                <!-- <div class="activeTelegramUsersBodyRow">
                     <div class="telegramBodyCol telegramNameSurname">Umut Gedik</div>
                     <div class="telegramBodyCol telegramUsername">umutgedikk</div>
                     <div class="telegramBodyCol telegramChatId" >3414123123</div>
                     <div class="telegramBodyCol telegramButtons">
                         <button class="telegramRemoveUserButton" chat_id="1213123">
-                            <?php _e( 'Remove', '@@@' ); ?>
+                            <?php //_e( 'Remove', '@@@' ); ?>
                         </button>
                     </div>
                 </div>
@@ -61,10 +61,10 @@
                     <div class="telegramBodyCol telegramChatId" >3414123123</div>
                     <div class="telegramBodyCol telegramButtons">
                         <button class="telegramRemoveUserButton" chat_id="1213123">
-                            <?php _e( 'Remove', '@@@' ); ?>
+                            <?php //_e( 'Remove', '@@@' ); ?>
                         </button>
                     </div>
-                </div>
+                </div> -->
 
             </div>
         </div>
@@ -96,26 +96,6 @@
                 <div class="pendingRequestCol telegramPendingButtons"></div>
             </div>
 
-            <div class="pendingRequestRow">
-                <div class="pendingRequestCol telegramPendingNameSurname">Mutlu Gedik</div>
-                <div class="pendingRequestCol telegramPendingUsername">mutlu001</div>
-                <div class="pendingRequestCol telegramPendingChatId">1234123123</div>
-                <div class="pendingRequestCol telegramPendingButtons">
-                    <div>
-                        <button class="telegramRejectButton telegramRequestButtons">
-                            <?php _e('Recejt', '@@@'); ?>
-                        </button>
-                        <button class="telegramAcceptButton telegramRequestButtons">
-                            <?php _e('Accept', '@@@'); ?>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
         </div>
-
-
     </div>
-
-
 </div>

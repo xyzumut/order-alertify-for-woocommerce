@@ -27,7 +27,6 @@ class MailSettingsView{
 
     public function returnLocalizeScript(){
         return [
-            'adminUrl' => get_admin_url(),
             'localizeStatuses' => $this->prepareStatusSlug(),
             'adminRules' => $this->prepareMailRules(),
         ];

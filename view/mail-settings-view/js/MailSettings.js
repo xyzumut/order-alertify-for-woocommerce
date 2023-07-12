@@ -20,7 +20,7 @@ window.addEventListener('load', async  () => {
             const formData = new FormData();
             formData.append('_operation', 'generalMailSettingsInit');
     
-            const request = await fetch(mailSettingsScript.adminUrl+'admin-ajax.php?action=orderAlertifyAjaxListener',{
+            const request = await fetch(orderAlertifyGeneralScript.adminUrl+'admin-ajax.php?action=orderAlertifyAjaxListener',{
                 method:'POST',
                 body:formData
             });
@@ -72,7 +72,7 @@ window.addEventListener('load', async  () => {
                 formData.append('orderAlertifyPassword', orderAlertifyPassword);
     
     
-                const request = await fetch(mailSettingsScript.adminUrl+'admin-ajax.php?action=orderAlertifyAjaxListener',{
+                const request = await fetch(orderAlertifyGeneralScript.adminUrl+'admin-ajax.php?action=orderAlertifyAjaxListener',{
                     method:'POST',
                     body:formData
                 });
@@ -157,7 +157,7 @@ window.addEventListener('load', async  () => {
     
             const modalData = modalOpen();
     
-            const request = await fetch(mailSettingsScript.adminUrl+'admin-ajax.php?action=orderAlertifyAjaxListener',{
+            const request = await fetch(orderAlertifyGeneralScript.adminUrl+'admin-ajax.php?action=orderAlertifyAjaxListener',{
                 method:'POST',
                 body:formData
             });
@@ -187,7 +187,7 @@ window.addEventListener('load', async  () => {
 
             const modalData = modalOpen();
 
-            const request = await fetch(mailSettingsScript.adminUrl+'admin-ajax.php?action=orderAlertifyAjaxListener',{
+            const request = await fetch(orderAlertifyGeneralScript.adminUrl+'admin-ajax.php?action=orderAlertifyAjaxListener',{
                 method:'POST',
                 body:formData
             });
@@ -218,7 +218,7 @@ window.addEventListener('load', async  () => {
 
             const modalData = modalOpen(loadingText);
 
-            const request = await fetch(mailSettingsScript.adminUrl+'admin-ajax.php?action=orderAlertifyAjaxListener',{
+            const request = await fetch(orderAlertifyGeneralScript.adminUrl+'admin-ajax.php?action=orderAlertifyAjaxListener',{
                 method:'POST',
                 body:formData
             });
@@ -271,7 +271,7 @@ window.addEventListener('load', async  () => {
                 formData.append('recipients', recipientsFinal)
                 formData.append('target', target);
 
-                const request = await fetch(mailSettingsScript.adminUrl+'admin-ajax.php?action=orderAlertifyAjaxListener',{
+                const request = await fetch(orderAlertifyGeneralScript.adminUrl+'admin-ajax.php?action=orderAlertifyAjaxListener',{
                     method:'POST',
                     body:formData
                 });

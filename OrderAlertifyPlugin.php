@@ -68,6 +68,7 @@ Domain Path: /lang
                 ['shortCode' => '{ship_phone}'   , 'view' => __('Shipping Phone', '@@@')],
             ];
             return [
+                'adminUrl' => get_admin_url(),
                 'shortcodes' => $shordCodes,
                 'copyToText' => __('Copy to Clipboard', '@@@'),
                 'loadingText' => __('Loading . . .', '@@@'),
@@ -367,6 +368,102 @@ Domain Path: /lang
                         $response['status'] = true;
                         $response['message'] = __('Mail General Settings Saved', '@@@');
                         break;
+                    case 'telegramMainSettingsInit';
+                        $telegramToken = get_option('telegramToken');
+                        if ($telegramToken === false) {
+                            $telegramToken = __('Not Added Yet', '@@@');
+                            update_option('telegramToken', $telegramToken);
+                        }
+
+                        $activeTelegramUsersIndex = get_option('telegramActiveUsersIndex');
+                        if ($activeTelegramUsersIndex === false) {
+                            $activeTelegramUsersIndex = 1;
+                            update_option('telegramActiveUsersIndex', $activeTelegramUsersIndex);
+                        }
+                        $activeUsers = []; // format string => nameSurname@username@chat_id
+                        for ($i = 1; $i < $activeTelegramUsersIndex; $i++){
+                            $temp = explode('@', get_option('telegramUser-'.$i));
+                            array_push($activeUsers, ['nameSurname' => $temp[0], 'username' => $temp[1], 'chatId' => $temp[2]]);
+                        }
+
+                        $response['status'] = true;
+                        $response['data'] = [
+                            'activeUsers' => $activeUsers,
+                            'telegramToken' => $telegramToken
+                        ];
+                        $response['message'] = __('Telegram Settings Arrived', '@@@');
+                        break;
+                    case 'saveTelegramToken':
+                        update_option('telegramToken', $post['newToken']);
+                        $response['status'] = true;
+                        $response['message'] = __('New Token is Saved.', '@@@');
+                        break;
+                    case 'checkChatId':
+                        $activeTelegramUsersIndex = get_option('telegramActiveUsersIndex');
+                        if ($activeTelegramUsersIndex === false) {
+                            $activeTelegramUsersIndex = 1;
+                            update_option('telegramActiveUsersIndex', $activeTelegramUsersIndex);
+                        }
+                        $activeTelegramUsersIndex = json_decode($activeTelegramUsersIndex);
+                        $activeUsers = []; // format string => nameSurname@username@chat_id
+
+                        for ($i = 1; $i < $activeTelegramUsersIndex; $i++){
+                            array_push($activeUsers, get_option('telegramUser-'.$i));
+                        }
+
+                        if (count($activeUsers) < 1) {
+                            $response['status'] = true;
+                        }
+
+                        $status = true; // true için eşleşme yok demek
+
+                        foreach ($activeUsers as $user) {
+                            $user = explode('@', $user);
+                            if (json_decode($user[2]) === json_decode($post['chat_id'])) {
+                                $status=false;
+                            }
+                        }
+
+                        $response['status'] = $status;
+                        break;
+                    case 'addTelegramUser':
+                        $activeTelegramUsersIndex = get_option('telegramActiveUsersIndex');
+                        if ($activeTelegramUsersIndex === false) {
+                            $activeTelegramUsersIndex = 1;
+                            update_option('telegramActiveUsersIndex', $activeTelegramUsersIndex);
+                        }
+                        update_option('telegramUser-'.($activeTelegramUsersIndex), $post['newTelegramUser']);
+                        update_option('telegramActiveUsersIndex', json_decode($activeTelegramUsersIndex)+1);
+                        $response['status'] = true;
+                        $response['message'] = __('New Telegram User Added', '@@@');
+                        break;
+                    case 'deleteTelegramUser':
+                        $activeTelegramUsersIndex = json_decode(get_option('telegramActiveUsersIndex'));
+
+                        $deleteTemp = false;
+                        for ($i = 1; $i < $activeTelegramUsersIndex ; $i++){
+                            $user = get_option('telegramUser-'.$i);
+                            if ($user === $post['user']) {
+                                $deleteTemp = true;
+                                $activeTelegramUsersIndex = $activeTelegramUsersIndex-1;
+                                update_option('telegramActiveUsersIndex', $activeTelegramUsersIndex);
+                            }
+
+                            if ($deleteTemp) {
+                                update_option('telegramUser-'.$i, get_option('telegramUser-'.($i+1)));
+                            }
+
+                        }
+
+                        if ($deleteTemp) {
+                            delete_option('telegramUser-'.$activeTelegramUsersIndex);
+                            $response['message'] = __('Deletion Successful', '@@@');
+                        }
+
+                        $response['status'] = $deleteTemp;
+                        
+                        break;
+                    //
                     default:
                         $temp = false;
                         break;

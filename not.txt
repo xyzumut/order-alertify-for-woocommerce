@@ -1,2 +1,2 @@
-kural ekleme, kurala göre şablon ekleme, kurala göre hedef mail ekleme vb. işler bitti
-hangi mail opsiyonunun kullanılıp kullanılmayacağını seçmek ve shortcode çevirisiyle beraber mail attırmak kaldı
+telegram settings sayfasında accept+remove yapınca pedding requeste düşmüyor ona bakıcam 
+telegram rules sayfası yapılacak
