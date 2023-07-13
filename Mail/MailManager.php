@@ -1,8 +1,6 @@
 <?php 
     namespace OrderAlertify\Tools;
     
-    
-    
     use PHPMailer\PHPMailer_\PHPMailer;
     use PHPMailer\PHPMailer_\Exception;
     require (__DIR__.'/').'phpmailer/vendor/phpmailer/phpmailer/src/Exception.php';

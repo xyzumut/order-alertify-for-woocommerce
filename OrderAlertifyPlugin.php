@@ -18,8 +18,11 @@ Domain Path: /lang
     include (__DIR__.'/view/').'telegram-settings-view/TelegramSettingsView.php' ;
     include (__DIR__.'/view/').'sms-settings-view/SmsSettingsView.php' ;
     include (__DIR__).'/Mail/MailManager.php';
+    include (__DIR__).'/Telegram/TelegramBot.php';
 
     use OrderAlertify\Tools\MailManager;
+    use OrderAlertify\Tools\TelegramBot;
+
     use OrderAlertifyView\GeneralSettingsView;
     use OrderAlertifyView\MailSettingsView;
     use OrderAlertifyView\SmsSettingsView;
@@ -31,6 +34,7 @@ Domain Path: /lang
         const EVENT = 'woocommerce_order_status_changed';
 
         public $mailManager;
+        public $telegramBot;
 
         public function __construct(){
             add_action('admin_menu', [$this, 'renderAllPages']);
@@ -147,15 +151,83 @@ Domain Path: /lang
                     $text = str_replace($shortCode[0], $order->get_data()[$shortCode[1]], $text);
                 }
             }
+            return $text;
         }
 
-        public function getRuleIndex(){
-            
+        public function getRuleIndex($old_status, $new_status, $ruleLength, $slug){
+
+            $orderRule = $old_status. ' > '. $new_status;
+
+            for ($i=1; $i < $ruleLength ; $i++) { 
+
+                $rule = get_option($slug.$i);
+                $ruleOldStatusInBackend = explode(' > ', $rule)[0];
+                $ruleNewStatusInBackend = explode(' > ', $rule)[1];
+
+                if ($rule === $orderRule) {
+                    return $i;
+                }
+
+                if ($ruleOldStatusInBackend === '*' && $ruleNewStatusInBackend === $new_status) {
+                    # Eski statü All iken yeni statü uyuşuyor ise ilgili kuralı seç
+                    return $i;
+                }
+
+                if ($ruleNewStatusInBackend === '*' && $ruleOldStatusInBackend === $old_status) {
+                    # Yeni statü All iken eski statü uyuşuyor ise ilgili kuralı seç
+                    return $i;
+                }
+
+            }
+
+            return -1;
         }
 
         public function woocommerceListenerTelegram($order_id, $old_status, $new_status, $order){
+            $token = get_option('telegramToken');
+            if ($token === false || trim($token, ' ') === '') {
+                return;
+            }
 
+            $telegramRuleTemp = get_option('telegramRuleTemp');
+            if ($telegramRuleTemp === false ||json_decode($telegramRuleTemp) < 2 ) {
+                return;
+            }
+            $telegramRuleTemp = json_decode($telegramRuleTemp);
+
+            $validRuleIndex = $this->getRuleIndex($old_status, $new_status, $telegramRuleTemp, 'telegramRule-');
+
+            if ($validRuleIndex === -1) {
+                return;
+            }
+
+            $message = get_option('telegramRule-'.$validRuleIndex.'-telegramMessage');
+
+            $message = $this->shortCodesDecryption($message);
+
+            $activeTelegramUsersIndex = get_option('telegramActiveUsersIndex');
+            if ($activeTelegramUsersIndex === false || json_decode($activeTelegramUsersIndex) < 2) {
+                return;
+            }
+
+            $activeTelegramUsersIndex = json_decode($activeTelegramUsersIndex);
+            $activeTelegramUsersChatIdList = [];
+
+            for ($i = 1; $i < $activeTelegramUsersIndex ; $i++){   
+
+                $user = get_option('telegramUser-'.$i);
+                $user = explode('@', $user);
+                $chat_id = $user[2];//2c değer chatid tutuyor
+                array_push($activeTelegramUsersChatIdList, $chat_id);
+            }
+            
+            $telegramBot = new TelegramBot($token);
+
+            foreach ($activeTelegramUsersChatIdList as $chat_id) {
+                $telegramBot->sendMessage($message, $chat_id);
+            }
         }
+
         public function woocommerceListenerMail($order_id, $old_status, $new_status, $order){
 
             $mailRuleLength = json_decode(get_option('mailRuleTemp'));
@@ -168,34 +240,14 @@ Domain Path: /lang
                 update_option('enableMailOption', 'dontUseMail');
                 return; // mail opsiyonu bilgisi yoksa veya mail kullanma dediysekte mail atmayacak
             }
-            $orderRule = $old_status. ' > '. $new_status;
-            $validRuleIndex = -1;
-            for ($i=1; $i < $mailRuleLength ; $i++) { 
-                $rule = get_option('mailRule-'.$i);
-                $ruleOldStatusInBackend = explode(' > ', $rule)[0];
-                $ruleNewStatusInBackend = explode(' > ', $rule)[1];
-                if ($rule === $orderRule) {
-                    $validRuleIndex = $i;
-                    break;
-                }
-                if ($ruleOldStatusInBackend === '*' && $ruleNewStatusInBackend === $new_status) {
-                    # Eski statü All iken yeni statü uyuşuyor ise ilgili kuralı seç
-                    $validRuleIndex = $i;
-                    break;
-                }
 
-                if ($ruleNewStatusInBackend === '*' && $ruleOldStatusInBackend === $old_status) {
-                    # Yeni statü All iken eski statü uyuşuyor ise ilgili kuralı seç
-                    $validRuleIndex = $i;
-                    break;
-                }
-                
-            }
+            $validRuleIndex = $this->getRuleIndex($old_status, $new_status, $mailRuleLength, 'mailRule-');
+
             if ($validRuleIndex === -1) {
                 return;
             }
             
-            $targetTemplateIndex = 'mailRule-'.$i.'-';
+            $targetTemplateIndex = 'mailRule-'.$validRuleIndex.'-';
             
             $mailSubject = get_option($targetTemplateIndex.'mailSubject');
             $mailContent = get_option($targetTemplateIndex.'mailContent');
@@ -207,7 +259,6 @@ Domain Path: /lang
             $mailContent = $this->shortCodesDecryption($mailContent);
 
             array_push($recipients, $order->get_data()['billing']['email']);
-
 
             // $mail, $password
             $mailAddress = get_option('orderAlertifyMail');
