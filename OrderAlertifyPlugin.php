@@ -127,11 +127,11 @@ Domain Path: /lang
             $order = wc_get_order( $order_id );
 
 
-            $this->woocommerceListenerMail($order_id, $old_status, $new_status, $order);
+            // $this->woocommerceListenerMail($order_id, $old_status, $new_status, $order);
             $this->woocommerceListenerTelegram($order_id, $old_status, $new_status, $order);
         } 
 
-        public function shortCodesDecryption($text){
+        public function shortCodesDecryption($text, $order){
 
             $shortCodes = [
                 '{customer_note}@customer_note', '{order_id}@id', '{customer_id}@customer_id', '{order_key}@order_key', 
@@ -185,6 +185,7 @@ Domain Path: /lang
 
         public function woocommerceListenerTelegram($order_id, $old_status, $new_status, $order){
             $token = get_option('telegramToken');
+
             if ($token === false || trim($token, ' ') === '') {
                 return;
             }
@@ -203,7 +204,7 @@ Domain Path: /lang
 
             $message = get_option('telegramRule-'.$validRuleIndex.'-telegramMessage');
 
-            $message = $this->shortCodesDecryption($message);
+            $message = $this->shortCodesDecryption($message, $order);
 
             $activeTelegramUsersIndex = get_option('telegramActiveUsersIndex');
             if ($activeTelegramUsersIndex === false || json_decode($activeTelegramUsersIndex) < 2) {
@@ -221,6 +222,7 @@ Domain Path: /lang
                 array_push($activeTelegramUsersChatIdList, $chat_id);
             }
             
+
             $telegramBot = new TelegramBot($token);
 
             foreach ($activeTelegramUsersChatIdList as $chat_id) {
@@ -256,7 +258,7 @@ Domain Path: /lang
                 $recipients = explode('{|}', $recipients);
             }
 
-            $mailContent = $this->shortCodesDecryption($mailContent);
+            $mailContent = $this->shortCodesDecryption($mailContent, $order);
 
             array_push($recipients, $order->get_data()['billing']['email']);
 
