@@ -4,7 +4,7 @@ const shortCodesGeneratorMailHeaderText = orderAlertifyGeneralScript.shortCodesG
 const dragAndDropChooseDifferentOptionText = orderAlertifyGeneralScript.dragAndDropChooseDifferentOptionText;
 const mailRecipeWarningMessageText = orderAlertifyGeneralScript.mailRecipeWarningMessageText;
 const loadingText = orderAlertifyGeneralScript.loadingText;
-
+const shortCodesGeneratorTelegramHeaderText = orderAlertifyGeneralScript.shortCodesGeneratorTelegramHeaderText;
 const dispNoneClassName = 'dispnone';
 
 function sendNotification(type, text) {

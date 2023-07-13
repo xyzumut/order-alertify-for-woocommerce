@@ -27,22 +27,11 @@ class MailSettingsView{
 
     public function returnLocalizeScript(){
         return [
-            'localizeStatuses' => $this->prepareStatusSlug(),
             'adminRules' => $this->prepareMailRules(),
         ];
     }
 
-    public function prepareStatusSlug(){
-        $status_slugs = array_keys(wc_get_order_statuses());
-        $status_views = array_values(wc_get_order_statuses());
-        $statuses = [];
-        for ($i = 0; $i < count($status_slugs); $i++){
-            $statuses[$i]['slug'] = $status_slugs[$i];
-            $statuses[$i]['view'] = $status_views[$i];
-        }
-        $statuses[count($statuses)] = ['slug' => '*', 'view' => __('All', '@@@')];
-        return $statuses;
-    }
+
 
     public function prepareMailRules(){
         if (get_option( 'mailRuleTemp') === false) 

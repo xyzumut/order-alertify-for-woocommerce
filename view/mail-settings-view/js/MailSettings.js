@@ -137,7 +137,7 @@ window.addEventListener('load', async  () => {
     // Kural Tanımlama Scripti
     const ruleGenerator = new RuleGenerator({
         definedRules: mailSettingsScript.adminRules, 
-        definedStatusesInWoocommerce: mailSettingsScript.localizeStatuses, 
+        definedStatusesInWoocommerce: orderAlertifyGeneralScript.localizeStatuses, 
         definedRulesRenderTargetElement: document.getElementById('definedMailRulesContainer'), 
         definedStatusesRenderTargetElement:document.getElementById('mailTemplatesRightContainer'),
         dropzoneRenderTargetElement: document.getElementById('newMailRuleContainer')
@@ -175,7 +175,9 @@ window.addEventListener('load', async  () => {
             return false;
         }
     });
+
     ruleGenerator.renderStasuses();
+    
     ruleGenerator.renderDefinedRules({
         deleteCallback: async ({oldStatusSlug, newStatusSlug}) => {
 

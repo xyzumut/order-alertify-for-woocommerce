@@ -10,7 +10,7 @@ window.addEventListener('load', () => {
         pendingRequestUsers;//[...{nameSurname, username, chatId}]
 
         activeTelegramUsersBodyRows;// aktif kullanıcı satırlarının renderlandığı konteynır
-        activeTelegramUsersBodyRowsDefaultHTML// hiç aktif kullanıcı olmadığındaki html içeriği
+        activeTelegramUsersBodyRowsDefaultHTML;// hiç aktif kullanıcı olmadığındaki html içeriği
 
         pendingRequestBody;
         pendingRequestBodyDefaultHTML
@@ -204,14 +204,13 @@ window.addEventListener('load', () => {
                         else{
                             sendNotification('error', response.message);
                         }
-
-
                     })
                 });
             }
         }
 
         addActiveNewUser = ({chat_id, username, nameSurname}) => {
+
             let renderActiveTelegramUsersRow = '';
             renderActiveTelegramUsersRow = renderActiveTelegramUsersRow +'<div class="activeTelegramUsersBodyRow">';
             renderActiveTelegramUsersRow = renderActiveTelegramUsersRow +'<div class="telegramBodyCol telegramNameSurname">'+nameSurname+'</div>';
@@ -221,12 +220,15 @@ window.addEventListener('load', () => {
             renderActiveTelegramUsersRow = renderActiveTelegramUsersRow +'<button class="telegramRemoveUserButton" uN="'+username+'" nS="'+nameSurname+'" ch="'+chat_id+'">';
             renderActiveTelegramUsersRow = renderActiveTelegramUsersRow +'Remove</button></div></div>';
 
-            if (this.activeTelegramUsers !== 0) {
+
+            if (this.activeTelegramUsers.length !== 0) {
                 this.activeTelegramUsersBodyRows.innerHTML = this.activeTelegramUsersBodyRows.innerHTML + renderActiveTelegramUsersRow;
             }
             else{
                 this.activeTelegramUsersBodyRows.innerHTML = renderActiveTelegramUsersRow;
             }
+
+            this.activeTelegramUsers.push({nameSurname:nameSurname, username:username, chatId:chat_id});
 
             const removeButtons = document.querySelectorAll('.telegramRemoveUserButton');
             removeButtons.forEach( removeButton => {
@@ -247,7 +249,7 @@ window.addEventListener('load', () => {
             const response = await request.json();
             modalClose(modalData);
             if (response.status === true) {
-                this.activeTelegramUsers = this.activeTelegramUsers.filter( item => item.chatID !== Number(removeButton.getAttribute('ch')))
+                this.activeTelegramUsers = this.activeTelegramUsers.filter( item => item.chatId !== removeButton.getAttribute('ch'));
                 sendNotification('success', response.message);
                 removeButton.parentNode.parentNode.remove();
                 if (this.activeTelegramUsers.length < 1) {
@@ -272,7 +274,148 @@ window.addEventListener('load', () => {
     menugenerator.render();
     // Menü Scripti
 
+    // {definedStatusesInWoocommerce, definedRules, definedStatusesRenderTargetElement, definedRulesRenderTargetElement, dropzoneRenderTargetElement}){
+
+    const rulegenerator = new RuleGenerator({
+        definedRules: telegramSettingsScript.definedTelegramRules,
+        definedStatusesInWoocommerce: orderAlertifyGeneralScript.localizeStatuses, 
+        definedRulesRenderTargetElement: document.getElementById('definedtelegramRulesContainer'),
+        definedStatusesRenderTargetElement: document.getElementById('telegramTemplatesRightContainer'),
+        dropzoneRenderTargetElement:document.getElementById('newtelegramRuleContainer')
+    })
+
+    rulegenerator.renderDropZones({
+        saveCallback: async ({oldStatusSlug, newStatusSlug}) => {
+
+            const formData = new FormData();
+
+            formData.append('_operation', 'addTelegramRule');
+            formData.append('oldStatusSlug' , oldStatusSlug );
+            formData.append('newStatusSlug' , newStatusSlug );
+
+            const modalData = modalOpen();
+    
+            const request = await fetch(orderAlertifyGeneralScript.adminUrl+'admin-ajax.php?action=orderAlertifyAjaxListener',{
+                method:'POST',
+                body:formData
+            });
+    
+            const response = await request.json();
+    
+            modalClose(modalData);
+    
+            if(response.status === true){
+                sendNotification('success', response.message);
+                return true;
+            }
+
+            sendNotification('error', response.message);
+            return false;
+        }
+    })
+
+    rulegenerator.renderStasuses();
+
+    rulegenerator.renderDefinedRules({
+        deleteCallback: async ({oldStatusSlug, newStatusSlug}) => {
+
+            const formData = new FormData();
+
+            formData.append('_operation', 'deleteTelegramRule');
+            formData.append('rule' , oldStatusSlug+' > '+newStatusSlug);
+
+            const modalData = modalOpen();
+    
+            const request = await fetch(orderAlertifyGeneralScript.adminUrl+'admin-ajax.php?action=orderAlertifyAjaxListener',{
+                method:'POST',
+                body:formData
+            });
+    
+            const response = await request.json();
+    
+            modalClose(modalData);
+    
+            if(response.status === true){
+                sendNotification('success', response.message);
+                return true;
+            }
+
+            sendNotification('error', response.message);
+            return false;
+            
+        },
+        goRuleCallback: async ({oldStatusSlug, newStatusSlug}) => {
+
+            const formData = new FormData();
+
+            formData.append('_operation', 'getTelegramTemplate');
+            formData.append('rule' , oldStatusSlug+' > '+newStatusSlug);
+
+            const modalData = modalOpen();
+    
+            const request = await fetch(orderAlertifyGeneralScript.adminUrl+'admin-ajax.php?action=orderAlertifyAjaxListener',{
+                method:'POST',
+                body:formData
+            });
+    
+            const response = await request.json();
+    
+            modalClose(modalData);
+    
+            if(response.status !== true){
+                sendNotification('error', response.message);
+                return;
+            }
+            sendNotification('success', response.message);
+
+            /* Veri Alındıktan sonra yapılacaklar burada */
+
+
+            menugenerator.handleMenuSwitch({newActiveButon:document.getElementById('mailTemplateSettingsContainerButton'), newActiveContainer:document.getElementById('mailTemplateSettingsContainer'), menuSlug:'Edit Telegram Message'});
+            
+            const telegramTextArea = document.getElementById('telegramMessageTextArea');
+
+            telegramTextArea.value = response.data.telegramMessage;
+
+            const telegramSaveButton = document.getElementById('telegramMessageSaveButton');
+            const temp_text = telegramSaveButton.innerText ;
+            const saveButtonCopy = telegramSaveButton.cloneNode(false);
+            saveButtonCopy.innerText = temp_text; 
+            telegramSaveButton.remove();
+            document.getElementById('telegramMessageLeftBarHeader').insertAdjacentElement('beforeend', saveButtonCopy)
+
+            document.getElementById('telegramMessageSaveButton').addEventListener('click',async () => {
+                const formData = new FormData();
+                formData.append('_operation', 'telegramMessageSave');
+                formData.append('target' , oldStatusSlug+' > '+newStatusSlug);
+                formData.append('newTelegramMessage', telegramTextArea.value);
+
+                const modalData = modalOpen();
+                
+                const request = await fetch(orderAlertifyGeneralScript.adminUrl+'admin-ajax.php?action=orderAlertifyAjaxListener', {
+                    method:'POST',
+                    body:formData
+                })
+
+                const response = await request.json();
+
+                modalClose(modalData);
+    
+                if(response.status !== true){
+                    sendNotification('error', response.message);
+                    return;
+                }
+                sendNotification('success', response.message);
+            });
+            
+
+
+
+        }
+    })
+
+
+    const shortCodesGenerator = new ShortCodes({data:shordCodes, header:shortCodesGeneratorTelegramHeaderText, targetContainer:document.getElementById('infoBoxContainer')});
+    shortCodesGenerator.render({copyText:copyText});
+
 })
-
-
-

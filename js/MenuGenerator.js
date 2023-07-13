@@ -1,4 +1,3 @@
-
 class MenuGenerator{
 
     initTemp = 0;
@@ -56,7 +55,7 @@ class MenuGenerator{
         this.oaHeader.innerHTML = this.oaHeaderBasePath + ' > ' + document.querySelector('.'+this.activeButtonClassName).innerText;
     }
 
-    handleMenuSwitch = async ({newActiveButon, newActiveContainer, menuSlug=null}) => {
+    handleMenuSwitch = ({newActiveButon, newActiveContainer, menuSlug=null}) => {
         let newPath = '';
         if (menuSlug === null) {
             newPath = newActiveButon.innerHTML;

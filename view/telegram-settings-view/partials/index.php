@@ -40,7 +40,7 @@
             </div>
 
             <div id="mailTemplateSettingsContainer" buttonText="<?php _e('Edit Telegram Rule'); ?>" class="ou_body_right_item privateMenuItem">
-                <?php // include (__DIR__.'/sub-partials/').'mailTemplatePage.php'; ?>
+                <?php include (__DIR__.'/sub-partials/').'telegramMessageSettings.php'; ?>
             </div>
 
         </div>
