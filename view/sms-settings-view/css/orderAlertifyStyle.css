@@ -1,3 +1,5 @@
-.myClass{
-    color: purple;
+#generalSmsSettingsLayout{
+    width: 950px;
+    height: 100px;
+    background-color: red;
 }

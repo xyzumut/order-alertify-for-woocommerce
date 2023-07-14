@@ -31,15 +31,15 @@
 
         <div id="oa_body_right">
 
-            <div id="telegramGeneralSettingsContainer" buttonText="buton 1 sms" class="ou_body_right_item">
-                <?php // include (__DIR__.'/sub-partials/').'generalSettings.php'; ?>
+            <div id="smsGeneralSettingsContainer" buttonText="buton 1 sms" class="ou_body_right_item">
+                <?php  include (__DIR__.'/sub-partials/').'generalSmsSettings.php'; ?>
             </div>
 
-            <div id="telegramRuleSettingsContainer" buttonText="buton 2 sms" class="ou_body_right_item">
+            <div id="smsRuleSettingsContainer" buttonText="buton 2 sms" class="ou_body_right_item">
                 <?php // include (__DIR__.'/sub-partials/').'mailRuleSettings.php'; ?>
             </div>
 
-            <div id="mailTemplateSettingsContainer" buttonText="gizli buton sms" class="ou_body_right_item privateMenuItem">
+            <div id="smsTemplateSettingsContainer" buttonText="gizli buton sms" class="ou_body_right_item privateMenuItem">
                 <?php // include (__DIR__.'/sub-partials/').'mailTemplatePage.php'; ?>
             </div>
 

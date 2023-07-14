@@ -190,13 +190,13 @@ Domain Path: /lang
                 return;
             }
 
-            $telegramRuleTemp = get_option('telegramRuleTemp');
-            if ($telegramRuleTemp === false ||json_decode($telegramRuleTemp) < 2 ) {
+            $telegramRuleLength = get_option('telegramRuleTemp');
+            if ($telegramRuleLength === false ||json_decode($telegramRuleLength) < 2 ) {
                 return;
             }
-            $telegramRuleTemp = json_decode($telegramRuleTemp);
+            $telegramRuleLength = json_decode($telegramRuleLength);
 
-            $validRuleIndex = $this->getRuleIndex($old_status, $new_status, $telegramRuleTemp, 'telegramRule-');
+            $validRuleIndex = $this->getRuleIndex($old_status, $new_status, $telegramRuleLength, 'telegramRule-');
 
             if ($validRuleIndex === -1) {
                 return;
@@ -635,6 +635,7 @@ Domain Path: /lang
                         $response['status'] = true;
                         break;
                     //
+                    
                     default:
                         $temp = false;
                         break;
@@ -645,11 +646,8 @@ Domain Path: /lang
             }
             wp_send_json($response);
         }
-
     }
-
     add_action( 'plugins_loaded', function(){
         $orderPlugin = new OrderAlertifyPlugin();
     });
-
 ?>

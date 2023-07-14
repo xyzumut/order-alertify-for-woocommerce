@@ -1,2 +1,3 @@
-telegram settings sayfasında accept+remove yapınca pedding requeste düşmüyor ona bakıcam 
-telegram rules sayfası yapılacak
+Yapılacaklar:
+    - SMS Sayfası Yapılacaklar
+    - Mail Kısmı ile Alakalı İşlemler Gerçekleştirilecek
