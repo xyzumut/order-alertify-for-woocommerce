@@ -92,7 +92,8 @@ Domain Path: /lang
                 'shortCodesGeneratorMailHeaderText' => __('Short Codes For Mail Templates', '@@@'),
                 'dragAndDropChooseDifferentOptionText' => __('Choose Different Options', '@@@'),
                 'mailRecipeWarningMessageText' => __('Please Enter the Appropriate Value', '@@@'),
-                'shortCodesGeneratorTelegramHeaderText' => __('Short Codes For Telegram Templates', '@@@')
+                'shortCodesGeneratorTelegramHeaderText' => __('Short Codes For Telegram Templates', '@@@'),
+                'shortCodesGeneratorSMSHeaderText' => __('Short Codes For SMS Templates', '@@@')
             ];  
         }
 
@@ -521,10 +522,12 @@ Domain Path: /lang
                                 $deleteTemp = true;
                                 $activeTelegramUsersIndex = $activeTelegramUsersIndex-1;
                                 update_option('telegramActiveUsersIndex', $activeTelegramUsersIndex);
+                                
                             }
 
                             if ($deleteTemp) {
                                 update_option('telegramUser-'.$i, get_option('telegramUser-'.($i+1)));
+                                
                             }
 
                         }
@@ -583,6 +586,7 @@ Domain Path: /lang
                             $definedRule = get_option('telegramRule-'.$i);
                             if ($post['rule'] === $definedRule) {
                                 delete_option( 'telegramRule-'.$i );
+                                delete_option( 'telegramRule-'.$i.'-telegramMessage' );
                                 $telegramRuleTemp = json_decode(get_option('telegramRuleTemp'));
                                 $telegramRuleTemp = $telegramRuleTemp-1;
                                 update_option('telegramRuleTemp', $telegramRuleTemp);
@@ -593,6 +597,8 @@ Domain Path: /lang
                             if ($isDeleteted) {
                                 update_option(('telegramRule-'.($i)), get_option('telegramRule-'.$i+1));
                                 delete_option('telegramRule-'.($i+1));
+                                update_option(('telegramRule-'.($i).'-telegramMessage'), get_option('telegramRule-'.($i+1).'-telegramMessage'));
+                                delete_option('telegramRule-'.($i+1).'-telegramMessage');
                             }
                         }
                         break;
@@ -634,8 +640,129 @@ Domain Path: /lang
                         $response['message'] = __('Telegram Message Saved', '@@@');
                         $response['status'] = true;
                         break;
+                    case 'saveSmsSettings':
+                        update_option('smsJwt', $post['smsJwt']);
+                        update_option('smsLoginUsername', $post['smsLoginUsername']);
+                        update_option('smsLoginPassword', $post['smsLoginPassword']);
+                        update_option('smsBaseApiUrl', $post['smsBaseApiUrl']);
+                        update_option('smsLoginEndpoint', $post['smsLoginEndpoint']);
+                        update_option('smsSendMessageEndpoint', $post['smsSendMessageEndpoint']);
+                        $response['status'] = true;
+                        $response['message'] = __('Sms Information Saved', '@@@');
+                        if ($post['smsJwt'] === 'noToken') {
+                            $response['message'] = __('Sms Information Saved But The Information Is Wrong', '@@@');
+                        }
+                        break;
+                    case 'getSmsSettings':
+                        $response['data'] = [
+                            'smsJwt' => get_option('smsJwt', ''),
+                            'smsLoginUsername' => get_option('smsLoginUsername', ''),
+                            'smsLoginPassword' => get_option('smsLoginPassword', ''),
+                            'smsBaseApiUrl' => get_option('smsBaseApiUrl', ''),
+                            'smsLoginEndpoint' => get_option('smsLoginEndpoint', ''),
+                            'smsSendMessageEndpoint' => get_option('smsSendMessageEndpoint', '')
+                        ];
+                        $response['status'] = true;
+                        $response['message'] = __('Information brought', '@@@');
+                        break;
+                    case 'addSmsRule':
+                        if (get_option('smsRuleTemp') === false) {
+                            # daha önce admin rule kaydı olmamış demektir
+                            update_option('smsRuleTemp', '1');
+                        }
+
+                        $smsRuleTemp = json_decode(get_option( 'smsRuleTemp'));
+
+                        $definedRules = [];
+                        for ($i = 1; $i < $smsRuleTemp; $i++){
+                            $definedRules[$i-1] = get_option('smsRule-'.$i);
+                        }
+
+                        $newRule = $post['oldStatusSlug'].' > '.$post['newStatusSlug'];
+                        for ($i = 0; $i < count($definedRules); $i++){
+                            $definedRule = $definedRules[$i];
+                            if ($definedRule == $newRule) {
+                                // kurallar eşleşmiş demektir demekki yeni kayıt yapmayacağız
+                                $response['message'] = __('This match already exists', '@@@');
+                                $smsRuleTemp = false;
+                                break;
+                            }
+                        }
+                        if ($smsRuleTemp !== false) {
+                            $response['data'] = $newRule;
+                            $response['message'] = __('New Rule Added', '@@@');
+                            $response['status'] = true;
+                            update_option('smsRule-'.$smsRuleTemp , $newRule);
+                            update_option( 'smsRuleTemp', $smsRuleTemp+1);
+                            array_push($response['debug'], ['smsRuleTemp' => $smsRuleTemp]);
+                            array_push($response['debug'], ['definedRules' => $definedRules]);
+                            array_push($response['debug'], ['newRule' => $newRule]);
+                        }
+                        break;
+                    case 'deleteSmsRule':
+                        if (get_option( 'smsRuleTemp') === false){ 
+                            $temp = false;
+                            break;
+                        }
+                        $isDeleteted = false;
+                        $smsRuleTemp = json_decode(get_option('smsRuleTemp'));
+                        for ($i = 1; $i < $smsRuleTemp; $i++){
+                            $definedRule = get_option('smsRule-'.$i);
+                            if ($post['rule'] === $definedRule) {
+                                delete_option( 'smsRule-'.$i );
+                                delete_option( 'smsRule-'.$i.'-smsMessage' );
+                                $smsRuleTemp = json_decode(get_option('smsRuleTemp'));
+                                $smsRuleTemp = $smsRuleTemp-1;
+                                update_option('smsRuleTemp', $smsRuleTemp);
+                                $isDeleteted = true;
+                                $response['status'] = true;
+                                $response['message'] = __('sms Rule deleted', '@@@');
+                            }
+                            if ($isDeleteted) {
+                                update_option(('smsRule-'.($i)), get_option('smsRule-'.$i+1));
+                                delete_option('smsRule-'.($i+1));
+                                update_option(('smsRule-'.($i).'-smsMessage'), get_option('smsRule-'.($i+1).'-smsMessage'));
+                                delete_option('smsRule-'.($i+1).'-smsMessage');
+                            }
+                        }
+                        break;
                     //
-                    
+                    case 'getSmsTemplate':
+                        if (get_option( 'smsRuleTemp') === false){ 
+                            $temp = false;
+                        }
+                        $smsRuleTemp = json_decode(get_option('smsRuleTemp'));
+                        $targetTemplateIndex; // optionlarda şablonu tutacak olan index
+                        for ($i = 1; $i < $smsRuleTemp; $i++){
+                            $definedRule = get_option('smsRule-'.$i);
+                            if ($post['rule'] === $definedRule) {
+                                $targetTemplateIndex = 'smsRule-'.$i;
+                            }
+                        }
+
+                        if (get_option($targetTemplateIndex.'-smsMessage') === false) {
+                            update_option($targetTemplateIndex.'-smsMessage', __('Not Added Yet SMS Message', '@@@'));
+                        }
+                        
+                        $response['message'] = __('SMS template brought', '@@@'); 
+                        $response['status'] = true;
+                        $response['data'] = [ 'smsMessage' => get_option($targetTemplateIndex.'-smsMessage')];
+
+                        break;
+                    case 'smsMessageSave':
+                        $smsRuleTemp = json_decode(get_option('smsRuleTemp'));
+                        $targetTemplateIndex; 
+                        for ($i = 1; $i < $smsRuleTemp; $i++){
+                            $definedRule = get_option('smsRule-'.$i);
+                            if ($post['target'] === $definedRule) {
+                                $targetTemplateIndex = 'smsRule-'.$i;
+                                break;
+                            }
+                        }
+                        update_option(($targetTemplateIndex.'-smsMessage'), $post['newsmsMessage']);
+                        $response['message'] = __('Sms Message Saved', '@@@');
+                        $response['status'] = true;
+                        break;
                     default:
                         $temp = false;
                         break;

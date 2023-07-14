@@ -5,6 +5,7 @@ const dragAndDropChooseDifferentOptionText = orderAlertifyGeneralScript.dragAndD
 const mailRecipeWarningMessageText = orderAlertifyGeneralScript.mailRecipeWarningMessageText;
 const loadingText = orderAlertifyGeneralScript.loadingText;
 const shortCodesGeneratorTelegramHeaderText = orderAlertifyGeneralScript.shortCodesGeneratorTelegramHeaderText;
+const shortCodesGeneratorSMSHeaderText = orderAlertifyGeneralScript.shortCodesGeneratorSMSHeaderText;
 const dispNoneClassName = 'dispnone';
 
 function sendNotification(type, text) {
