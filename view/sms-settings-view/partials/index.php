@@ -31,16 +31,16 @@
 
         <div id="oa_body_right">
 
-            <div id="smsGeneralSettingsContainer" buttonText="buton 1 sms" class="ou_body_right_item">
+            <div id="smsGeneralSettingsContainer" buttonText="<?php _e('Sms General Settings');?>" class="ou_body_right_item">
                 <?php  include (__DIR__.'/sub-partials/').'generalSmsSettings.php'; ?>
             </div>
 
-            <div id="smsRuleSettingsContainer" buttonText="buton 2 sms" class="ou_body_right_item">
-                <?php // include (__DIR__.'/sub-partials/').'mailRuleSettings.php'; ?>
+            <div id="smsRuleSettingsContainer" buttonText="<?php _e('Sms Rule Settings', '@@@');?>" class="ou_body_right_item">
+                <?php  include (__DIR__.'/sub-partials/').'smsRuleSettings.php'; ?>
             </div>
 
-            <div id="smsTemplateSettingsContainer" buttonText="gizli buton sms" class="ou_body_right_item privateMenuItem">
-                <?php // include (__DIR__.'/sub-partials/').'mailTemplatePage.php'; ?>
+            <div id="smsTemplateSettingsContainer" buttonText="<?php _e('Edit Sms Rule', '@@@');?>" class="ou_body_right_item privateMenuItem">
+                <?php include (__DIR__.'/sub-partials/').'smsTemplatePage.php'; ?>
             </div>
 
         </div>

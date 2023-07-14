@@ -407,10 +407,6 @@ window.addEventListener('load', () => {
                 }
                 sendNotification('success', response.message);
             });
-            
-
-
-
         }
     })
 
