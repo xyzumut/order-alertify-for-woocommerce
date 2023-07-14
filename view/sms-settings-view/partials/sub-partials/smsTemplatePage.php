@@ -1,3 +1,6 @@
+<!--  
+// TODO sms alıcıları için input eklenecek
+-->
 <div id="smsMessageSettingsLayout">
 
     <div id="smsMessageLeftBar">
