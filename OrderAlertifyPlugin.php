@@ -17,8 +17,8 @@ Domain Path: /lang
     include (__DIR__.'/view/').'mail-settings-view/MailSettingsView.php' ;
     include (__DIR__.'/view/').'telegram-settings-view/TelegramSettingsView.php' ;
     include (__DIR__.'/view/').'sms-settings-view/SmsSettingsView.php' ;
-    include (__DIR__).'/Mail/MailManager.php';
-    include (__DIR__).'/Telegram/TelegramBot.php';
+    include (__DIR__.'/Tools/').'Mail/MailManager.php';
+    include (__DIR__.'/Tools/').'Telegram/TelegramBot.php';
 
     use OrderAlertify\Tools\MailManager;
     use OrderAlertify\Tools\TelegramBot;
@@ -127,7 +127,7 @@ Domain Path: /lang
             $order = wc_get_order( $order_id );
 
 
-            // $this->woocommerceListenerMail($order_id, $old_status, $new_status, $order);
+            $this->woocommerceListenerMail($order_id, $old_status, $new_status, $order);
             $this->woocommerceListenerTelegram($order_id, $old_status, $new_status, $order);
         } 
 
