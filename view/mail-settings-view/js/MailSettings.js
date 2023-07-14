@@ -20,7 +20,7 @@ window.addEventListener('load', async  () => {
             const formData = new FormData();
             formData.append('_operation', 'generalMailSettingsInit');
     
-            const request = await fetch(mailSettingsScript.adminUrl+'admin-ajax.php?action=orderAlertifyAjaxListener',{
+            const request = await fetch(orderAlertifyGeneralScript.adminUrl+'admin-ajax.php?action=orderAlertifyAjaxListener',{
                 method:'POST',
                 body:formData
             });
@@ -72,7 +72,7 @@ window.addEventListener('load', async  () => {
                 formData.append('orderAlertifyPassword', orderAlertifyPassword);
     
     
-                const request = await fetch(mailSettingsScript.adminUrl+'admin-ajax.php?action=orderAlertifyAjaxListener',{
+                const request = await fetch(orderAlertifyGeneralScript.adminUrl+'admin-ajax.php?action=orderAlertifyAjaxListener',{
                     method:'POST',
                     body:formData
                 });
@@ -137,7 +137,7 @@ window.addEventListener('load', async  () => {
     // Kural Tanımlama Scripti
     const ruleGenerator = new RuleGenerator({
         definedRules: mailSettingsScript.adminRules, 
-        definedStatusesInWoocommerce: mailSettingsScript.localizeStatuses, 
+        definedStatusesInWoocommerce: orderAlertifyGeneralScript.localizeStatuses, 
         definedRulesRenderTargetElement: document.getElementById('definedMailRulesContainer'), 
         definedStatusesRenderTargetElement:document.getElementById('mailTemplatesRightContainer'),
         dropzoneRenderTargetElement: document.getElementById('newMailRuleContainer')
@@ -157,7 +157,7 @@ window.addEventListener('load', async  () => {
     
             const modalData = modalOpen();
     
-            const request = await fetch(mailSettingsScript.adminUrl+'admin-ajax.php?action=orderAlertifyAjaxListener',{
+            const request = await fetch(orderAlertifyGeneralScript.adminUrl+'admin-ajax.php?action=orderAlertifyAjaxListener',{
                 method:'POST',
                 body:formData
             });
@@ -175,7 +175,9 @@ window.addEventListener('load', async  () => {
             return false;
         }
     });
+
     ruleGenerator.renderStasuses();
+    
     ruleGenerator.renderDefinedRules({
         deleteCallback: async ({oldStatusSlug, newStatusSlug}) => {
 
@@ -187,7 +189,7 @@ window.addEventListener('load', async  () => {
 
             const modalData = modalOpen();
 
-            const request = await fetch(mailSettingsScript.adminUrl+'admin-ajax.php?action=orderAlertifyAjaxListener',{
+            const request = await fetch(orderAlertifyGeneralScript.adminUrl+'admin-ajax.php?action=orderAlertifyAjaxListener',{
                 method:'POST',
                 body:formData
             });
@@ -218,7 +220,7 @@ window.addEventListener('load', async  () => {
 
             const modalData = modalOpen(loadingText);
 
-            const request = await fetch(mailSettingsScript.adminUrl+'admin-ajax.php?action=orderAlertifyAjaxListener',{
+            const request = await fetch(orderAlertifyGeneralScript.adminUrl+'admin-ajax.php?action=orderAlertifyAjaxListener',{
                 method:'POST',
                 body:formData
             });
@@ -271,7 +273,7 @@ window.addEventListener('load', async  () => {
                 formData.append('recipients', recipientsFinal)
                 formData.append('target', target);
 
-                const request = await fetch(mailSettingsScript.adminUrl+'admin-ajax.php?action=orderAlertifyAjaxListener',{
+                const request = await fetch(orderAlertifyGeneralScript.adminUrl+'admin-ajax.php?action=orderAlertifyAjaxListener',{
                     method:'POST',
                     body:formData
                 });

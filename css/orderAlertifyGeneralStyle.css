@@ -276,8 +276,8 @@ input:focus-visible{
     margin: 0 20px;
 }
 .dropZones{
-    min-width: 100px;
-    padding: 0 5px;
+    min-width: 110px;
+    padding: 0 10px;
     height: 40px;
     border: 2px dashed #5F85BD;
     display: flex;
@@ -342,9 +342,6 @@ input:focus-visible{
     color: #5f85bd;
     font-size: 13px;
 }
-
-
-
 
 .settingsButton{
     font-size: 18px;

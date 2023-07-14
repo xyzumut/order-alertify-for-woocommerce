@@ -17,9 +17,12 @@ Domain Path: /lang
     include (__DIR__.'/view/').'mail-settings-view/MailSettingsView.php' ;
     include (__DIR__.'/view/').'telegram-settings-view/TelegramSettingsView.php' ;
     include (__DIR__.'/view/').'sms-settings-view/SmsSettingsView.php' ;
-    include (__DIR__).'/Mail/MailManager.php';
+    include (__DIR__.'/Tools/').'Mail/MailManager.php';
+    include (__DIR__.'/Tools/').'Telegram/TelegramBot.php';
 
     use OrderAlertify\Tools\MailManager;
+    use OrderAlertify\Tools\TelegramBot;
+
     use OrderAlertifyView\GeneralSettingsView;
     use OrderAlertifyView\MailSettingsView;
     use OrderAlertifyView\SmsSettingsView;
@@ -31,6 +34,7 @@ Domain Path: /lang
         const EVENT = 'woocommerce_order_status_changed';
 
         public $mailManager;
+        public $telegramBot;
 
         public function __construct(){
             add_action('admin_menu', [$this, 'renderAllPages']);
@@ -45,6 +49,18 @@ Domain Path: /lang
             wp_enqueue_script( 'orderAlertifyRuleGenerator', plugin_dir_url(__FILE__).'js/RuleGenerator.js', array(), '', true);
             wp_enqueue_script( 'orderAlertifyShortCodes', plugin_dir_url(__FILE__).'js/ShortCodes.js', array(), '', true);
             wp_enqueue_script( 'menuGenerator', plugin_dir_url(__FILE__).'js/MenuGenerator.js', array(), '', true);
+        }
+
+        public function prepareStatusSlug(){
+            $status_slugs = array_keys(wc_get_order_statuses());
+            $status_views = array_values(wc_get_order_statuses());
+            $statuses = [];
+            for ($i = 0; $i < count($status_slugs); $i++){
+                $statuses[$i]['slug'] = $status_slugs[$i];
+                $statuses[$i]['view'] = $status_views[$i];
+            }
+            $statuses[count($statuses)] = ['slug' => '*', 'view' => __('All', '@@@')];
+            return $statuses;
         }
 
         public function returnLocalizeScript(){
@@ -68,12 +84,15 @@ Domain Path: /lang
                 ['shortCode' => '{ship_phone}'   , 'view' => __('Shipping Phone', '@@@')],
             ];
             return [
+                'localizeStatuses' => $this->prepareStatusSlug(),
+                'adminUrl' => get_admin_url(),
                 'shortcodes' => $shordCodes,
                 'copyToText' => __('Copy to Clipboard', '@@@'),
                 'loadingText' => __('Loading . . .', '@@@'),
                 'shortCodesGeneratorMailHeaderText' => __('Short Codes For Mail Templates', '@@@'),
                 'dragAndDropChooseDifferentOptionText' => __('Choose Different Options', '@@@'),
-                'mailRecipeWarningMessageText' => __('Please Enter the Appropriate Value', '@@@')
+                'mailRecipeWarningMessageText' => __('Please Enter the Appropriate Value', '@@@'),
+                'shortCodesGeneratorTelegramHeaderText' => __('Short Codes For Telegram Templates', '@@@')
             ];  
         }
 
@@ -103,8 +122,17 @@ Domain Path: /lang
         }
 
         public function woocommerceListener($order_id, $old_status, $new_status){
-            
+            $old_status = 'wc-'.$old_status;
+            $new_status = 'wc-'.$new_status;
             $order = wc_get_order( $order_id );
+
+
+            $this->woocommerceListenerMail($order_id, $old_status, $new_status, $order);
+            $this->woocommerceListenerTelegram($order_id, $old_status, $new_status, $order);
+        } 
+
+        public function shortCodesDecryption($text, $order){
+
             $shortCodes = [
                 '{customer_note}@customer_note', '{order_id}@id', '{customer_id}@customer_id', '{order_key}@order_key', 
                 '{bil_first}@billing@first_name', '{bil_last}@billing@last_name', '{bil_add1}@billing@address_1', '{bil_add2}@billing@address_2', '{bil_city}@billing@city',
@@ -112,13 +140,98 @@ Domain Path: /lang
                 '{ship_add2}@shipping@address_2', '{ship_city}@shipping@city', '{ship_phone}@shipping@phone'
             ];
 
-            $this->woocommerceListenerMail($order_id, $old_status, $new_status, $shortCodes, $order);
+            foreach ($shortCodes as $shortCode) {
+                $shortCode = explode('@', $shortCode);
+                if (count($shortCode) === 3) {
+                    # short code + arrayindex1 + arrayindex2
+                    $text = str_replace($shortCode[0], $order->get_data()[$shortCode[1]][$shortCode[2]], $text);
+                }
+                else if (count($shortCode) === 2) {
+                    # short code + arrayindex1 
+                    $text = str_replace($shortCode[0], $order->get_data()[$shortCode[1]], $text);
+                }
+            }
+            return $text;
+        }
 
-        } 
+        public function getRuleIndex($old_status, $new_status, $ruleLength, $slug){
 
-        public function woocommerceListenerMail($order_id, $old_status, $new_status, $shortCodes, $order){
-            $old_status = 'wc-'.$old_status;
-            $new_status = 'wc-'.$new_status;
+            $orderRule = $old_status. ' > '. $new_status;
+
+            for ($i=1; $i < $ruleLength ; $i++) { 
+
+                $rule = get_option($slug.$i);
+                $ruleOldStatusInBackend = explode(' > ', $rule)[0];
+                $ruleNewStatusInBackend = explode(' > ', $rule)[1];
+
+                if ($rule === $orderRule) {
+                    return $i;
+                }
+
+                if ($ruleOldStatusInBackend === '*' && $ruleNewStatusInBackend === $new_status) {
+                    # Eski statü All iken yeni statü uyuşuyor ise ilgili kuralı seç
+                    return $i;
+                }
+
+                if ($ruleNewStatusInBackend === '*' && $ruleOldStatusInBackend === $old_status) {
+                    # Yeni statü All iken eski statü uyuşuyor ise ilgili kuralı seç
+                    return $i;
+                }
+
+            }
+
+            return -1;
+        }
+
+        public function woocommerceListenerTelegram($order_id, $old_status, $new_status, $order){
+            $token = get_option('telegramToken');
+
+            if ($token === false || trim($token, ' ') === '') {
+                return;
+            }
+
+            $telegramRuleLength = get_option('telegramRuleTemp');
+            if ($telegramRuleLength === false ||json_decode($telegramRuleLength) < 2 ) {
+                return;
+            }
+            $telegramRuleLength = json_decode($telegramRuleLength);
+
+            $validRuleIndex = $this->getRuleIndex($old_status, $new_status, $telegramRuleLength, 'telegramRule-');
+
+            if ($validRuleIndex === -1) {
+                return;
+            }
+
+            $message = get_option('telegramRule-'.$validRuleIndex.'-telegramMessage');
+
+            $message = $this->shortCodesDecryption($message, $order);
+
+            $activeTelegramUsersIndex = get_option('telegramActiveUsersIndex');
+            if ($activeTelegramUsersIndex === false || json_decode($activeTelegramUsersIndex) < 2) {
+                return;
+            }
+
+            $activeTelegramUsersIndex = json_decode($activeTelegramUsersIndex);
+            $activeTelegramUsersChatIdList = [];
+
+            for ($i = 1; $i < $activeTelegramUsersIndex ; $i++){   
+
+                $user = get_option('telegramUser-'.$i);
+                $user = explode('@', $user);
+                $chat_id = $user[2];//2c değer chatid tutuyor
+                array_push($activeTelegramUsersChatIdList, $chat_id);
+            }
+            
+
+            $telegramBot = new TelegramBot($token);
+
+            foreach ($activeTelegramUsersChatIdList as $chat_id) {
+                $telegramBot->sendMessage($message, $chat_id);
+            }
+        }
+
+        public function woocommerceListenerMail($order_id, $old_status, $new_status, $order){
+
             $mailRuleLength = json_decode(get_option('mailRuleTemp'));
             if ($mailRuleLength === false || $mailRuleLength === 1) {
                 update_option('mailRuleTemp', 1);
@@ -129,40 +242,14 @@ Domain Path: /lang
                 update_option('enableMailOption', 'dontUseMail');
                 return; // mail opsiyonu bilgisi yoksa veya mail kullanma dediysekte mail atmayacak
             }
-            $orderRule = $old_status. ' > '. $new_status;
-            $validRuleIndex = -1;
-            for ($i=1; $i < $mailRuleLength ; $i++) { 
-                $rule = get_option('mailRule-'.$i);
-                $ruleOldStatusInBackend = explode(' > ', $rule)[0];
-                $ruleNewStatusInBackend = explode(' > ', $rule)[1];
-                update_option('[FB]DEBUG'.'-oldStatusInOrder', $old_status);
-                update_option('[FB]DEBUG'.'-newStatusInOrder', $new_status);
-                update_option('[FB]DEBUG'.'-oldStatusInBackend', $ruleOldStatusInBackend);
-                update_option('[FB]DEBUG'.'-newStatusInBackend', $ruleNewStatusInBackend);
 
+            $validRuleIndex = $this->getRuleIndex($old_status, $new_status, $mailRuleLength, 'mailRule-');
 
-                if ($rule === $orderRule) {
-                    $validRuleIndex = $i;
-                    break;
-                }
-                if ($ruleOldStatusInBackend === '*' && $ruleNewStatusInBackend === $new_status) {
-                    # Eski statü All iken yeni statü uyuşuyor ise ilgili kuralı seç
-                    $validRuleIndex = $i;
-                    break;
-                }
-
-                if ($ruleNewStatusInBackend === '*' && $ruleOldStatusInBackend === $old_status) {
-                    # Yeni statü All iken eski statü uyuşuyor ise ilgili kuralı seç
-                    $validRuleIndex = $i;
-                    break;
-                }
-                
-            }
             if ($validRuleIndex === -1) {
                 return;
             }
             
-            $targetTemplateIndex = 'mailRule-'.$i.'-';
+            $targetTemplateIndex = 'mailRule-'.$validRuleIndex.'-';
             
             $mailSubject = get_option($targetTemplateIndex.'mailSubject');
             $mailContent = get_option($targetTemplateIndex.'mailContent');
@@ -171,21 +258,9 @@ Domain Path: /lang
                 $recipients = explode('{|}', $recipients);
             }
 
-
-            foreach ($shortCodes as $shortCode) {
-                $shortCode = explode('@', $shortCode);
-                if (count($shortCode) === 3) {
-                    # short code + arrayindex1 + arrayindex2
-                    $mailContent = str_replace($shortCode[0], $order->get_data()[$shortCode[1]][$shortCode[2]], $mailContent);
-                }
-                else if (count($shortCode) === 2) {
-                    # short code + arrayindex1 
-                    $mailContent = str_replace($shortCode[0], $order->get_data()[$shortCode[1]], $mailContent);
-                }
-            }
+            $mailContent = $this->shortCodesDecryption($mailContent, $order);
 
             array_push($recipients, $order->get_data()['billing']['email']);
-
 
             // $mail, $password
             $mailAddress = get_option('orderAlertifyMail');
@@ -367,6 +442,200 @@ Domain Path: /lang
                         $response['status'] = true;
                         $response['message'] = __('Mail General Settings Saved', '@@@');
                         break;
+                    case 'telegramMainSettingsInit';
+                        $telegramToken = get_option('telegramToken');
+                        if ($telegramToken === false) {
+                            $telegramToken = __('Not Added Yet', '@@@');
+                            update_option('telegramToken', $telegramToken);
+                        }
+
+                        $activeTelegramUsersIndex = get_option('telegramActiveUsersIndex');
+                        if ($activeTelegramUsersIndex === false) {
+                            $activeTelegramUsersIndex = 1;
+                            update_option('telegramActiveUsersIndex', $activeTelegramUsersIndex);
+                        }
+                        $activeUsers = []; // format string => nameSurname@username@chat_id
+                        for ($i = 1; $i < $activeTelegramUsersIndex; $i++){
+                            $temp = explode('@', get_option('telegramUser-'.$i));
+                            array_push($activeUsers, ['nameSurname' => $temp[0], 'username' => $temp[1], 'chatId' => $temp[2]]);
+                        }
+
+                        $response['status'] = true;
+                        $response['data'] = [
+                            'activeUsers' => $activeUsers,
+                            'telegramToken' => $telegramToken
+                        ];
+                        $response['message'] = __('Telegram Settings Arrived', '@@@');
+                        break;
+                    case 'saveTelegramToken':
+                        update_option('telegramToken', $post['newToken']);
+                        $response['status'] = true;
+                        $response['message'] = __('New Token is Saved.', '@@@');
+                        break;
+                    case 'checkChatId':
+                        $activeTelegramUsersIndex = get_option('telegramActiveUsersIndex');
+                        if ($activeTelegramUsersIndex === false) {
+                            $activeTelegramUsersIndex = 1;
+                            update_option('telegramActiveUsersIndex', $activeTelegramUsersIndex);
+                        }
+                        $activeTelegramUsersIndex = json_decode($activeTelegramUsersIndex);
+                        $activeUsers = []; // format string => nameSurname@username@chat_id
+
+                        for ($i = 1; $i < $activeTelegramUsersIndex; $i++){
+                            array_push($activeUsers, get_option('telegramUser-'.$i));
+                        }
+
+                        if (count($activeUsers) < 1) {
+                            $response['status'] = true;
+                        }
+
+                        $status = true; // true için eşleşme yok demek
+
+                        foreach ($activeUsers as $user) {
+                            $user = explode('@', $user);
+                            if (json_decode($user[2]) === json_decode($post['chat_id'])) {
+                                $status=false;
+                            }
+                        }
+
+                        $response['status'] = $status;
+                        break;
+                    case 'addTelegramUser':
+                        $activeTelegramUsersIndex = get_option('telegramActiveUsersIndex');
+                        if ($activeTelegramUsersIndex === false) {
+                            $activeTelegramUsersIndex = 1;
+                            update_option('telegramActiveUsersIndex', $activeTelegramUsersIndex);
+                        }
+                        update_option('telegramUser-'.($activeTelegramUsersIndex), $post['newTelegramUser']);
+                        update_option('telegramActiveUsersIndex', json_decode($activeTelegramUsersIndex)+1);
+                        $response['status'] = true;
+                        $response['message'] = __('New Telegram User Added', '@@@');
+                        break;
+                    case 'deleteTelegramUser':
+                        $activeTelegramUsersIndex = json_decode(get_option('telegramActiveUsersIndex'));
+
+                        $deleteTemp = false;
+                        for ($i = 1; $i < $activeTelegramUsersIndex ; $i++){
+                            $user = get_option('telegramUser-'.$i);
+                            if ($user === $post['user']) {
+                                $deleteTemp = true;
+                                $activeTelegramUsersIndex = $activeTelegramUsersIndex-1;
+                                update_option('telegramActiveUsersIndex', $activeTelegramUsersIndex);
+                            }
+
+                            if ($deleteTemp) {
+                                update_option('telegramUser-'.$i, get_option('telegramUser-'.($i+1)));
+                            }
+
+                        }
+
+                        if ($deleteTemp) {
+                            delete_option('telegramUser-'.$activeTelegramUsersIndex);
+                            $response['message'] = __('Deletion Successful', '@@@');
+                        }
+
+                        $response['status'] = $deleteTemp;
+                        
+                        break;
+                    case 'addTelegramRule':
+                        if (get_option('telegramRuleTemp') === false) {
+                            # daha önce admin rule kaydı olmamış demektir
+                            update_option('telegramRuleTemp', '1');
+                        }
+
+                        $telegramRuleTemp = json_decode(get_option( 'telegramRuleTemp'));
+
+                        $definedRules = [];
+                        for ($i = 1; $i < $telegramRuleTemp; $i++){
+                            $definedRules[$i-1] = get_option('telegramRule-'.$i);
+                        }
+
+                        $newRule = $post['oldStatusSlug'].' > '.$post['newStatusSlug'];
+
+                        for ($i = 0; $i < count($definedRules); $i++){
+                            $definedRule = $definedRules[$i];
+                            if ($definedRule == $newRule) {
+                                // kurallar eşleşmiş demektir demekki yeni kayıt yapmayacağız
+                                $response['message'] = __('This match already exists', '@@@');
+                                $telegramRuleTemp = false;
+                                break;
+                            }
+                        }
+
+                        if ($telegramRuleTemp !== false) {
+                            $response['data'] = $newRule;
+                            $response['message'] = __('New Rule Added', '@@@');
+                            $response['status'] = true;
+                            update_option('telegramRule-'.$telegramRuleTemp , $newRule);
+                            update_option( 'telegramRuleTemp', $telegramRuleTemp+1);
+                        }
+
+
+                        break;
+                    case 'deleteTelegramRule':
+                        if (get_option( 'telegramRuleTemp') === false){ 
+                            $temp = false;
+                            break;
+                        }
+                        $isDeleteted = false;
+                        $telegramRuleTemp = json_decode(get_option('telegramRuleTemp'));
+                        for ($i = 1; $i < $telegramRuleTemp; $i++){
+                            $definedRule = get_option('telegramRule-'.$i);
+                            if ($post['rule'] === $definedRule) {
+                                delete_option( 'telegramRule-'.$i );
+                                $telegramRuleTemp = json_decode(get_option('telegramRuleTemp'));
+                                $telegramRuleTemp = $telegramRuleTemp-1;
+                                update_option('telegramRuleTemp', $telegramRuleTemp);
+                                $isDeleteted = true;
+                                $response['status'] = true;
+                                $response['message'] = __('Telegram Rule deleted', '@@@');
+                            }
+                            if ($isDeleteted) {
+                                update_option(('telegramRule-'.($i)), get_option('telegramRule-'.$i+1));
+                                delete_option('telegramRule-'.($i+1));
+                            }
+                        }
+                        break;
+                    
+                    case 'getTelegramTemplate':
+                        if (get_option( 'telegramRuleTemp') === false){ 
+                            $temp = false;
+                        }
+                        
+                        $telegramRuleTemp = json_decode(get_option('telegramRuleTemp'));
+                        $targetTemplateIndex; // optionlarda şablonu tutacak olan index
+                        for ($i = 1; $i < $telegramRuleTemp; $i++){
+                            $definedRule = get_option('telegramRule-'.$i);
+                            if ($post['rule'] === $definedRule) {
+                                $targetTemplateIndex = 'telegramRule-'.$i;
+                            }
+                        }
+
+                        if (get_option($targetTemplateIndex.'-telegramMessage') === false) {
+                            update_option($targetTemplateIndex.'-telegramMessage', __('Not Added Yet Telegram Message', '@@@'));
+                        }
+                        
+                        $response['message'] = __('Telegram template brought', '@@@'); 
+                        $response['status'] = true;
+                        $response['data'] = [ 'telegramMessage' => get_option($targetTemplateIndex.'-telegramMessage')];
+
+                        break;
+                    case 'telegramMessageSave':
+                        $telegramRuleTemp = json_decode(get_option('telegramRuleTemp'));
+                        $targetTemplateIndex; 
+                        for ($i = 1; $i < $telegramRuleTemp; $i++){
+                            $definedRule = get_option('telegramRule-'.$i);
+                            if ($post['target'] === $definedRule) {
+                                $targetTemplateIndex = 'telegramRule-'.$i;
+                                break;
+                            }
+                        }
+                        update_option(($targetTemplateIndex.'-telegramMessage'), $post['newTelegramMessage']);
+                        $response['message'] = __('Telegram Message Saved', '@@@');
+                        $response['status'] = true;
+                        break;
+                    //
+                    
                     default:
                         $temp = false;
                         break;
@@ -377,11 +646,8 @@ Domain Path: /lang
             }
             wp_send_json($response);
         }
-
     }
-
     add_action( 'plugins_loaded', function(){
         $orderPlugin = new OrderAlertifyPlugin();
     });
-
 ?>
