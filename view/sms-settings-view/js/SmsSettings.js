@@ -1,5 +1,5 @@
 window.addEventListener('load', () => {
-
+    // TODO frontendine inputu eklendikten sonra alıcılar için script yazılacak
     class SmsSettings{
         
         smsApiBaseUrlInput;
