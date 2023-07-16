@@ -161,6 +161,103 @@
 #smsMessageRightBar{
     width: 300px;
     display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+#smsMessageRightBar > div{
+    margin: 20px 0;
+}
+
+
+
+#recipeAddContainer{
+    display:flex;
+    border: 2px dashed black;
+    justify-content:center;
+    align-items:center;
+    opacity:.5;
+    cursor:pointer;
+}
+#recipeAddContainer, #recipeInputContainer{
+    width:300px;
+    height:40px;
+    padding:0;
+}
+.smsRecipientsContainerHeader{
+    font-size: 20px;
+}
+.recipeAddPlus{
+    font-size:30px;
+    font-weight:900;
+}
+#recipeAddContainer:hover{
+    opacity:1;
+}
+
+#recipeInputContainer{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
     justify-content: center;
     align-items: center;
+}
+#recipeAddInput{
+    width: 270px;
+    box-sizing: border-box;
+    height: 100%;
+}
+#recideAddPlusContainer{
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: green;
+}
+#recideAddPlusContainer:hover{
+    background-color: green;
+    color: white;
+}
+#smsRecipientsContainer{
+    width: 300px;
+    padding: 10px 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    margin-bottom: 30px;
+}
+.smsRecipientsItem{
+    width: 300px;
+    height: 40px;
+    line-height: 40px;
+    cursor: pointer;
+    position: relative;
+}
+.smsRecipientsItem:after{
+    content: 'X';
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 10px;
+    display: none;
+    font-size: 26px;
+}
+.smsRecipientsItem:hover{
+    color: red;
+}
+.smsRecipientsItem:hover:after{
+    display: block;
+}
+#smsRecipientsItems{
+    width: 300px;
+    min-height: 0;
+    padding: 10px 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+.smsRecipientsItemDefault{
+    margin-bottom:10px;
+    margin-top: 10px;
 }
