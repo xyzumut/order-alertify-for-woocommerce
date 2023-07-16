@@ -30,7 +30,7 @@ window.addEventListener('load', async  () => {
     
             const response = await request.json();        
     
-            // backendden gelecek  //TODO Burada önceki ayarlarıda çözücez 
+            // backendden gelecek  
             const email = response.data.mail;
             const password = response.data.password;
             const host = response.data.host;
