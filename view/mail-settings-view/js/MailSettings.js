@@ -4,6 +4,9 @@ window.addEventListener('load', async  () => {
         constructor(){
             this.generalMailSettingsMailInput = document.getElementById('mailAddressInput');
             this.generalMailSettingsPasswordInput = document.getElementById('mailPasswordInput');
+            this.smtpHostInput = document.getElementById('smtpHostInput');
+            this.smtpPortInput = document.getElementById('smtpPortInput');
+            this.mailHostSecureOptions = document.getElementById('mailHostSecureOptions');
             this.recipeAddContainer = document.getElementById('recipeAddContainer');
             this.recipeInputContainer = document.getElementById('recipeInputContainer');
             this.mailRecipientsItems = document.getElementById('mailRecipientsItems');
@@ -19,7 +22,7 @@ window.addEventListener('load', async  () => {
     
             const formData = new FormData();
             formData.append('_operation', 'generalMailSettingsInit');
-    
+
             const request = await fetch(orderAlertifyGeneralScript.adminUrl+'admin-ajax.php?action=orderAlertifyAjaxListener',{
                 method:'POST',
                 body:formData
@@ -27,10 +30,12 @@ window.addEventListener('load', async  () => {
     
             const response = await request.json();        
     
-            // backendden gelecek
-            const oldSelectedOption = response.data.selectedMailOption;
+            // backendden gelecek  //TODO Burada önceki ayarlarıda çözücez 
             const email = response.data.mail;
             const password = response.data.password;
+            const host = response.data.host;
+            const port = response.data.port;
+            const secure = response.data.secure;
             // backendden gelecek
     
             modalClose(modalData)
@@ -43,34 +48,60 @@ window.addEventListener('load', async  () => {
             }
     
             const availableMailRadios = document.querySelectorAll('.availableMailRadio');
-            let selectedOption = oldSelectedOption;
             availableMailRadios.forEach( radioBtn => { 
                 radioBtn.addEventListener('click', (e) => {
-                    selectedOption = radioBtn.value;
+                    const selectedOption = radioBtn.value;
+                    const switchSecureOption = (mode) => {
+                        const selectElement = document.getElementById('mailHostSecureOptions');
+                        for (let i = 0; i < selectElement.children.length; i++) {
+                            const option = selectElement.children[i];
+                            if (option.value === mode) {
+                                option.selected = true;
+                            }
+                        }
+                    }
+                    switch (selectedOption) {
+                        case 'useOutlook':
+                            document.getElementById('smtpHostInput').value = 'smtp.office365.com';
+                            document.getElementById('smtpPortInput').value = '587';
+                            switchSecureOption('STARTTLS');
+                            break;
+                        case 'useYandex':
+                            document.getElementById('smtpHostInput').value = 'smtp.yandex.com.tr';
+                            document.getElementById('smtpPortInput').value = '465';
+                            switchSecureOption('SSL');
+                            break;
+                        default:
+                            break;
+                    }
                 })
-                if (radioBtn.value === selectedOption) {
-                    radioBtn.checked = true;
-                }
             });
     
             this.generalMailSettingsMailInput.value = email;
             this.generalMailSettingsPasswordInput.value = password;
-    
+            this.smtpHostInput.value = host;
+            this.smtpPortInput.value = port;
+            this.mailHostSecureOptions.value = secure;
+
             const saveButton = document.getElementById('saveMailAccountButton');
     
             saveButton.addEventListener('click', async () => {
-                const enableMailOpiton = selectedOption;
                 const orderAlertifyMail = this.generalMailSettingsMailInput.value;
                 const orderAlertifyPassword = this.generalMailSettingsPasswordInput.value;
-                
+                const smtpHostInput = this.smtpHostInput.value;
+                const smtpPortInput = this.smtpPortInput.value;
+                const mailHostSecureOptions = this.mailHostSecureOptions.value; 
+
+
                 const modalData = modalOpen();
     
                 const formData = new FormData();
                 formData.append('_operation', 'generalMailSettingsUpdate');
-                formData.append('enableMailOption', enableMailOpiton);
                 formData.append('orderAlertifyMail', orderAlertifyMail);
                 formData.append('orderAlertifyPassword', orderAlertifyPassword);
-    
+                formData.append('orderAlertifyMailHost', smtpHostInput);
+                formData.append('orderAlertifySmtpPort', smtpPortInput);
+                formData.append('orderAlertifySmtpSecure', mailHostSecureOptions);
     
                 const request = await fetch(orderAlertifyGeneralScript.adminUrl+'admin-ajax.php?action=orderAlertifyAjaxListener',{
                     method:'POST',

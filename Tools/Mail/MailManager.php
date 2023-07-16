@@ -16,25 +16,22 @@
         public $mailContent;
         public $mailSubject;
         public $senderName;
-
-        CONST outlookPort = 587;
-        CONST outlookSecure = 'STARTTLS';
-        CONST outlookHost = 'smtp.office365.com';  
-
-        CONST yandexPort = 465;
-        CONST yandexSecure = 'ssl';
-        CONST yandexHost = 'smtp.yandex.com.tr'; 
-        
+        public $host; 
+        public $port;
+        public $secure;
 
 
-        public function __construct($enableMailOption, $targets, $mailSubject, $mailContent, $mail, $password, $senderName){
+        public function __construct($enableMailOption, $targets, $mailSubject, $mailContent, $mail, $password, $senderName, $host, $port, $secure){
             $this->enableMailOption = $enableMailOption ;            
             $this->mail             = $mail ;            
             $this->password         = $password ;            
             $this->targets          = $targets ;            
             $this->mailContent      = $mailContent ;            
             $this->mailSubject      = $mailSubject ;            
-            $this->senderName       = $senderName ;            
+            $this->senderName       = $senderName ;
+            $this->host             = $host;
+            $this->port             = $port;
+            $this->secure           = $secure;            
         }
        
 
@@ -42,12 +39,12 @@
 
             $mail = new PHPMailer();
             $mail->isSMTP();                                            
-            $mail->Host       = $this->enableMailOption === 'useOutlook' ? MailManager::outlookHost : MailManager::yandexHost;                     
+            $mail->Host       = $this->host;                     
             $mail->SMTPAuth   = true;                                   
             $mail->Username   = $this->mail;                     
             $mail->Password   = $this->password;                            
-            $mail->SMTPSecure = $this->enableMailOption === 'useOutlook' ? MailManager::outlookSecure : MailManager::yandexSecure;            
-            $mail->Port       = $this->enableMailOption === 'useOutlook' ? MailManager::outlookPort : MailManager::yandexPort;                                  
+            $mail->SMTPSecure = $this->secure;            
+            $mail->Port       = $this->port;                                  
         
             $mail->setFrom($this->mail, $this->senderName);
 

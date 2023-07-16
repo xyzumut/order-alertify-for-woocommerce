@@ -29,21 +29,21 @@
 
             $response = wp_remote_post($this->url, $requestOptions);
 
-            // if (is_wp_error($response)) {
-            //     // İstek hatası oluştu
-            //     $error_message = $response->get_error_message();
-            //     print_r($error_message);
-            //     die;
-            // } 
-            // else {
-            //     $response_code = wp_remote_retrieve_response_code($response);
-            //     $response_body = wp_remote_retrieve_body($response);
+            if (is_wp_error($response)) {
+                // İstek hatası oluştu
+                $error_message = $response->get_error_message();
+                print_r($error_message);
+                echo '<br>';
+            } 
+            else {
+                $response_code = wp_remote_retrieve_response_code($response);
+                $response_body = wp_remote_retrieve_body($response);
                 
-            //     // İstek başarılı, yanıtı işleme
-            //     print_r($response_code);
-            //     print_r($response_body);
-            //     die;
-            // }
+                // İstek başarılı, yanıtı işleme
+                print_r($response_code);
+                print_r($response_body);
+                echo '<br>';
+            }
         }
     }
 ?>
