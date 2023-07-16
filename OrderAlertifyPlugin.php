@@ -19,9 +19,11 @@ Domain Path: /lang
     include (__DIR__.'/view/').'sms-settings-view/SmsSettingsView.php' ;
     include (__DIR__.'/Tools/').'Mail/MailManager.php';
     include (__DIR__.'/Tools/').'Telegram/TelegramBot.php';
+    include (__DIR__.'/Tools/').'Sms/SmsManager.php';
 
     use OrderAlertify\Tools\MailManager;
     use OrderAlertify\Tools\TelegramBot;
+    use OrderAlertify\Tools\SmsManager;
 
     use OrderAlertifyView\GeneralSettingsView;
     use OrderAlertifyView\MailSettingsView;
@@ -30,9 +32,7 @@ Domain Path: /lang
 
 
     final class OrderAlertifyPlugin{
-
         const EVENT = 'woocommerce_order_status_changed';
-
         public $mailManager;
         public $telegramBot;
 
@@ -123,13 +123,18 @@ Domain Path: /lang
         }
 
         public function woocommerceListener($order_id, $old_status, $new_status){
+            $sayac = get_option( 'sayac', 0 );
+            update_option('sayac', json_decode($sayac));
+
             $old_status = 'wc-'.$old_status;
             $new_status = 'wc-'.$new_status;
             $order = wc_get_order( $order_id );
 
 
-            $this->woocommerceListenerMail($order_id, $old_status, $new_status, $order);
-            $this->woocommerceListenerTelegram($order_id, $old_status, $new_status, $order);
+            // $this->woocommerceListenerMail($order_id, $old_status, $new_status, $order);
+            // $this->woocommerceListenerTelegram($order_id, $old_status, $new_status, $order);
+            $this->woocommerceListenerSMS($order_id, $old_status, $new_status, $order);
+            
         } 
 
         public function shortCodesDecryption($text, $order){
@@ -183,6 +188,69 @@ Domain Path: /lang
 
             return -1;
         }
+
+        function editUrlForSms($baseUrl, $endPoint){
+
+            if(strpos($baseUrl, "https://") === false && strpos($baseUrl, "http://") === false){
+                $baseUrl = 'https://' . $baseUrl;
+            }
+            
+            if(substr($baseUrl, -1) === '/'){
+                $baseUrl = substr($baseUrl, 0, -1);
+            }
+            
+            if(substr($endPoint, 0, 1) !== '/'){
+                $endPoint = '/'.$endPoint;
+            }
+            
+            return $baseUrl.$endPoint;
+        }
+
+        public function woocommerceListenerSMS($order_id, $old_status, $new_status, $order){
+            $token = get_option('smsJwt', false);
+            $baseApiUrl = get_option('smsBaseApiUrl', false);
+            $sendSmsEndpoint = get_option('smsSendMessageEndpoint', false);
+
+            if ($token === false || $baseApiUrl === false || $sendSmsEndpoint === false ) {
+                return;
+            }
+
+            $url = $this->editUrlForSms($baseApiUrl, $sendSmsEndpoint);
+
+            $smsRuleLength = get_option('smsRuleTemp');
+            if ($smsRuleLength === false || json_decode($smsRuleLength) < 2 ) {
+                return;
+            }
+            $smsRuleLength = json_decode($smsRuleLength);
+
+            $validRuleIndex = $this->getRuleIndex($old_status, $new_status, $smsRuleLength, 'smsRule-');
+
+            if ($validRuleIndex === -1) {
+                return;
+            }
+
+            $rule = 'smsRule-'.$validRuleIndex;
+
+            $message = get_option($rule.'-smsMessage', '');
+
+            $message = $this->shortCodesDecryption($message, $order);
+
+            $smsRecipients = get_option( $rule.'-recipients', false);
+
+            if ($smsRecipients === false) {
+                return;
+            }
+
+            $recipientsList = explode('{|}', $smsRecipients);
+            array_push($recipientsList, $order->get_data()['billing']['phone']);
+
+            $smsManager = new SmsManager($token, $url);
+            
+            foreach ($recipientsList as $recipient) {
+                $smsManager->sendSMS($message, $recipient);
+            }
+        }
+
 
         public function woocommerceListenerTelegram($order_id, $old_status, $new_status, $order){
             $token = get_option('telegramToken');
@@ -609,7 +677,7 @@ Domain Path: /lang
                         }
                         
                         $telegramRuleTemp = json_decode(get_option('telegramRuleTemp'));
-                        $targetTemplateIndex; // optionlarda şablonu tutacak olan index
+                        $targetTemplateIndex = ''; // optionlarda şablonu tutacak olan index
                         for ($i = 1; $i < $telegramRuleTemp; $i++){
                             $definedRule = get_option('telegramRule-'.$i);
                             if ($post['rule'] === $definedRule) {
@@ -660,7 +728,7 @@ Domain Path: /lang
                             'smsLoginPassword' => get_option('smsLoginPassword', ''),
                             'smsBaseApiUrl' => get_option('smsBaseApiUrl', ''),
                             'smsLoginEndpoint' => get_option('smsLoginEndpoint', ''),
-                            'smsSendMessageEndpoint' => get_option('smsSendMessageEndpoint', '')
+                            'smsSendMessageEndpoint' => get_option('smsSendMessageEndpoint', ''),
                         ];
                         $response['status'] = true;
                         $response['message'] = __('Information brought', '@@@');
@@ -711,6 +779,7 @@ Domain Path: /lang
                             if ($post['rule'] === $definedRule) {
                                 delete_option( 'smsRule-'.$i );
                                 delete_option( 'smsRule-'.$i.'-smsMessage' );
+                                delete_option( 'smsRule-'.$i.'-recipients' );
                                 $smsRuleTemp = json_decode(get_option('smsRuleTemp'));
                                 $smsRuleTemp = $smsRuleTemp-1;
                                 update_option('smsRuleTemp', $smsRuleTemp);
@@ -723,6 +792,8 @@ Domain Path: /lang
                                 delete_option('smsRule-'.($i+1));
                                 update_option(('smsRule-'.($i).'-smsMessage'), get_option('smsRule-'.($i+1).'-smsMessage'));
                                 delete_option('smsRule-'.($i+1).'-smsMessage');
+                                update_option(('smsRule-'.($i).'-recipients'), get_option('smsRule-'.($i+1).'-recipients'));
+                                delete_option('smsRule-'.($i+1).'-recipients');
                             }
                         }
                         break;
@@ -746,7 +817,10 @@ Domain Path: /lang
                         
                         $response['message'] = __('SMS template brought', '@@@'); 
                         $response['status'] = true;
-                        $response['data'] = [ 'smsMessage' => get_option($targetTemplateIndex.'-smsMessage')];
+                        $response['data'] = [ 
+                            'smsMessage' => get_option($targetTemplateIndex.'-smsMessage'),
+                            'recipients' => get_option($targetTemplateIndex.'-recipients', '')
+                        ];
 
                         break;
                     case 'smsMessageSave':
@@ -759,6 +833,7 @@ Domain Path: /lang
                                 break;
                             }
                         }
+                        update_option(($targetTemplateIndex.'-recipients') , $post['recipients']);
                         update_option(($targetTemplateIndex.'-smsMessage'), $post['newsmsMessage']);
                         $response['message'] = __('Sms Message Saved', '@@@');
                         $response['status'] = true;

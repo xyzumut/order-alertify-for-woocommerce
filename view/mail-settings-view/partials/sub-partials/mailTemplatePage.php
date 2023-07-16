@@ -13,7 +13,6 @@
         </div>
 
     </div>  
-
     <div id="mailTemplateRightColumn">
 
         <div id="mailTemplateRightColumnHeader">

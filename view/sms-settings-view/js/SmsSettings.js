@@ -7,13 +7,27 @@ window.addEventListener('load', () => {
         smsSendMessageEndpoint;
         smsLoginInput;
         smsLoginPasswordInput;
+        recipeAddContainer;
+        recipeInputContainer;
+        recipeAddInput;
+
+
+        recipentInit = () => { document.querySelectorAll('.smsRecipientsItem').forEach(element => element.addEventListener('click', () => {element.remove()})) }
 
         constructor({smsApiBaseUrlInput,smsLoginEndpoint,smsSendMessageEndpoint,smsLoginInput,smsLoginPasswordInput, saveSmsSettingsButton}){
             this.smsSendMessageEndpoint = smsSendMessageEndpoint;
+            this.saveSmsSettingsButton  = saveSmsSettingsButton;
             this.smsLoginPasswordInput  = smsLoginPasswordInput;
             this.smsApiBaseUrlInput     = smsApiBaseUrlInput;
             this.smsLoginEndpoint       = smsLoginEndpoint;
             this.smsLoginInput          = smsLoginInput;
+
+            this.recipeAddContainer = document.getElementById('recipeAddContainer');
+            this.recipeInputContainer = document.getElementById('recipeInputContainer');
+            this.smsRecipientsItems = document.getElementById('smsRecipientsItems');
+            this.recipeAddInput = document.getElementById('recipeAddInput');
+            this.recideAddPlusContainer = document.getElementById('recideAddPlusContainer');
+
         }
 
         editUrl = ({baseUrl, endPoint}) => {
@@ -53,11 +67,10 @@ window.addEventListener('load', () => {
             this.smsLoginEndpoint.value       = response.data.smsLoginEndpoint;
             this.smsLoginInput.value          = response.data.smsLoginUsername;
 
-            const saveSmsSettingsButton = document.getElementById('saveSmsSettingsButton');
-
-            saveSmsSettingsButton.addEventListener('click', async () => {
+            this.saveSmsSettingsButton.addEventListener('click', async () => {
                 const modalData = modalOpen();
-                
+
+
                 const token = await this.loginSms({
                     username: this.smsLoginInput.value,
                     password: this.smsLoginPasswordInput.value,
@@ -73,6 +86,7 @@ window.addEventListener('load', () => {
                 formData.append('smsLoginEndpoint', this.smsLoginEndpoint.value);
                 formData.append('smsSendMessageEndpoint', this.smsSendMessageEndpoint.value);
 
+
                 const request = await fetch(orderAlertifyGeneralScript.adminUrl+'admin-ajax.php?action=orderAlertifyAjaxListener',{
                     method:'POST',
                     body:formData
@@ -86,6 +100,29 @@ window.addEventListener('load', () => {
                     sendNotification('error', response.message);
                 }
                 sendNotification('success', response.message);
+            });
+
+            this.recipeAddContainer.addEventListener('click', () => {
+                recipeAddContainer.classList.add(dispNoneClassName);
+                recipeInputContainer.classList.remove(dispNoneClassName);
+            })
+            
+            this.recideAddPlusContainer.addEventListener('click', () => {
+
+                if (recipeAddInput.value.length < 5) {
+                    sendNotification(smsRecipeWarningMessageText);
+                    return;
+                }
+        
+                const newItem = '<div class="smsRecipientsItem" >'+recipeAddInput.value+'</div>';
+                
+                console.log(this.smsRecipientsItems)
+                
+                this.smsRecipientsItems.innerHTML = this.smsRecipientsItems.innerHTML + newItem; 
+        
+                recipeAddContainer.classList.remove(dispNoneClassName);
+                recipeInputContainer.classList.add(dispNoneClassName);
+                recipeAddInput.value=' ';
             });
         }
 
@@ -200,6 +237,8 @@ window.addEventListener('load', () => {
         },
         goRuleCallback: async ({oldStatusSlug, newStatusSlug}) => {
 
+            sms.recipentInit();
+            
             const formData = new FormData();
 
             formData.append('_operation', 'getSmsTemplate');
@@ -214,6 +253,17 @@ window.addEventListener('load', () => {
     
             const response = await request.json();
     
+            const recipients = response.data.recipients !== '' ? response.data.recipients.split('{|}') : null;
+            sms.smsRecipientsItems.innerHTML = '';
+            if (recipients !== null) {
+                recipients.forEach( recipient => {
+                    if (recipient !== '') {
+                        sms.smsRecipientsItems.innerHTML = sms.smsRecipientsItems.innerHTML + '<div class="smsRecipientsItem">'+recipient+'</div>';
+                        sms.recipentInit();
+                    }
+                });
+            }
+
             modalClose(modalData);
     
             if(response.status !== true){
@@ -243,11 +293,20 @@ window.addEventListener('load', () => {
             document.getElementById('smsMessageLeftBarHeader').insertAdjacentElement('beforeend', saveButtonCopy)
 
             document.getElementById('smsMessageSaveButton').addEventListener('click',async () => {
+                
+                const recipientsContainer = document.querySelectorAll('.smsRecipientsItem');
+                const recipientValues = [];
+                recipientsContainer.forEach( element => {
+                    recipientValues.push(element.innerText);
+                })
+                const recipientsFinal = recipientValues.join('{|}');
+                
                 const formData = new FormData();
                 formData.append('_operation', 'smsMessageSave');
                 formData.append('target' , oldStatusSlug+' > '+newStatusSlug);
                 formData.append('newsmsMessage', smsTextArea.value);
-
+                formData.append('recipients', recipientsFinal)
+                
                 const modalData = modalOpen();
                 
                 const request = await fetch(orderAlertifyGeneralScript.adminUrl+'admin-ajax.php?action=orderAlertifyAjaxListener', {
