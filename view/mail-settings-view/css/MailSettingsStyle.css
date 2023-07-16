@@ -178,9 +178,11 @@
 #recipeInputContainer{
     display: flex;
     flex-direction: row;
-    flex-wrap: nowrap;
-    justify-content: center;
+    margin: 15px 0;
     align-items: center;
+    font-size: 16px;
+    width: 500px;
+    justify-content: space-between;
 }
 #recipeAddInput{
     width: 270px;
@@ -243,20 +245,27 @@
     font-weight: 700;
 }
 .inputContainer{
-    /* width: ; */
     display: flex;
     flex-direction: row;
     margin: 15px 0;
     align-items: center;
     font-size: 16px;
+    width: 400px;
+    justify-content: space-between;
 }
-#mailAddressInput, #mailPasswordInput{
+.mailSmtpInputs{
     width: 250px;
     height: 36px;
     border: 1px solid #5f85bd;
     padding: 2px ;
     border-radius: 5px;
     margin-left: 15px;
+}
+.mailLabel{
+    width: 120px;
+}
+.mailLabel{
+
 }
 #mailAddressInputLabel, #mailPasswordInputLabel{
     font-size: 16px;

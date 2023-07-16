@@ -1,3 +1,0 @@
-Yapılacaklar:
-    - SMS gönderme kaldı
-    - Mail Kısmı ile Alakalı İşlemler Gerçekleştirilecek

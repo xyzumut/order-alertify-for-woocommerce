@@ -131,8 +131,8 @@ Domain Path: /lang
             $order = wc_get_order( $order_id );
 
 
-            // $this->woocommerceListenerMail($order_id, $old_status, $new_status, $order);
-            // $this->woocommerceListenerTelegram($order_id, $old_status, $new_status, $order);
+            $this->woocommerceListenerMail($order_id, $old_status, $new_status, $order);
+            $this->woocommerceListenerTelegram($order_id, $old_status, $new_status, $order);
             $this->woocommerceListenerSMS($order_id, $old_status, $new_status, $order);
             
         } 
@@ -301,15 +301,12 @@ Domain Path: /lang
 
         public function woocommerceListenerMail($order_id, $old_status, $new_status, $order){
 
+
+
             $mailRuleLength = json_decode(get_option('mailRuleTemp'));
             if ($mailRuleLength === false || $mailRuleLength === 1) {
                 update_option('mailRuleTemp', 1);
                 return; // kural yoksa mailde atılmasın gerek yok
-            }
-            $selectedMailOption = get_option('enableMailOption');
-            if ($selectedMailOption === false || $selectedMailOption === 'dontUseMail') {
-                update_option('enableMailOption', 'dontUseMail');
-                return; // mail opsiyonu bilgisi yoksa veya mail kullanma dediysekte mail atmayacak
             }
 
             $validRuleIndex = $this->getRuleIndex($old_status, $new_status, $mailRuleLength, 'mailRule-');
@@ -332,13 +329,17 @@ Domain Path: /lang
             array_push($recipients, $order->get_data()['billing']['email']);
 
             // $mail, $password
-            $mailAddress = get_option('orderAlertifyMail');
-            $mailPassword = get_option('orderAlertifyPassword');
-            if ($mailAddress === false || $mailPassword === false) {
+            $mailAddress = get_option('orderAlertifyMail', false);
+            $mailPassword = get_option('orderAlertifyPassword', false);
+            $host = get_option('orderAlertifyMailHost', false);
+            $port = get_option('orderAlertifySmtpPort', false);
+            $secure = get_option('orderAlertifySmtpSecure', false);
+
+            if ($mailAddress === false || $mailPassword === false || $host === false || $port === false || $secure === false) {
                 return;
             }
 
-            $mailManager = new MailManager($selectedMailOption, $recipients, $mailSubject, $mailContent, $mailAddress, $mailPassword, 'Gri WooCommerce');
+            $mailManager = new MailManager($selectedMailOption, $recipients, $mailSubject, $mailContent, $mailAddress, $mailPassword, 'Gri WooCommerce', $host, $port, $secure);
             $mailManager->sendMail();
         }
 
@@ -481,33 +482,39 @@ Domain Path: /lang
                         $response['status'] = true;
                         break;
                     case 'generalMailSettingsInit':
-                        $enableMailOption = get_option('enableMailOption');
-                        $mail = get_option('orderAlertifyMail');
-                        $password = get_option('orderAlertifyPassword');
-                        if ( $enableMailOption === false) {
-                            $enableMailOption = 'dontUseMail';
-                            update_option('enableMailOpiton', $enableMailOption);
-                        }
-                        if ( $mail === false) {
-                            $mail = '';
-                            update_option('orderAlertifyMail', $mail);
-                        }
-                        if ( $password === false) {
-                            $password = '';
-                            update_option('orderAlertifyPassword', $enableMailOption);
-                        }
+
+                        $mail = get_option('orderAlertifyMail', '');
+                        $password = get_option('orderAlertifyPassword', '');
+                        $host = get_option('orderAlertifyMailHost', '');
+                        $port = get_option('orderAlertifySmtpPort', '');
+                        $secure = get_option('orderAlertifySmtpSecure', 'SSL');
 
                         $response['status'] = true;
-                        $response['data'] = array('selectedMailOption' => $enableMailOption, 'mail' => $mail, 'password' => $password);
+                        $response['data'] = array(
+                            'mail' => $mail,
+                            'password' => $password,
+                            'host' => $host,
+                            'port' => $port,
+                            'secure' => $secure,
+                        );
                         $response['message'] = __('Mail General Settings Brought', '@@@');
                         break;
                     case 'generalMailSettingsUpdate':
                         $enableMailOption = $post['enableMailOption'];
                         $orderAlertifyMail = $post['orderAlertifyMail'];
                         $orderAlertifyPassword = $post['orderAlertifyPassword'];
+                        $orderAlertifyMailHost = $post['orderAlertifyMailHost'];
+                        $orderAlertifySmtpPort = $post['orderAlertifySmtpPort'];
+                        $orderAlertifySmtpSecure = $post['orderAlertifySmtpSecure'];
+
                         update_option('enableMailOption', $enableMailOption);
                         update_option('orderAlertifyMail', $orderAlertifyMail);
                         update_option('orderAlertifyPassword', $orderAlertifyPassword);
+                        update_option('orderAlertifyMailHost', $orderAlertifyMailHost);
+                        update_option('orderAlertifySmtpPort', $orderAlertifySmtpPort);
+                        update_option('orderAlertifySmtpSecure', $orderAlertifySmtpSecure);
+
+
                         $response['status'] = true;
                         $response['message'] = __('Mail General Settings Saved', '@@@');
                         break;

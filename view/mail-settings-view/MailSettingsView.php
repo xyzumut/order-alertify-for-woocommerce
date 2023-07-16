@@ -1,8 +1,7 @@
 <?php 
 namespace OrderAlertifyView;
-// TODO mail işlemleri için düzeltmeler yapılacak, bahsi geçen düzeltmeler :
-// - Mail ayarları smtp sunucusu ve bilgileri ile girilecek
-// - Outlook ve Yandex için otomatik doldurma yapılacak
+
+
 class MailSettingsView{
 
     CONST outlookMailOptionName = 'woocommerceOrderNotificationOutlookAddress';

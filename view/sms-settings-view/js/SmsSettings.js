@@ -1,5 +1,4 @@
 window.addEventListener('load', () => {
-    // TODO frontendine inputu eklendikten sonra alıcılar için script yazılacak
     class SmsSettings{
         
         smsApiBaseUrlInput;
@@ -116,10 +115,10 @@ window.addEventListener('load', () => {
         
                 const newItem = '<div class="smsRecipientsItem" >'+recipeAddInput.value+'</div>';
                 
-                console.log(this.smsRecipientsItems)
-                
                 this.smsRecipientsItems.innerHTML = this.smsRecipientsItems.innerHTML + newItem; 
-        
+                
+                this.recipentInit();
+
                 recipeAddContainer.classList.remove(dispNoneClassName);
                 recipeInputContainer.classList.add(dispNoneClassName);
                 recipeAddInput.value=' ';
