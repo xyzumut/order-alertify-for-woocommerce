@@ -31,10 +31,6 @@
 
         <div id="oa_body_right">
 
-            <div id="mailGeneralSettingsContainer" buttonText="General Settings" class="ou_body_right_item">
-                <?php include (__DIR__.'/sub-partials/').'generalSettings.php'; ?>
-            </div>
-
             <div id="mailRuleSettingsContainer" buttonText="Mail Rule Settings" class="ou_body_right_item">
                 <?php include (__DIR__.'/sub-partials/').'mailRuleSettings.php'; ?>
             </div>
