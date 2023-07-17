@@ -153,13 +153,15 @@ window.addEventListener('load', () => {
                 return;
             }
             else{
+                
+
                 this.oldChatIdList.push(chat_id);
                 let renderPendingRequestRow = '<div class="pendingRequestRow"><div class="pendingRequestCol telegramPendingNameSurname">'+(nameSurname);
                 renderPendingRequestRow = renderPendingRequestRow +'</div><div class="pendingRequestCol telegramPendingUsername">'+(username)+'</div>'
                 renderPendingRequestRow = renderPendingRequestRow +'<div class="pendingRequestCol telegramPendingChatId">'+(chat_id)+'</div>'
                 renderPendingRequestRow = renderPendingRequestRow +'<div class="pendingRequestCol telegramPendingButtons"><div><button class="telegramRejectButton telegramRequestButtons">';
-                renderPendingRequestRow = renderPendingRequestRow +'Reject</button><button class="telegramAcceptButton telegramRequestButtons" ch="'+(chat_id)+'" nS="'+(nameSurname)+'" uS="'+(username)+'">';
-                renderPendingRequestRow = renderPendingRequestRow +'Accept</button></div></div></div>';
+                renderPendingRequestRow = renderPendingRequestRow + orderAlertifyGeneralScript.rejectText +'</button><button class="telegramAcceptButton telegramRequestButtons" ch="'+(chat_id)+'" nS="'+(nameSurname)+'" uS="'+(username)+'">';
+                renderPendingRequestRow = renderPendingRequestRow + orderAlertifyGeneralScript.acceptText +'</button></div></div></div>';
 
                 if (this.pendingRequestBody.innerHTML === this.pendingRequestBodyDefaultHTML) {
                     this.pendingRequestBody.innerHTML = renderPendingRequestRow;
@@ -218,7 +220,7 @@ window.addEventListener('load', () => {
             renderActiveTelegramUsersRow = renderActiveTelegramUsersRow +'<div class="telegramBodyCol telegramChatId" >'+chat_id+'</div>';
             renderActiveTelegramUsersRow = renderActiveTelegramUsersRow +'<div class="telegramBodyCol telegramButtons">';
             renderActiveTelegramUsersRow = renderActiveTelegramUsersRow +'<button class="telegramRemoveUserButton" uN="'+username+'" nS="'+nameSurname+'" ch="'+chat_id+'">';
-            renderActiveTelegramUsersRow = renderActiveTelegramUsersRow +'Remove</button></div></div>';
+            renderActiveTelegramUsersRow = renderActiveTelegramUsersRow + orderAlertifyGeneralScript.removeText + '</button></div></div>';
 
 
             if (this.activeTelegramUsers.length !== 0) {

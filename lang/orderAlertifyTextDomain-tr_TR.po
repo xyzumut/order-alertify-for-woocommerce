@@ -1,0 +1,524 @@
+# Copyright (C) 2023 OrderAlertify
+# This file is distributed under the same license as the OrderAlertify package.
+msgid ""
+msgstr ""
+"Project-Id-Version: OrderAlertify 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/order-alertify-"
+"for-woocommerce\n"
+"POT-Creation-Date: 2023-07-17 12:17:32+00:00\n"
+"PO-Revision-Date: 2023-07-17 15:19+0300\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: tr_TR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.3.1\n"
+
+#: OrderAlertifyPlugin.php:58
+msgid "All"
+msgstr "Hepsi"
+
+#: OrderAlertifyPlugin.php:64
+msgid "Total Price"
+msgstr "Toplam fiyat"
+
+#: OrderAlertifyPlugin.php:65
+msgid "Customer Note"
+msgstr "Müşteri Notu"
+
+#: OrderAlertifyPlugin.php:66
+msgid "Order ID"
+msgstr "Sipariş No"
+
+#: OrderAlertifyPlugin.php:67
+msgid "Customer ID"
+msgstr "Müşteri No"
+
+#: OrderAlertifyPlugin.php:68
+msgid "Order Key"
+msgstr "Sipariş Anahtarı"
+
+#: OrderAlertifyPlugin.php:69
+msgid "Billing First Name"
+msgstr "Sipariş Sahibi Adı"
+
+#: OrderAlertifyPlugin.php:70
+msgid "Billing Last Name"
+msgstr "Sipariş Sahibi Soyadı"
+
+#: OrderAlertifyPlugin.php:71
+msgid "Billing Address 1"
+msgstr "Siparişin 1.Adres"
+
+#: OrderAlertifyPlugin.php:72
+msgid "Billing Address 2"
+msgstr "Siparişin 2.Adres"
+
+#: OrderAlertifyPlugin.php:73
+msgid "Billing City"
+msgstr "Şehir"
+
+#: OrderAlertifyPlugin.php:74
+msgid "Billing Email"
+msgstr "Mail Adresi"
+
+#: OrderAlertifyPlugin.php:75
+msgid "Billing Phone"
+msgstr "Telefon Numarası"
+
+#: OrderAlertifyPlugin.php:76
+msgid "Shipping First Name"
+msgstr "Alıcı Adı"
+
+#: OrderAlertifyPlugin.php:77
+msgid "Shipping Last Name"
+msgstr "Alıcı Soyadı"
+
+#: OrderAlertifyPlugin.php:78
+msgid "Shipping Address 1"
+msgstr "Alıcı 1.Adresi"
+
+#: OrderAlertifyPlugin.php:79
+msgid "Shipping Address 2"
+msgstr "Alıcı 2.Adresi"
+
+#: OrderAlertifyPlugin.php:80
+msgid "Shipping City"
+msgstr "Alıcı Şehri"
+
+#: OrderAlertifyPlugin.php:81
+msgid "Shipping Phone"
+msgstr "Alıcı Telefon No"
+
+#: OrderAlertifyPlugin.php:87
+msgid "Copy to Clipboard"
+msgstr "Panoya Kopyala"
+
+#: OrderAlertifyPlugin.php:88
+msgid "Loading . . ."
+msgstr "Yükleniyor . . ."
+
+#: OrderAlertifyPlugin.php:89
+msgid "Short Codes For Mail Templates"
+msgstr "Mail Şablonu için kısa kodlar"
+
+#: OrderAlertifyPlugin.php:90
+msgid "Choose Different Options"
+msgstr "Farklı Seçenekler Seçin"
+
+#: OrderAlertifyPlugin.php:91
+msgid "Please Enter the Appropriate Value"
+msgstr "Lütfen Uygun Değeri Giriniz"
+
+#: OrderAlertifyPlugin.php:92
+msgid "Short Codes For Telegram Templates"
+msgstr "Telegram Şablonları İçin Kısa Kodlar"
+
+#: OrderAlertifyPlugin.php:93
+msgid "Short Codes For SMS Templates"
+msgstr "SMS Şablonları İçin Kısa Kodlar"
+
+#: OrderAlertifyPlugin.php:94
+msgid "Reject"
+msgstr "Reddet"
+
+#: OrderAlertifyPlugin.php:95
+msgid "Accept"
+msgstr "Kabul Et"
+
+#: OrderAlertifyPlugin.php:96
+msgid "Remove"
+msgstr "Kaldır"
+
+#: OrderAlertifyPlugin.php:97
+msgid "Delete Rule"
+msgstr "Kural silindi"
+
+#: OrderAlertifyPlugin.php:98
+msgid "Go Rule"
+msgstr "sms Kuralı silindi"
+
+#: OrderAlertifyPlugin.php:103
+msgid "OrderAlertify Plugin"
+msgstr "OrderAlertify Eklentisi"
+
+#: OrderAlertifyPlugin.php:103 OrderAlertifyPlugin.php:104
+#: view/general-settings-view/partials/index.php:33
+msgid "Order Alertify"
+msgstr "Order Alertify"
+
+#: OrderAlertifyPlugin.php:104
+msgid "General Settings"
+msgstr "Genel Ayarlar"
+
+#: OrderAlertifyPlugin.php:105
+msgid "Mail Settings"
+msgstr "Mail ayarları"
+
+#: OrderAlertifyPlugin.php:105
+msgid "MailSettings"
+msgstr "MailAyarları"
+
+#: OrderAlertifyPlugin.php:106
+msgid "Telegram Settings"
+msgstr "Telegram ayarları"
+
+#: OrderAlertifyPlugin.php:106
+msgid "TelegramSettings"
+msgstr "TelegramAyarları"
+
+#: OrderAlertifyPlugin.php:107
+msgid "SMS Settings"
+msgstr "SMS ayarları"
+
+#: OrderAlertifyPlugin.php:107
+msgid "SmsSettings"
+msgstr "SmsAyarları"
+
+#: OrderAlertifyPlugin.php:365
+msgid "Something Went Wrong"
+msgstr "Bir şeyler yanlış gitti"
+
+#: OrderAlertifyPlugin.php:391 OrderAlertifyPlugin.php:637
+#: OrderAlertifyPlugin.php:761
+msgid "This match already exists"
+msgstr "Bu eşleşme zaten var"
+
+#: OrderAlertifyPlugin.php:399 OrderAlertifyPlugin.php:645
+#: OrderAlertifyPlugin.php:768
+msgid "New Rule Added"
+msgstr "Yeni kural eklendi"
+
+#: OrderAlertifyPlugin.php:425
+msgid "Rule deleted"
+msgstr "Kural silindi"
+
+#: OrderAlertifyPlugin.php:456 OrderAlertifyPlugin.php:457
+#: OrderAlertifyPlugin.php:524
+msgid "Not Added Yet"
+msgstr "Henüz eklenmedi"
+
+#: OrderAlertifyPlugin.php:461
+msgid "Mail template brought"
+msgstr "Mail şablonu getirildi"
+
+#: OrderAlertifyPlugin.php:481
+msgid "Template Saved"
+msgstr "Şablon kaydedildi"
+
+#: OrderAlertifyPlugin.php:500
+msgid "Mail General Settings Brought"
+msgstr "Genel mail ayarları getirildi"
+
+#: OrderAlertifyPlugin.php:519
+msgid "Mail General Settings Saved"
+msgstr "Genel mail ayarları kaydedildi"
+
+#: OrderAlertifyPlugin.php:544
+msgid "Telegram Settings Arrived"
+msgstr "Telegram ayarları getirildi"
+
+#: OrderAlertifyPlugin.php:549
+msgid "New Token is Saved."
+msgstr "Yeni token kaydedildi."
+
+#: OrderAlertifyPlugin.php:588
+msgid "New Telegram User Added"
+msgstr "Yeni telegram kullanıcısı eklendi"
+
+#: OrderAlertifyPlugin.php:612
+msgid "Deletion Successful"
+msgstr "Silme işlemi başarılı"
+
+#: OrderAlertifyPlugin.php:670
+msgid "Telegram Rule deleted"
+msgstr "Telegram kuralı silindi"
+
+#: OrderAlertifyPlugin.php:696
+msgid "Not Added Yet Telegram Message"
+msgstr "Henüz telegram mesajı eklenmedi"
+
+#: OrderAlertifyPlugin.php:699
+msgid "Telegram template brought"
+msgstr "Telegram şablonu getirildi"
+
+#: OrderAlertifyPlugin.php:715
+msgid "Telegram Message Saved"
+msgstr "Telegram mesajı kaydedildi"
+
+#: OrderAlertifyPlugin.php:726
+msgid "Sms Information Saved"
+msgstr "Sms bilgileri kaydedildi"
+
+#: OrderAlertifyPlugin.php:728
+msgid "Sms Information Saved But The Information Is Wrong"
+msgstr "Sms bilgileri kaydedildi ama bilgiler hatalı"
+
+#: OrderAlertifyPlugin.php:741
+msgid "Information brought"
+msgstr "Bilgiler getirildi"
+
+#: OrderAlertifyPlugin.php:795
+msgid "sms Rule deleted"
+msgstr "sms Kuralı silindi"
+
+#: OrderAlertifyPlugin.php:821
+msgid "Not Added Yet SMS Message"
+msgstr "Henüz SMS mesajı oluşturulmadı"
+
+#: OrderAlertifyPlugin.php:824
+msgid "SMS template brought"
+msgstr "SMS şablonu getirildi"
+
+#: OrderAlertifyPlugin.php:844
+msgid "Sms Message Saved"
+msgstr "SMS mesajı kaydedildi"
+
+#: OrderAlertifyPlugin.php:857
+msgid "Option information arrived"
+msgstr "Opsiyon bilgileri getirildi"
+
+#: OrderAlertifyPlugin.php:881
+msgid "Option Settings Saved"
+msgstr "Opsiyon ayarları kaydedildi"
+
+#: view/general-settings-view/partials/index.php:8
+#: view/mail-settings-view/partials/index.php:8
+#: view/sms-settings-view/partials/index.php:8
+#: view/telegram-settings-view/partials/index.php:8
+msgid "Saving Settings . . ."
+msgstr "Ayarlar Kaydediliyor . . ."
+
+#: view/general-settings-view/partials/index.php:23
+msgid "General Settings Page"
+msgstr "Genel Ayarlar Sayfası"
+
+#: view/general-settings-view/partials/sub-partials/orderAlertifyGeneral.php:5
+msgid "What is this plugin and how does it work?"
+msgstr "Bu eklendi nedir ve nasıl çalışır?"
+
+#: view/general-settings-view/partials/sub-partials/orderAlertifyGeneral.php:8
+msgid ""
+"This plugin detects the status changes of orders created on woocommerce and "
+"generates notifications about the options you have selected."
+msgstr ""
+"Bu eklenti, woocommerce üzerinde oluşturulan siparişlerin durum "
+"değişikliklerini algılar ve seçtiğiniz seçeneklerle ilgili bildirimler "
+"oluşturur."
+
+#: view/general-settings-view/partials/sub-partials/orderAlertifyGeneral.php:11
+msgid "These notifications take place within the rules you set."
+msgstr "Bu bildirimler sizin belirlediğiniz kurallar dahilinde gerçekleşir."
+
+#: view/general-settings-view/partials/sub-partials/orderAlertifyGeneral.php:14
+msgid "You set these rules on the options' own pages."
+msgstr "Bu kuralları seçeneklerin kendi sayfalarında belirlersiniz."
+
+#: view/general-settings-view/partials/sub-partials/orderAlertifyGeneral.php:17
+msgid "These options are e-mail, sms and telegram options."
+msgstr "Bu seçenekler e-posta, sms ve telgraf seçenekleridir."
+
+#: view/general-settings-view/partials/sub-partials/orderAlertifyGeneral.php:21
+msgid ""
+"For Telegram notification, you must enter your bot's information on the "
+"\"Telegram Settings\" page and then message your bot on the \"Telegram "
+"Settings\" page and accept yourself."
+msgstr ""
+"Telegram bildirimi için \"Telegram Ayarları\" sayfasında botunuzun "
+"bilgilerini girmeli ve ardından \"Telegram Ayarları\" sayfasında botunuza "
+"mesaj atıp kendinizi kabul etmelisiniz."
+
+#: view/general-settings-view/partials/sub-partials/orderAlertifyGeneral.php:25
+msgid ""
+"For Mail and SMS, you must make your settings on the \"Mail Settings\" and "
+"\"SMS Settings\" page."
+msgstr ""
+"Mail ve SMS için \"Mail Ayarları\" ve \"SMS Ayarları\" sayfasından "
+"ayarlarınızı yapmanız gerekmektedir."
+
+#: view/general-settings-view/partials/sub-partials/orderAlertifyGeneral.php:28
+msgid ""
+"After setting any option, you must set the rules and customize the content "
+"to be sent in the relevant rule."
+msgstr ""
+"Herhangi bir seçeneği ayarladıktan sonra kuralları belirlemeli ve ilgili "
+"kuralda gönderilecek içeriği özelleştirmelisiniz."
+
+#: view/general-settings-view/partials/sub-partials/orderAlertifyGeneral.php:36
+msgid "Mail Option"
+msgstr "Mail Opsiyonu"
+
+#: view/general-settings-view/partials/sub-partials/orderAlertifyGeneral.php:45
+msgid "Click the button to enable the e-mail option."
+msgstr "E-Mail opsiyonunu etkinleştirmek için tıklayın."
+
+#: view/general-settings-view/partials/sub-partials/orderAlertifyGeneral.php:52
+msgid "Sms Option"
+msgstr "SMS Opsiyonu"
+
+#: view/general-settings-view/partials/sub-partials/orderAlertifyGeneral.php:61
+msgid "Click the button to enable the sms option."
+msgstr "SMS opsiyonunu etkinleştirmek için tıklayın."
+
+#: view/general-settings-view/partials/sub-partials/orderAlertifyGeneral.php:68
+msgid "Telegram Option"
+msgstr "Telegram Opsiyonu"
+
+#: view/general-settings-view/partials/sub-partials/orderAlertifyGeneral.php:77
+msgid "Click the button to enable the telegram option."
+msgstr "Telegram opsiyonunu etkinleştirmek için tıklayın."
+
+#: view/mail-settings-view/partials/index.php:23
+msgid "Mail Settings Page"
+msgstr "Mail Ayarları Sayfası"
+
+#: view/mail-settings-view/partials/index.php:34
+msgid "Mail Rule Settings"
+msgstr "SMS Kural ayarları"
+
+#: view/mail-settings-view/partials/index.php:38
+msgid "Edit Rule Settings"
+msgstr "Telegram Kuralını Düzenle"
+
+#: view/mail-settings-view/partials/sub-partials/mailTemplatePage.php:7
+msgid "Subject"
+msgstr "Konu"
+
+#: view/mail-settings-view/partials/sub-partials/mailTemplatePage.php:19
+#: view/sms-settings-view/partials/sub-partials/generalSmsSettings.php:34
+#: view/sms-settings-view/partials/sub-partials/smsTemplatePage.php:13
+#: view/telegram-settings-view/partials/sub-partials/generalTelegramSettings.php:11
+#: view/telegram-settings-view/partials/sub-partials/telegramMessageSettings.php:11
+msgid "Save"
+msgstr "Kaydet"
+
+#: view/mail-settings-view/partials/sub-partials/mailTemplatePage.php:24
+#: view/sms-settings-view/partials/sub-partials/smsTemplatePage.php:25
+msgid "Recipients"
+msgstr "Alıcılar"
+
+#: view/mail-settings-view/partials/sub-partials/mailTemplatePage.php:26
+msgid "Customer's mail"
+msgstr "Müşteri Maili"
+
+#: view/sms-settings-view/partials/index.php:23
+msgid "SMS Settings Page"
+msgstr "Sms Ayarları"
+
+#: view/sms-settings-view/partials/index.php:34
+msgid "Sms General Settings"
+msgstr "Genel Sms Ayarları"
+
+#: view/sms-settings-view/partials/index.php:38
+msgid "Sms Rule Settings"
+msgstr "SMS Kural ayarları"
+
+#: view/sms-settings-view/partials/index.php:42
+msgid "Edit Sms Rule"
+msgstr "SMS Kuralı düzenle"
+
+#: view/sms-settings-view/partials/sub-partials/generalSmsSettings.php:5
+msgid "Api BASE Url"
+msgstr "Api BASE Url"
+
+#: view/sms-settings-view/partials/sub-partials/generalSmsSettings.php:11
+msgid "Login Endpoint"
+msgstr "Login Endpoint"
+
+#: view/sms-settings-view/partials/sub-partials/generalSmsSettings.php:17
+msgid "Send Message Endpoint"
+msgstr "Send Message Endpoint"
+
+#: view/sms-settings-view/partials/sub-partials/generalSmsSettings.php:23
+msgid "Login Username"
+msgstr "Giriş Kullanıcı Adı"
+
+#: view/sms-settings-view/partials/sub-partials/generalSmsSettings.php:29
+msgid "Login Password"
+msgstr "Giriş Şifresi"
+
+#: view/sms-settings-view/partials/sub-partials/smsTemplatePage.php:9
+msgid "Your Sms Message"
+msgstr "SMS mesajı kaydedildi"
+
+#: view/sms-settings-view/partials/sub-partials/smsTemplatePage.php:27
+msgid "Customer's Phone"
+msgstr "Müşteri Numarası"
+
+#: view/telegram-settings-view/partials/index.php:23
+msgid "Telegram Settings Page"
+msgstr "Telegram Ayarları"
+
+#: view/telegram-settings-view/partials/index.php:34
+msgid "Main Telegram Settings"
+msgstr "Ana Telegram Ayarları"
+
+#: view/telegram-settings-view/partials/index.php:38
+msgid "Telegram Rules Settings"
+msgstr "Telegram Kural Ayarları"
+
+#: view/telegram-settings-view/partials/index.php:42
+msgid "Edit Telegram Rule"
+msgstr "Telegram Kuralını Düzenle"
+
+#: view/telegram-settings-view/partials/sub-partials/generalTelegramSettings.php:15
+msgid "Below are active telegram recipients."
+msgstr "Aşağıda Aktif Telegram Kullanıcıları Bulunmakta."
+
+#: view/telegram-settings-view/partials/sub-partials/generalTelegramSettings.php:22
+msgid "Active Telegram Users"
+msgstr "Aktif Telegram Kullanıcıları"
+
+#: view/telegram-settings-view/partials/sub-partials/generalTelegramSettings.php:31
+msgid "Name Surname"
+msgstr "Ad Soyad"
+
+#: view/telegram-settings-view/partials/sub-partials/generalTelegramSettings.php:32
+msgid "Telegram Username"
+msgstr "Telegram Kullanıcı Adı"
+
+#: view/telegram-settings-view/partials/sub-partials/generalTelegramSettings.php:33
+msgid "Chat ID"
+msgstr "Chat ID"
+
+#: view/telegram-settings-view/partials/sub-partials/generalTelegramSettings.php:41
+#: view/telegram-settings-view/partials/sub-partials/generalTelegramSettings.php:42
+#: view/telegram-settings-view/partials/sub-partials/generalTelegramSettings.php:43
+#: view/telegram-settings-view/partials/sub-partials/generalTelegramSettings.php:93
+#: view/telegram-settings-view/partials/sub-partials/generalTelegramSettings.php:94
+#: view/telegram-settings-view/partials/sub-partials/generalTelegramSettings.php:95
+msgid "Not Yet"
+msgstr "Henüz Değil"
+
+#: view/telegram-settings-view/partials/sub-partials/generalTelegramSettings.php:74
+msgid ""
+"In order to define a new user for your Telegram Bot, you must first start a "
+"chat with your Telegram Bot."
+msgstr ""
+"Telegram Botunuza yeni bir kullanıcı tanımlayabilmek için öncelikle "
+"Telegram Botunuzla bir sohbet başlatmalısınız."
+
+#: view/telegram-settings-view/partials/sub-partials/generalTelegramSettings.php:78
+msgid "When you do this, you can accept yourself from the panel below."
+msgstr "Bunu yaptığınızda aşağıdaki panelden kendinizi kabul edebilirsiniz."
+
+#: view/telegram-settings-view/partials/sub-partials/generalTelegramSettings.php:85
+msgid "Pending Telegram Requests"
+msgstr "Telegram isteği bekleniyor"
+
+#: view/telegram-settings-view/partials/sub-partials/telegramMessageSettings.php:8
+msgid "Your Telegram Message"
+msgstr "Telegram mesajı kaydedildi"
+
+#. Plugin Name of the plugin/theme
+msgid "OrderAlertify"
+msgstr "OrderAlertify"
+
+#. Description of the plugin/theme
+msgid "OrderAlertify Eklentisi"
+msgstr "OrderAlertify Eklentisi"
+
+#. Author of the plugin/theme
+msgid "Umut Gedik"
+msgstr "Umut Gedik"

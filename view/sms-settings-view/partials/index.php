@@ -20,7 +20,7 @@
     </div>
     
     <div id="oa_header">
-        <?php _e('SMS Settings Page', '@@@') ?> 
+        <?php _e('SMS Settings Page', 'orderAlertifyTextDomain') ?> 
     </div>
     
     <div id="oa_body">
@@ -35,11 +35,11 @@
                 <?php  include (__DIR__.'/sub-partials/').'generalSmsSettings.php'; ?>
             </div>
 
-            <div id="smsRuleSettingsContainer" buttonText="<?php _e('Sms Rule Settings', '@@@');?>" class="ou_body_right_item">
+            <div id="smsRuleSettingsContainer" buttonText="<?php _e('Sms Rule Settings', 'orderAlertifyTextDomain');?>" class="ou_body_right_item">
                 <?php  include (__DIR__.'/sub-partials/').'smsRuleSettings.php'; ?>
             </div>
 
-            <div id="smsTemplateSettingsContainer" buttonText="<?php _e('Edit Sms Rule', '@@@');?>" class="ou_body_right_item privateMenuItem">
+            <div id="smsTemplateSettingsContainer" buttonText="<?php _e('Edit Sms Rule', 'orderAlertifyTextDomain');?>" class="ou_body_right_item privateMenuItem">
                 <?php include (__DIR__.'/sub-partials/').'smsTemplatePage.php'; ?>
             </div>
 

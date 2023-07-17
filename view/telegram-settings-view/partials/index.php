@@ -20,7 +20,7 @@
     </div>
     
     <div id="oa_header">
-        <?php _e('Telegram Settings Page', '@@@') ?> 
+        <?php _e('Telegram Settings Page', 'orderAlertifyTextDomain') ?> 
     </div>
     
     <div id="oa_body">
@@ -31,15 +31,15 @@
 
         <div id="oa_body_right">
 
-            <div id="telegramGeneralSettingsContainer" buttonText="<?php _e('Main Telegram Settings', '@@@'); ?>" class="ou_body_right_item">
+            <div id="telegramGeneralSettingsContainer" buttonText="<?php _e('Main Telegram Settings', 'orderAlertifyTextDomain'); ?>" class="ou_body_right_item">
                 <?php include (__DIR__.'/sub-partials/').'generalTelegramSettings.php'; ?>
             </div>
 
-            <div id="telegramRuleSettingsContainer" buttonText="<?php _e('Telegram Rules Settings', '@@@'); ?>" class="ou_body_right_item">
+            <div id="telegramRuleSettingsContainer" buttonText="<?php _e('Telegram Rules Settings', 'orderAlertifyTextDomain'); ?>" class="ou_body_right_item">
                 <?php  include (__DIR__.'/sub-partials/').'telegramRuleSettings.php'; ?>
             </div>
 
-            <div id="mailTemplateSettingsContainer" buttonText="<?php _e('Edit Telegram Rule'); ?>" class="ou_body_right_item privateMenuItem">
+            <div id="mailTemplateSettingsContainer" buttonText="<?php _e('Edit Telegram Rule', 'orderAlertifyTextDomain'); ?>" class="ou_body_right_item privateMenuItem">
                 <?php include (__DIR__.'/sub-partials/').'telegramMessageSettings.php'; ?>
             </div>
 

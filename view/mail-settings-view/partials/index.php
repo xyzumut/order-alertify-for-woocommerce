@@ -20,7 +20,7 @@
     </div>
 
     <div id="oa_header">
-        <?php _e('Mail Settings Page', '@@@') ?> 
+        <?php _e('Mail Settings Page', 'orderAlertifyTextDomain') ?> 
     </div>
     
     <div id="oa_body">
@@ -31,11 +31,11 @@
 
         <div id="oa_body_right">
 
-            <div id="mailRuleSettingsContainer" buttonText="Mail Rule Settings" class="ou_body_right_item">
+            <div id="mailRuleSettingsContainer" buttonText="<?php _e('Mail Rule Settings', 'orderAlertifyTextDomain')?>" class="ou_body_right_item">
                 <?php include (__DIR__.'/sub-partials/').'mailRuleSettings.php'; ?>
             </div>
 
-            <div id="mailTemplateSettingsContainer" buttonText="Edit Rule Settings" class="ou_body_right_item privateMenuItem">
+            <div id="mailTemplateSettingsContainer" buttonText="<?php _e('Edit Rule Settings', 'orderAlertifyTextDomain')?>" class="ou_body_right_item privateMenuItem">
                 <?php include (__DIR__.'/sub-partials/').'mailTemplatePage.php'; ?>
             </div>
 

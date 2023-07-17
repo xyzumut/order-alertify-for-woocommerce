@@ -20,7 +20,7 @@
     </div>
     
     <div id="oa_header">
-        <?php _e('General Settings Page', '@@@') ?> 
+        <?php _e('General Settings Page', 'orderAlertifyTextDomain') ?> 
     </div>
     
     <div id="oa_body">
@@ -30,7 +30,7 @@
         </div>
 
         <div id="oa_body_right">
-            <div id="orderAlertifyGeneralSettingsContainer" buttonText="<?php _e('Order Alertify', '@@@'); ?>" class="ou_body_right_item">
+            <div id="orderAlertifyGeneralSettingsContainer" buttonText="<?php _e('Order Alertify', 'orderAlertifyTextDomain'); ?>" class="ou_body_right_item">
                 <?php include (__DIR__.'/sub-partials/').'orderAlertifyGeneral.php'; ?>
             </div>
         </div>
