@@ -11,7 +11,9 @@ Version: 1.0.0
 Text Domain: orderAlertifyTextDomain
 Domain Path: /lang
 */
-
+    // TODO log tutma işlemi gerçekleştirilecek
+    // TODO sms başarılı olmaz ise tekrar token isteyecek
+    // TODO mail şablon oluşturulacak
 
     include (__DIR__.'/view/').'general-settings-view/GeneralSettingsView.php' ;
     include (__DIR__.'/view/').'mail-settings-view/MailSettingsView.php' ;
@@ -36,7 +38,6 @@ Domain Path: /lang
             add_action('admin_menu', [$this, 'renderAllPages']);
             add_action(OrderAlertifyPlugin::EVENT, [$this, 'woocommerceListener'], 10, 3);
             add_action('wp_ajax_orderAlertifyAjaxListener', [$this, 'orderAlertifyAjaxListener']);
-            add_action('wp_ajax_nopriv_orderAlertifyAjaxListener', [$this, 'orderAlertifyAjaxListener']);
             $this->mailEditorFormatter();
             wp_enqueue_style( 'orderAlertifyGeneralStyle', plugin_dir_url(__FILE__).'css/orderAlertifyGeneralStyle.css');
             wp_enqueue_style( 'orderAlertifyTailwindStyle', plugin_dir_url(__FILE__).'css/orderAlertifyTailwind.css');

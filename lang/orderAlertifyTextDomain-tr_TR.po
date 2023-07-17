@@ -6,7 +6,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/order-alertify-"
 "for-woocommerce\n"
 "POT-Creation-Date: 2023-07-17 12:17:32+00:00\n"
-"PO-Revision-Date: 2023-07-17 15:19+0300\n"
+"PO-Revision-Date: 2023-07-17 16:39+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: tr_TR\n"
@@ -133,7 +133,7 @@ msgstr "Kaldır"
 
 #: OrderAlertifyPlugin.php:97
 msgid "Delete Rule"
-msgstr "Kural silindi"
+msgstr "Kuralı sil"
 
 #: OrderAlertifyPlugin.php:98
 msgid "Go Rule"
@@ -375,11 +375,11 @@ msgstr "Mail Ayarları Sayfası"
 
 #: view/mail-settings-view/partials/index.php:34
 msgid "Mail Rule Settings"
-msgstr "SMS Kural ayarları"
+msgstr "Kuralı Düzenle"
 
 #: view/mail-settings-view/partials/index.php:38
 msgid "Edit Rule Settings"
-msgstr "Telegram Kuralını Düzenle"
+msgstr "Kuralı Düzenle"
 
 #: view/mail-settings-view/partials/sub-partials/mailTemplatePage.php:7
 msgid "Subject"
