@@ -5,10 +5,10 @@
        <div id="leftBarContent">
         <div id="telegramMessageLeftBarHeader">
                 <div id="telegramMessageLeftBarHeaderText">
-                    Your Telegram Message
+                    <?php _e('Your Telegram Message', '@@@');?>
                 </div>
 
-                <button id="telegramMessageSaveButton">Save</button>
+                <button id="telegramMessageSaveButton"><?php _e('Save', '@@@') ?></button>
             </div>
 
             <textarea id="telegramMessageTextArea" cols="30" rows="10"></textarea>

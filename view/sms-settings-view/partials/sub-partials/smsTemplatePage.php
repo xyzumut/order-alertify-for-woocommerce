@@ -6,10 +6,12 @@
        <div id="leftBarContent">
         <div id="smsMessageLeftBarHeader">
                 <div id="smsMessageLeftBarHeaderText">
-                    Your Sms Message
+                    <?php _e('Your Sms Message', '@@@');?>
                 </div>
 
-                <button id="smsMessageSaveButton">Save</button>
+                <button id="smsMessageSaveButton">
+                    <?php _e('Save', '@@@');?>
+                </button>
             </div>
 
             <textarea id="smsMessageTextArea" cols="30" rows="10"></textarea>
@@ -20,9 +22,9 @@
     <div id="smsMessageRightBar">
         <div id="smsRecipientsContainer">
 
-            <div class="smsRecipientsItemDefault smsRecipientsContainerHeader"><?php _e('Recipients', '@@@'); ?></div>
+            <div class="smsRecipientsItemDefault smsRecipientsContainerHeader"><?php _e('Recipients', 'orderAlertifyTextDomain'); ?></div>
 
-            <div class="smsRecipientsItemDefault"><?php _e('Customer\'s Phone', '@@@'); ?></div>
+            <div class="smsRecipientsItemDefault"><?php _e('Customer\'s Phone', 'orderAlertifyTextDomain'); ?></div>
 
             <div id="smsRecipientsItems">
 

@@ -8,7 +8,7 @@ Plugin Name: OrderAlertify
 Description: OrderAlertify Eklentisi
 Author: Umut Gedik
 Version: 1.0.0
-Text Domain: @@@@
+Text Domain: orderAlertifyTextDomain
 Domain Path: /lang
 */
 
@@ -55,51 +55,56 @@ Domain Path: /lang
                 $statuses[$i]['slug'] = $status_slugs[$i];
                 $statuses[$i]['view'] = $status_views[$i];
             }
-            $statuses[count($statuses)] = ['slug' => '*', 'view' => __('All', '@@@')];
+            $statuses[count($statuses)] = ['slug' => '*', 'view' => __('All', 'orderAlertifyTextDomain')];
             return $statuses;
         }
 
         public function returnLocalizeScript(){
             $shordCodes = [
-                ['shortCode' => '{total}'        , 'view' => __('Total Price', '@@@')],
-                ['shortCode' => '{customer_note}', 'view' => __('Customer Note', '@@@')],
-                ['shortCode' => '{order_id}'     , 'view' => __('Order ID', '@@@')],
-                ['shortCode' => '{customer_id}'  , 'view' => __('Customer ID', '@@@')],
-                ['shortCode' => '{order_key}'    , 'view' => __('Order Key', '@@@')],
-                ['shortCode' => '{bil_first}'    , 'view' => __('Billing First Name', '@@@')],
-                ['shortCode' => '{bil_last}'     , 'view' => __('Billing Last Name', '@@@')],
-                ['shortCode' => '{bil_add1}'     , 'view' => __('Billing Address 1', '@@@')],
-                ['shortCode' => '{bil_add2}'     , 'view' => __('Billing Address 2', '@@@')],
-                ['shortCode' => '{bil_city}'     , 'view' => __('Billing City', '@@@')],
-                ['shortCode' => '{bil_mail}'     , 'view' => __('Billing Email', '@@@')],
-                ['shortCode' => '{bil_phone}'    , 'view' => __('Billing Phone', '@@@')],
-                ['shortCode' => '{ship_first}'   , 'view' => __('Shipping First Name', '@@@')],
-                ['shortCode' => '{ship_last}'    , 'view' => __('Shipping Last Name', '@@@')],
-                ['shortCode' => '{ship_add1}'    , 'view' => __('Shipping Address 1', '@@@')],
-                ['shortCode' => '{ship_add2}'    , 'view' => __('Shipping Address 2', '@@@')],
-                ['shortCode' => '{ship_city}'    , 'view' => __('Shipping City', '@@@')],
-                ['shortCode' => '{ship_phone}'   , 'view' => __('Shipping Phone', '@@@')],
+                ['shortCode' => '{total}'        , 'view' => __('Total Price', 'orderAlertifyTextDomain')],
+                ['shortCode' => '{customer_note}', 'view' => __('Customer Note', 'orderAlertifyTextDomain')],
+                ['shortCode' => '{order_id}'     , 'view' => __('Order ID', 'orderAlertifyTextDomain')],
+                ['shortCode' => '{customer_id}'  , 'view' => __('Customer ID', 'orderAlertifyTextDomain')],
+                ['shortCode' => '{order_key}'    , 'view' => __('Order Key', 'orderAlertifyTextDomain')],
+                ['shortCode' => '{bil_first}'    , 'view' => __('Billing First Name', 'orderAlertifyTextDomain')],
+                ['shortCode' => '{bil_last}'     , 'view' => __('Billing Last Name', 'orderAlertifyTextDomain')],
+                ['shortCode' => '{bil_add1}'     , 'view' => __('Billing Address 1', 'orderAlertifyTextDomain')],
+                ['shortCode' => '{bil_add2}'     , 'view' => __('Billing Address 2', 'orderAlertifyTextDomain')],
+                ['shortCode' => '{bil_city}'     , 'view' => __('Billing City', 'orderAlertifyTextDomain')],
+                ['shortCode' => '{bil_mail}'     , 'view' => __('Billing Email', 'orderAlertifyTextDomain')],
+                ['shortCode' => '{bil_phone}'    , 'view' => __('Billing Phone', 'orderAlertifyTextDomain')],
+                ['shortCode' => '{ship_first}'   , 'view' => __('Shipping First Name', 'orderAlertifyTextDomain')],
+                ['shortCode' => '{ship_last}'    , 'view' => __('Shipping Last Name', 'orderAlertifyTextDomain')],
+                ['shortCode' => '{ship_add1}'    , 'view' => __('Shipping Address 1', 'orderAlertifyTextDomain')],
+                ['shortCode' => '{ship_add2}'    , 'view' => __('Shipping Address 2', 'orderAlertifyTextDomain')],
+                ['shortCode' => '{ship_city}'    , 'view' => __('Shipping City', 'orderAlertifyTextDomain')],
+                ['shortCode' => '{ship_phone}'   , 'view' => __('Shipping Phone', 'orderAlertifyTextDomain')],
             ];
             return [
                 'localizeStatuses' => $this->prepareStatusSlug(),
                 'adminUrl' => get_admin_url(),
                 'shortcodes' => $shordCodes,
-                'copyToText' => __('Copy to Clipboard', '@@@'),
-                'loadingText' => __('Loading . . .', '@@@'),
-                'shortCodesGeneratorMailHeaderText' => __('Short Codes For Mail Templates', '@@@'),
-                'dragAndDropChooseDifferentOptionText' => __('Choose Different Options', '@@@'),
-                'mailRecipeWarningMessageText' => __('Please Enter the Appropriate Value', '@@@'),
-                'shortCodesGeneratorTelegramHeaderText' => __('Short Codes For Telegram Templates', '@@@'),
-                'shortCodesGeneratorSMSHeaderText' => __('Short Codes For SMS Templates', '@@@')
+                'copyToText' => __('Copy to Clipboard', 'orderAlertifyTextDomain'),
+                'loadingText' => __('Loading . . .', 'orderAlertifyTextDomain'),
+                'shortCodesGeneratorMailHeaderText' => __('Short Codes For Mail Templates', 'orderAlertifyTextDomain'),
+                'dragAndDropChooseDifferentOptionText' => __('Choose Different Options', 'orderAlertifyTextDomain'),
+                'mailRecipeWarningMessageText' => __('Please Enter the Appropriate Value', 'orderAlertifyTextDomain'),
+                'shortCodesGeneratorTelegramHeaderText' => __('Short Codes For Telegram Templates', 'orderAlertifyTextDomain'),
+                'shortCodesGeneratorSMSHeaderText' => __('Short Codes For SMS Templates', 'orderAlertifyTextDomain'),
+                'rejectText' => __('Reject', 'orderAlertifyTextDomain'),
+                'acceptText' => __('Accept', 'orderAlertifyTextDomain'),
+                'removeText' => __('Remove', 'orderAlertifyTextDomain'),
+                'deleteRuleText' => __('Delete Rule', 'orderAlertifyTextDomain'),
+                'goRuleText' => __('Go Rule', 'orderAlertifyTextDomain'),
             ];  
         }
 
         public function renderAllPages() {
-            add_menu_page( __('OrderAlertify Plugin', '@@@'), __('Order Alertify', '@@@'), 'manage_options', 'OrderAlertifyGeneralSettings', [$this, 'renderMainMenuPage'], 'dashicons-admin-settings', 67);
-		    add_submenu_page( 'OrderAlertifyGeneralSettings', __('Order Alertify', '@@@')   , __('General Settings', '@@@') , 'manage_options', 'OrderAlertifyGeneralSettings');
-		    add_submenu_page( 'OrderAlertifyGeneralSettings', __('Mail Settings', '@@@')    , __('Mail Settings', '@@@')    , 'manage_options', __('MailSettings', '@@@')    , [$this, 'renderMailSettings']    , 2);
-		    add_submenu_page( 'OrderAlertifyGeneralSettings', __('Telegram Settings', '@@@'), __('Telegram Settings', '@@@'), 'manage_options', __('TelegramSettings', '@@@'), [$this, 'renderTelegramSettings'], 3);
-		    add_submenu_page( 'OrderAlertifyGeneralSettings', __('SMS Settings', '@@@')     , __('SMS Settings', '@@@')     , 'manage_options', __('SmsSettings', '@@@')     , [$this, 'renderSmsSettings']     , 4);
+            add_menu_page( __('OrderAlertify Plugin', 'orderAlertifyTextDomain'), __('Order Alertify', 'orderAlertifyTextDomain'), 'manage_options', 'OrderAlertifyGeneralSettings', [$this, 'renderMainMenuPage'], 'dashicons-admin-settings', 67);
+		    add_submenu_page( 'OrderAlertifyGeneralSettings', __('Order Alertify', 'orderAlertifyTextDomain')   , __('General Settings', 'orderAlertifyTextDomain') , 'manage_options', 'OrderAlertifyGeneralSettings');
+		    add_submenu_page( 'OrderAlertifyGeneralSettings', __('Mail Settings', 'orderAlertifyTextDomain')    , __('Mail Settings', 'orderAlertifyTextDomain')    , 'manage_options', __('MailSettings', 'orderAlertifyTextDomain')    , [$this, 'renderMailSettings']    , 2);
+		    add_submenu_page( 'OrderAlertifyGeneralSettings', __('Telegram Settings', 'orderAlertifyTextDomain'), __('Telegram Settings', 'orderAlertifyTextDomain'), 'manage_options', __('TelegramSettings', 'orderAlertifyTextDomain'), [$this, 'renderTelegramSettings'], 3);
+		    add_submenu_page( 'OrderAlertifyGeneralSettings', __('SMS Settings', 'orderAlertifyTextDomain')     , __('SMS Settings', 'orderAlertifyTextDomain')     , 'manage_options', __('SmsSettings', 'orderAlertifyTextDomain')     , [$this, 'renderSmsSettings']     , 4);
         }
 
         public function renderMainMenuPage(){
@@ -383,7 +388,7 @@ Domain Path: /lang
                             $definedRule = $definedRules[$i];
                             if ($definedRule == $newRule) {
                                 // kurallar eşleşmiş demektir demekki yeni kayıt yapmayacağız
-                                $response['message'] = __('This match already exists', '@@@');
+                                $response['message'] = __('This match already exists', 'orderAlertifyTextDomain');
                                 $mailRuleTemp = false;
                                 break;
                             }
@@ -391,7 +396,7 @@ Domain Path: /lang
 
                         if ($mailRuleTemp !== false) {
                             $response['data'] = $newRule;
-                            $response['message'] = __('New Rule Added', '@@@');
+                            $response['message'] = __('New Rule Added', 'orderAlertifyTextDomain');
                             $response['status'] = true;
                             update_option('mailRule-'.$mailRuleTemp , $newRule);
                             update_option( 'mailRuleTemp', $mailRuleTemp+1);
@@ -417,7 +422,7 @@ Domain Path: /lang
                                 update_option('mailRuleTemp', $mailRuleTemp);
                                 $isDeleteted = true;
                                 $response['status'] = true;
-                                $response['message'] = __('Rule deleted', '@@@');
+                                $response['message'] = __('Rule deleted', 'orderAlertifyTextDomain');
                             }
                             if ($isDeleteted) {
                                 update_option(('mailRule-'.($i)), get_option('mailRule-'.$i+1));
@@ -448,12 +453,12 @@ Domain Path: /lang
                         }
 
                         if (get_option($targetTemplateIndex.'-mailContent') === false) {
-                            update_option($targetTemplateIndex.'-mailContent', __('Not Added Yet', '@@@'));
-                            update_option($targetTemplateIndex.'-mailSubject', __('Not Added Yet', '@@@'));
+                            update_option($targetTemplateIndex.'-mailContent', __('Not Added Yet', 'orderAlertifyTextDomain'));
+                            update_option($targetTemplateIndex.'-mailSubject', __('Not Added Yet', 'orderAlertifyTextDomain'));
                             update_option($targetTemplateIndex.'-recipients', 'false');
                         }
                         
-                        $response['message'] = __('Mail template brought', '@@@'); 
+                        $response['message'] = __('Mail template brought', 'orderAlertifyTextDomain'); 
                         $response['status'] = true;
                         $response['data'] = [
                             'mailSubject' => get_option($targetTemplateIndex.'-mailSubject'),
@@ -473,7 +478,7 @@ Domain Path: /lang
                         update_option(($targetTemplateIndex.'-recipients') , $post['recipients']);
                         update_option(($targetTemplateIndex.'-mailContent'), $post['newContent']);
                         update_option(($targetTemplateIndex.'-mailSubject'), $post['newSubject']);
-                        $response['message'] = __('Template Saved', '@@@');
+                        $response['message'] = __('Template Saved', 'orderAlertifyTextDomain');
                         $response['status'] = true;
                         break;
                     case 'generalMailSettingsInit':
@@ -492,7 +497,7 @@ Domain Path: /lang
                             'port' => $port,
                             'secure' => $secure,
                         );
-                        $response['message'] = __('Mail General Settings Brought', '@@@');
+                        $response['message'] = __('Mail General Settings Brought', 'orderAlertifyTextDomain');
                         break;
                     case 'generalMailSettingsUpdate':
                         $enableMailOption = $post['enableMailOption'];
@@ -511,12 +516,12 @@ Domain Path: /lang
 
 
                         $response['status'] = true;
-                        $response['message'] = __('Mail General Settings Saved', '@@@');
+                        $response['message'] = __('Mail General Settings Saved', 'orderAlertifyTextDomain');
                         break;
                     case 'telegramMainSettingsInit';
                         $telegramToken = get_option('telegramToken');
                         if ($telegramToken === false) {
-                            $telegramToken = __('Not Added Yet', '@@@');
+                            $telegramToken = __('Not Added Yet', 'orderAlertifyTextDomain');
                             update_option('telegramToken', $telegramToken);
                         }
 
@@ -536,12 +541,12 @@ Domain Path: /lang
                             'activeUsers' => $activeUsers,
                             'telegramToken' => $telegramToken
                         ];
-                        $response['message'] = __('Telegram Settings Arrived', '@@@');
+                        $response['message'] = __('Telegram Settings Arrived', 'orderAlertifyTextDomain');
                         break;
                     case 'saveTelegramToken':
                         update_option('telegramToken', $post['newToken']);
                         $response['status'] = true;
-                        $response['message'] = __('New Token is Saved.', '@@@');
+                        $response['message'] = __('New Token is Saved.', 'orderAlertifyTextDomain');
                         break;
                     case 'checkChatId':
                         $activeTelegramUsersIndex = get_option('telegramActiveUsersIndex');
@@ -580,7 +585,7 @@ Domain Path: /lang
                         update_option('telegramUser-'.($activeTelegramUsersIndex), $post['newTelegramUser']);
                         update_option('telegramActiveUsersIndex', json_decode($activeTelegramUsersIndex)+1);
                         $response['status'] = true;
-                        $response['message'] = __('New Telegram User Added', '@@@');
+                        $response['message'] = __('New Telegram User Added', 'orderAlertifyTextDomain');
                         break;
                     case 'deleteTelegramUser':
                         $activeTelegramUsersIndex = json_decode(get_option('telegramActiveUsersIndex'));
@@ -604,7 +609,7 @@ Domain Path: /lang
 
                         if ($deleteTemp) {
                             delete_option('telegramUser-'.$activeTelegramUsersIndex);
-                            $response['message'] = __('Deletion Successful', '@@@');
+                            $response['message'] = __('Deletion Successful', 'orderAlertifyTextDomain');
                         }
 
                         $response['status'] = $deleteTemp;
@@ -629,7 +634,7 @@ Domain Path: /lang
                             $definedRule = $definedRules[$i];
                             if ($definedRule == $newRule) {
                                 // kurallar eşleşmiş demektir demekki yeni kayıt yapmayacağız
-                                $response['message'] = __('This match already exists', '@@@');
+                                $response['message'] = __('This match already exists', 'orderAlertifyTextDomain');
                                 $telegramRuleTemp = false;
                                 break;
                             }
@@ -637,7 +642,7 @@ Domain Path: /lang
 
                         if ($telegramRuleTemp !== false) {
                             $response['data'] = $newRule;
-                            $response['message'] = __('New Rule Added', '@@@');
+                            $response['message'] = __('New Rule Added', 'orderAlertifyTextDomain');
                             $response['status'] = true;
                             update_option('telegramRule-'.$telegramRuleTemp , $newRule);
                             update_option( 'telegramRuleTemp', $telegramRuleTemp+1);
@@ -662,7 +667,7 @@ Domain Path: /lang
                                 update_option('telegramRuleTemp', $telegramRuleTemp);
                                 $isDeleteted = true;
                                 $response['status'] = true;
-                                $response['message'] = __('Telegram Rule deleted', '@@@');
+                                $response['message'] = __('Telegram Rule deleted', 'orderAlertifyTextDomain');
                             }
                             if ($isDeleteted) {
                                 update_option(('telegramRule-'.($i)), get_option('telegramRule-'.$i+1));
@@ -688,10 +693,10 @@ Domain Path: /lang
                         }
 
                         if (get_option($targetTemplateIndex.'-telegramMessage') === false) {
-                            update_option($targetTemplateIndex.'-telegramMessage', __('Not Added Yet Telegram Message', '@@@'));
+                            update_option($targetTemplateIndex.'-telegramMessage', __('Not Added Yet Telegram Message', 'orderAlertifyTextDomain'));
                         }
                         
-                        $response['message'] = __('Telegram template brought', '@@@'); 
+                        $response['message'] = __('Telegram template brought', 'orderAlertifyTextDomain'); 
                         $response['status'] = true;
                         $response['data'] = [ 'telegramMessage' => get_option($targetTemplateIndex.'-telegramMessage')];
 
@@ -707,7 +712,7 @@ Domain Path: /lang
                             }
                         }
                         update_option(($targetTemplateIndex.'-telegramMessage'), $post['newTelegramMessage']);
-                        $response['message'] = __('Telegram Message Saved', '@@@');
+                        $response['message'] = __('Telegram Message Saved', 'orderAlertifyTextDomain');
                         $response['status'] = true;
                         break;
                     case 'saveSmsSettings':
@@ -718,9 +723,9 @@ Domain Path: /lang
                         update_option('smsLoginEndpoint', $post['smsLoginEndpoint']);
                         update_option('smsSendMessageEndpoint', $post['smsSendMessageEndpoint']);
                         $response['status'] = true;
-                        $response['message'] = __('Sms Information Saved', '@@@');
+                        $response['message'] = __('Sms Information Saved', 'orderAlertifyTextDomain');
                         if ($post['smsJwt'] === 'noToken') {
-                            $response['message'] = __('Sms Information Saved But The Information Is Wrong', '@@@');
+                            $response['message'] = __('Sms Information Saved But The Information Is Wrong', 'orderAlertifyTextDomain');
                         }
                         break;
                     case 'getSmsSettings':
@@ -733,7 +738,7 @@ Domain Path: /lang
                             'smsSendMessageEndpoint' => get_option('smsSendMessageEndpoint', ''),
                         ];
                         $response['status'] = true;
-                        $response['message'] = __('Information brought', '@@@');
+                        $response['message'] = __('Information brought', 'orderAlertifyTextDomain');
                         break;
                     case 'addSmsRule':
                         if (get_option('smsRuleTemp') === false) {
@@ -753,14 +758,14 @@ Domain Path: /lang
                             $definedRule = $definedRules[$i];
                             if ($definedRule == $newRule) {
                                 // kurallar eşleşmiş demektir demekki yeni kayıt yapmayacağız
-                                $response['message'] = __('This match already exists', '@@@');
+                                $response['message'] = __('This match already exists', 'orderAlertifyTextDomain');
                                 $smsRuleTemp = false;
                                 break;
                             }
                         }
                         if ($smsRuleTemp !== false) {
                             $response['data'] = $newRule;
-                            $response['message'] = __('New Rule Added', '@@@');
+                            $response['message'] = __('New Rule Added', 'orderAlertifyTextDomain');
                             $response['status'] = true;
                             update_option('smsRule-'.$smsRuleTemp , $newRule);
                             update_option( 'smsRuleTemp', $smsRuleTemp+1);
@@ -787,7 +792,7 @@ Domain Path: /lang
                                 update_option('smsRuleTemp', $smsRuleTemp);
                                 $isDeleteted = true;
                                 $response['status'] = true;
-                                $response['message'] = __('sms Rule deleted', '@@@');
+                                $response['message'] = __('sms Rule deleted', 'orderAlertifyTextDomain');
                             }
                             if ($isDeleteted) {
                                 update_option(('smsRule-'.($i)), get_option('smsRule-'.$i+1));
@@ -813,10 +818,10 @@ Domain Path: /lang
                         }
 
                         if (get_option($targetTemplateIndex.'-smsMessage') === false) {
-                            update_option($targetTemplateIndex.'-smsMessage', __('Not Added Yet SMS Message', '@@@'));
+                            update_option($targetTemplateIndex.'-smsMessage', __('Not Added Yet SMS Message', 'orderAlertifyTextDomain'));
                         }
                         
-                        $response['message'] = __('SMS template brought', '@@@'); 
+                        $response['message'] = __('SMS template brought', 'orderAlertifyTextDomain'); 
                         $response['status'] = true;
                         $response['data'] = [ 
                             'smsMessage' => get_option($targetTemplateIndex.'-smsMessage'),
@@ -836,7 +841,7 @@ Domain Path: /lang
                         }
                         update_option(($targetTemplateIndex.'-recipients') , $post['recipients']);
                         update_option(($targetTemplateIndex.'-smsMessage'), $post['newsmsMessage']);
-                        $response['message'] = __('Sms Message Saved', '@@@');
+                        $response['message'] = __('Sms Message Saved', 'orderAlertifyTextDomain');
                         $response['status'] = true;
                         break;
                     case 'getGeneralData':
@@ -849,7 +854,7 @@ Domain Path: /lang
                             'isSmsEnable' => $isSmsEnable
                         ];
                         $response['status'] = true;
-                        $response['message'] = __('Option information arrived', '@@@');
+                        $response['message'] = __('Option information arrived', 'orderAlertifyTextDomain');
                         break;
                     case 'saveOption':
                         $switchTemp = false;
@@ -873,7 +878,7 @@ Domain Path: /lang
 
                         if ($switchTemp) {
                             $response['status'] = true;
-                            $response['message'] = __('Option Settings Saved', '@@@');
+                            $response['message'] = __('Option Settings Saved', 'orderAlertifyTextDomain');
                         }
                         else{
                             $temp = false;
@@ -892,6 +897,8 @@ Domain Path: /lang
         }
     }
     add_action( 'plugins_loaded', function(){
+        $plugin_dir = basename(dirname(__FILE__));
+        load_plugin_textdomain( 'orderAlertifyTextDomain', false, $plugin_dir . '/lang' );
         $orderPlugin = new OrderAlertifyPlugin();
     });
 ?>
