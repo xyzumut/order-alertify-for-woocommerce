@@ -17,11 +17,9 @@ Domain Path: /lang
     include (__DIR__.'/view/').'mail-settings-view/MailSettingsView.php' ;
     include (__DIR__.'/view/').'telegram-settings-view/TelegramSettingsView.php' ;
     include (__DIR__.'/view/').'sms-settings-view/SmsSettingsView.php' ;
-    include (__DIR__.'/Tools/').'Mail/MailManager.php';
     include (__DIR__.'/Tools/').'Telegram/TelegramBot.php';
     include (__DIR__.'/Tools/').'Sms/SmsManager.php';
 
-    use OrderAlertify\Tools\MailManager;
     use OrderAlertify\Tools\TelegramBot;
     use OrderAlertify\Tools\SmsManager;
 
@@ -33,8 +31,6 @@ Domain Path: /lang
 
     final class OrderAlertifyPlugin{
         const EVENT = 'woocommerce_order_status_changed';
-        public $mailManager;
-        public $telegramBot;
 
         public function __construct(){
             add_action('admin_menu', [$this, 'renderAllPages']);
@@ -337,19 +333,9 @@ Domain Path: /lang
 
             array_push($recipients, $order->get_data()['billing']['email']);
 
-            // $mail, $password
-            $mailAddress = get_option('orderAlertifyMail', false);
-            $mailPassword = get_option('orderAlertifyPassword', false);
-            $host = get_option('orderAlertifyMailHost', false);
-            $port = get_option('orderAlertifySmtpPort', false);
-            $secure = get_option('orderAlertifySmtpSecure', false);
-
-            if ($mailAddress === false || $mailPassword === false || $host === false || $port === false || $secure === false) {
-                return;
+            foreach ($recipients as $recipient){
+                wp_mail( $recipient, $mailSubject, $mailContent, array('Content-Type: text/html; charset=UTF-8') );
             }
-
-            $mailManager = new MailManager($selectedMailOption, $recipients, $mailSubject, $mailContent, $mailAddress, $mailPassword, 'Gri WooCommerce', $host, $port, $secure);
-            $mailManager->sendMail();
         }
 
         public function mailEditorFormatter(){
