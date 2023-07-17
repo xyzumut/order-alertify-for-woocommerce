@@ -30,19 +30,9 @@
         </div>
 
         <div id="oa_body_right">
-
-            <div id="telegramGeneralSettingsContainer" buttonText="buton 1 genel" class="ou_body_right_item">
-                <?php // include (__DIR__.'/sub-partials/').'generalSettings.php'; ?>
+            <div id="orderAlertifyGeneralSettingsContainer" buttonText="<?php _e('Order Alertify', '@@@'); ?>" class="ou_body_right_item">
+                <?php include (__DIR__.'/sub-partials/').'orderAlertifyGeneral.php'; ?>
             </div>
-
-            <div id="telegramRuleSettingsContainer" buttonText="buton 2 genel" class="ou_body_right_item">
-                <?php // include (__DIR__.'/sub-partials/').'mailRuleSettings.php'; ?>
-            </div>
-
-            <div id="mailTemplateSettingsContainer" buttonText="gizli buton genel" class="ou_body_right_item privateMenuItem">
-                <?php // include (__DIR__.'/sub-partials/').'mailTemplatePage.php'; ?>
-            </div>
-
         </div>
 
     </div>

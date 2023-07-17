@@ -163,6 +163,7 @@
     width:300px;
     height:40px;
     padding:0;
+
 }
 .mailRecipientsContainerHeader{
     font-size: 20px;
@@ -183,6 +184,7 @@
     font-size: 16px;
     width: 500px;
     justify-content: space-between;
+    max-width: 100%;
 }
 #recipeAddInput{
     width: 270px;

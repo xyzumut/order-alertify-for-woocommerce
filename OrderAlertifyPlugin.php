@@ -65,6 +65,7 @@ Domain Path: /lang
 
         public function returnLocalizeScript(){
             $shordCodes = [
+                ['shortCode' => '{total}'        , 'view' => __('Total Price', '@@@')],
                 ['shortCode' => '{customer_note}', 'view' => __('Customer Note', '@@@')],
                 ['shortCode' => '{order_id}'     , 'view' => __('Order ID', '@@@')],
                 ['shortCode' => '{customer_id}'  , 'view' => __('Customer ID', '@@@')],
@@ -123,24 +124,33 @@ Domain Path: /lang
         }
 
         public function woocommerceListener($order_id, $old_status, $new_status){
-            $sayac = get_option( 'sayac', 0 );
-            update_option('sayac', json_decode($sayac));
 
             $old_status = 'wc-'.$old_status;
             $new_status = 'wc-'.$new_status;
             $order = wc_get_order( $order_id );
 
+            $isMailEnable = get_option('isMailEnable', 'disable');
+            $isSmsEnable = get_option('isSmsEnable', 'disable');
+            $isTelegramEnable = get_option('isTelegramEnable', 'disable');
 
-            $this->woocommerceListenerMail($order_id, $old_status, $new_status, $order);
-            $this->woocommerceListenerTelegram($order_id, $old_status, $new_status, $order);
-            $this->woocommerceListenerSMS($order_id, $old_status, $new_status, $order);
+            if ($isMailEnable === 'enable') {
+                $this->woocommerceListenerMail($order_id, $old_status, $new_status, $order);
+            }
+
+            if ($isSmsEnable === 'enable') {
+                $this->woocommerceListenerSMS($order_id, $old_status, $new_status, $order);
+            }
+
+            if ($isTelegramEnable === 'enable') {
+                $this->woocommerceListenerTelegram($order_id, $old_status, $new_status, $order);
+            }
             
         } 
 
         public function shortCodesDecryption($text, $order){
 
             $shortCodes = [
-                '{customer_note}@customer_note', '{order_id}@id', '{customer_id}@customer_id', '{order_key}@order_key', 
+                '{total}@total', '{customer_note}@customer_note', '{order_id}@id', '{customer_id}@customer_id', '{order_key}@order_key', 
                 '{bil_first}@billing@first_name', '{bil_last}@billing@last_name', '{bil_add1}@billing@address_1', '{bil_add2}@billing@address_2', '{bil_city}@billing@city',
                 '{bil_mail}@billing@email', '{bil_phone}@billing@phone', '{ship_first}@shipping@first_name', '{ship_last}@shipping@last_name', '{ship_add1}@shipping@address_1', 
                 '{ship_add2}@shipping@address_2', '{ship_city}@shipping@city', '{ship_phone}@shipping@phone'
@@ -301,8 +311,6 @@ Domain Path: /lang
 
         public function woocommerceListenerMail($order_id, $old_status, $new_status, $order){
 
-
-
             $mailRuleLength = json_decode(get_option('mailRuleTemp'));
             if ($mailRuleLength === false || $mailRuleLength === 1) {
                 update_option('mailRuleTemp', 1);
@@ -325,6 +333,7 @@ Domain Path: /lang
             }
 
             $mailContent = $this->shortCodesDecryption($mailContent, $order);
+            $mailSubject = $this->shortCodesDecryption($mailSubject, $order);
 
             array_push($recipients, $order->get_data()['billing']['email']);
 
@@ -804,7 +813,6 @@ Domain Path: /lang
                             }
                         }
                         break;
-                    //
                     case 'getSmsTemplate':
                         if (get_option( 'smsRuleTemp') === false){ 
                             $temp = false;
@@ -844,6 +852,47 @@ Domain Path: /lang
                         update_option(($targetTemplateIndex.'-smsMessage'), $post['newsmsMessage']);
                         $response['message'] = __('Sms Message Saved', '@@@');
                         $response['status'] = true;
+                        break;
+                    case 'getGeneralData':
+                        $isTelegramEnable   = get_option('isTelegramEnable', 'disable');
+                        $isMailEnable       = get_option('isMailEnable', 'disable');
+                        $isSmsEnable        = get_option('isSmsEnable', 'disable');
+                        $response['data'] = [
+                            'isTelegramEnable' => $isTelegramEnable ,
+                            'isMailEnable' => $isMailEnable ,
+                            'isSmsEnable' => $isSmsEnable
+                        ];
+                        $response['status'] = true;
+                        $response['message'] = __('Option information arrived', '@@@');
+                        break;
+                    case 'saveOption':
+                        $switchTemp = false;
+                        switch ($post['optionType']){
+                            case 'telegramToggle':
+                                update_option('isTelegramEnable', $post['value']);
+                                $switchTemp = true;
+                                break;
+                            case 'mailToggle':
+                                update_option('isMailEnable', $post['value']);
+                                $switchTemp = true;
+                                break;
+                            case 'smsToggle':
+                                update_option('isSmsEnable', $post['value']);
+                                $switchTemp = true;
+                                break;
+                        default:
+                            $temp = false;
+                            break;
+                        }
+
+                        if ($switchTemp) {
+                            $response['status'] = true;
+                            $response['message'] = __('Option Settings Saved', '@@@');
+                        }
+                        else{
+                            $temp = false;
+                        }
+
                         break;
                     default:
                         $temp = false;

@@ -243,7 +243,7 @@ window.addEventListener('load', () => {
             formData.append('_operation', 'getSmsTemplate');
             formData.append('rule' , oldStatusSlug+' > '+newStatusSlug);
 
-            const modalData = modalOpen();
+            const modalData = modalOpen(loadingText);
     
             const request = await fetch(orderAlertifyGeneralScript.adminUrl+'admin-ajax.php?action=orderAlertifyAjaxListener',{
                 method:'POST',

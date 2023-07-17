@@ -33,7 +33,7 @@ window.addEventListener('load', () => {
             const formData = new FormData();
             formData.append('_operation', 'telegramMainSettingsInit');
 
-            const modalData = modalOpen('Veriler Getiriliyor');
+            const modalData = modalOpen(orderAlertifyGeneralScript.loadingText);
 
             const request = await fetch(orderAlertifyGeneralScript.adminUrl+'admin-ajax.php?action=orderAlertifyAjaxListener',{
                 method:'POST',
@@ -351,7 +351,7 @@ window.addEventListener('load', () => {
             formData.append('_operation', 'getTelegramTemplate');
             formData.append('rule' , oldStatusSlug+' > '+newStatusSlug);
 
-            const modalData = modalOpen();
+            const modalData = modalOpen(loadingText);
     
             const request = await fetch(orderAlertifyGeneralScript.adminUrl+'admin-ajax.php?action=orderAlertifyAjaxListener',{
                 method:'POST',
