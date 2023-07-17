@@ -18,7 +18,6 @@ Domain Path: /lang
     include (__DIR__.'/view/').'general-settings-view/GeneralSettingsView.php' ;
     include (__DIR__.'/view/').'mail-settings-view/MailSettingsView.php' ;
     include (__DIR__.'/view/').'telegram-settings-view/TelegramSettingsView.php' ;
-    include (__DIR__.'/view/').'telegram-settings-viewCopy/TelegramSettingsView.php' ;
     include (__DIR__.'/view/').'sms-settings-view/SmsSettingsView.php' ;
     include (__DIR__.'/Tools/').'Telegram/TelegramBot.php';
     include (__DIR__.'/Tools/').'Sms/SmsManager.php';
@@ -30,7 +29,6 @@ Domain Path: /lang
     use OrderAlertifyView\MailSettingsView;
     use OrderAlertifyView\SmsSettingsView;
     use OrderAlertifyView\TelegramSettingsView;
-    use OrderAlertifyView\TelegramSettingsViewCopy;
 
 
     final class OrderAlertifyPlugin{
@@ -108,7 +106,6 @@ Domain Path: /lang
 		    add_submenu_page( 'OrderAlertifyGeneralSettings', __('Mail Settings', 'orderAlertifyTextDomain')    , __('Mail Settings', 'orderAlertifyTextDomain')    , 'manage_options', __('MailSettings', 'orderAlertifyTextDomain')    , [$this, 'renderMailSettings']    , 2);
 		    add_submenu_page( 'OrderAlertifyGeneralSettings', __('Telegram Settings', 'orderAlertifyTextDomain'), __('Telegram Settings', 'orderAlertifyTextDomain'), 'manage_options', __('TelegramSettings', 'orderAlertifyTextDomain'), [$this, 'renderTelegramSettings'], 3);
 		    add_submenu_page( 'OrderAlertifyGeneralSettings', __('SMS Settings', 'orderAlertifyTextDomain')     , __('SMS Settings', 'orderAlertifyTextDomain')     , 'manage_options', __('SmsSettings', 'orderAlertifyTextDomain')     , [$this, 'renderSmsSettings']     , 4);
-		    add_submenu_page( 'OrderAlertifyGeneralSettings', __('Telegram SettingsCopy', 'orderAlertifyTextDomain'), __('Telegram Settings', 'orderAlertifyTextDomain'), 'manage_options', __('TelegramSettingsCopy', 'orderAlertifyTextDomain'), [$this, 'renderTelegramSettingsCopy'], 5);
         }
 
         public function renderMainMenuPage(){
@@ -121,10 +118,6 @@ Domain Path: /lang
         }
         public function renderTelegramSettings(){
             $view = new TelegramSettingsView();
-            $view->render();
-        }
-        public function renderTelegramSettingsCopy(){
-            $view = new TelegramSettingsViewCopy();
             $view->render();
         }
         public function renderSmsSettings(){
