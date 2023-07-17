@@ -5,7 +5,7 @@
     <div id="orderNotificationLoadingModal">
         <div id="orderNotificationLoadingModalContainer">
             <div id="orderNotificationLoadingModalContainerHeader">
-                <?php _e('Saving Settings . . .'); ?>
+                <?php _e('Saving Settings . . .', 'orderAlertifyTextDomain'); ?>
             </div>
             <div id="orderNotificationLoadingModalContainerBody">
                 <div v-if="loading" class="spinnerNotifiaction">

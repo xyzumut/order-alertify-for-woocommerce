@@ -16,7 +16,7 @@ window.addEventListener('load', async  () => {
 
         recipentInit = () => { document.querySelectorAll('.mailRecipientsItem').forEach(element => element.addEventListener('click', () => {element.remove()})) }
 
-        render = async () => {
+        render = () => {
     
             this.recipeAddContainer.addEventListener('click', () => {
                 recipeAddContainer.classList.add(dispNoneClassName);

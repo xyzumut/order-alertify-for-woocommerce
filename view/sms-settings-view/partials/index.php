@@ -5,7 +5,7 @@
     <div id="orderNotificationLoadingModal">
         <div id="orderNotificationLoadingModalContainer">
             <div id="orderNotificationLoadingModalContainerHeader">
-                <?php _e('Saving Settings . . .'); ?>
+                <?php _e('Saving Settings . . .', 'orderAlertifyTextDomain'); ?>
             </div>
             <div id="orderNotificationLoadingModalContainerBody">
                 <div v-if="loading" class="spinnerNotifiaction">
@@ -31,7 +31,7 @@
 
         <div id="oa_body_right">
 
-            <div id="smsGeneralSettingsContainer" buttonText="<?php _e('Sms General Settings');?>" class="ou_body_right_item">
+            <div id="smsGeneralSettingsContainer" buttonText="<?php _e('Sms General Settings', 'orderAlertifyTextDomain');?>" class="ou_body_right_item">
                 <?php  include (__DIR__.'/sub-partials/').'generalSmsSettings.php'; ?>
             </div>
 

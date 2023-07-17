@@ -85,7 +85,7 @@ window.addEventListener('load', () => {
                 renderActiveTelegramUsersRow = renderActiveTelegramUsersRow +'<div class="telegramBodyCol telegramChatId" >'+activeUser.chatId+'</div>';
                 renderActiveTelegramUsersRow = renderActiveTelegramUsersRow +'<div class="telegramBodyCol telegramButtons">';
                 renderActiveTelegramUsersRow = renderActiveTelegramUsersRow +'<button class="telegramRemoveUserButton" uN="'+activeUser.username+'" nS="'+activeUser.nameSurname+'" ch="'+activeUser.chatId+'">';
-                renderActiveTelegramUsersRow = renderActiveTelegramUsersRow +'Remove</button></div></div>';
+                renderActiveTelegramUsersRow = renderActiveTelegramUsersRow + orderAlertifyGeneralScript.removeText +'</button></div></div>';
             });
 
             this.activeTelegramUsersBodyRows.innerHTML = renderActiveTelegramUsersRow;

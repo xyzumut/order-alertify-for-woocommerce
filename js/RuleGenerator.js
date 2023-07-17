@@ -102,7 +102,7 @@ class RuleGenerator{
 
             let render = '<div class="definedRulesRows">  <div class="definedGroup">';
             render = render + '<div class="definedGroupItem">'+oldView+'</div> <div class="definedGroupItemArrow">></div> <div class="definedGroupItem">'+newView+'</div></div>';
-            render = render + ' <div id="definedGroupOptions"> <button class="ruleButton deleteRule"  newstatusslug="'+newStatusSlug+'" oldstatusslug="'+oldStatusSlug+'">Delete Rule</button> <button class="ruleButton goRule"  newStatusSlug="'+newStatusSlug+'" oldStatusSlug="'+oldStatusSlug+'">Go Rule</button></div></div>';
+            render = render + ' <div id="definedGroupOptions"> <button class="ruleButton deleteRule"  newstatusslug="'+newStatusSlug+'" oldstatusslug="'+oldStatusSlug+'">'+orderAlertifyGeneralScript.deleteRuleText+'</button> <button class="ruleButton goRule"  newStatusSlug="'+newStatusSlug+'" oldStatusSlug="'+oldStatusSlug+'">'+orderAlertifyGeneralScript.goRuleText+'</button></div></div>';
             definedRulesTemplatesBody.innerHTML = definedRulesTemplatesBody.innerHTML + render;
             
         });

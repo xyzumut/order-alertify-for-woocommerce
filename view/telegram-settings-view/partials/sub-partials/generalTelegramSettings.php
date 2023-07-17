@@ -44,28 +44,6 @@
                     <div class="telegramBodyCol"></div>
                 </div>
 
-                <!-- <div class="activeTelegramUsersBodyRow">
-                    <div class="telegramBodyCol telegramNameSurname">Umut Gedik</div>
-                    <div class="telegramBodyCol telegramUsername">umutgedikk</div>
-                    <div class="telegramBodyCol telegramChatId" >3414123123</div>
-                    <div class="telegramBodyCol telegramButtons">
-                        <button class="telegramRemoveUserButton" chat_id="1213123">
-                            <?php //_e( 'Remove', 'orderAlertifyTextDomain' ); ?>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="activeTelegramUsersBodyRow">
-                    <div class="telegramBodyCol telegramNameSurname">Umut Gedik</div>
-                    <div class="telegramBodyCol telegramUsername">umutgedikk</div>
-                    <div class="telegramBodyCol telegramChatId" >3414123123</div>
-                    <div class="telegramBodyCol telegramButtons">
-                        <button class="telegramRemoveUserButton" chat_id="1213123">
-                            <?php //_e( 'Remove', 'orderAlertifyTextDomain' ); ?>
-                        </button>
-                    </div>
-                </div> -->
-
             </div>
         </div>
     </div>
@@ -82,7 +60,7 @@
 
         <div id="pendingRequestsHeader">
             <div id="pendingRequestsHeaderText">
-                <?php _e('Pending Telegram Requests'); ?>
+                <?php _e('Pending Telegram Requests', 'orderAlertifyTextDomain'); ?>
             </div>
             <div id="pendingRequestsHeaderLine"></div>
         </div>
