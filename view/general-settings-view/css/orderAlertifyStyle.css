@@ -55,10 +55,6 @@
     font-size: 16px;
     min-height: 60px;
 }
-
-
-
-
 .orderAlertifySwitch {
     position: relative;
     display: inline-block;
@@ -109,4 +105,24 @@ input:checked + .slider:before {
 }
 .slider.round:before {
     border-radius: 50%;
+}
+
+
+#logsMainContainer{
+    width: 950px;
+    min-height: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-top: 20px;
+}
+#logRowsContainer{
+    width: 800px;
+    height: 700px;
+    overflow-y: auto;
+    padding-top: 30px;
+}
+.accordion-button:after{
+    display: none !important;
 }

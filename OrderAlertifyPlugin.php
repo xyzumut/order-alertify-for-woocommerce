@@ -11,9 +11,6 @@ Version: 1.0.0
 Text Domain: orderAlertifyTextDomain
 Domain Path: /lang
 */
-    // TODO log tutma işlemi gerçekleştirilecek
-    // TODO sms başarılı olmaz ise tekrar token isteyecek
-    // TODO mail şablon oluşturulacak
 
     include (__DIR__.'/view/').'general-settings-view/GeneralSettingsView.php' ;
     include (__DIR__.'/view/').'mail-settings-view/MailSettingsView.php' ;
@@ -33,8 +30,9 @@ Domain Path: /lang
 
     final class OrderAlertifyPlugin{
         const EVENT = 'woocommerce_order_status_changed';
-
+        
         public function __construct(){
+            
             add_action('admin_menu', [$this, 'renderAllPages']);
             add_action(OrderAlertifyPlugin::EVENT, [$this, 'woocommerceListener'], 10, 3);
             add_action('wp_ajax_orderAlertifyAjaxListener', [$this, 'orderAlertifyAjaxListener']);
@@ -46,6 +44,35 @@ Domain Path: /lang
             wp_enqueue_script( 'orderAlertifyRuleGenerator', plugin_dir_url(__FILE__).'js/RuleGenerator.js', array(), '', true);
             wp_enqueue_script( 'orderAlertifyShortCodes', plugin_dir_url(__FILE__).'js/ShortCodes.js', array(), '', true);
             wp_enqueue_script( 'menuGenerator', plugin_dir_url(__FILE__).'js/MenuGenerator.js', array(), '', true);
+
+            wp_enqueue_style( 'orderAlertifyBootstrapCSS', plugin_dir_url(__FILE__).'css/orderAlertifyBootstrap.css');
+            wp_enqueue_script( 'orderAlertifyBootstrapScript', plugin_dir_url(__FILE__).'js/orderAlertifyBootstrap.js', array(), '', true);
+
+        }
+
+        public function orderAlertifyLogger($type, $status, $message, $content){
+            
+            global $wpdb;
+
+            if ($type === false || $status === false || $message === false || $content === false) {
+                return;
+            }
+
+            $tableName = $wpdb->prefix . "orderalertifylogs"; 
+
+            return $wpdb->insert($tableName, array(
+                'type'      =>  $type,
+                'status'    =>  $status,
+                'message'   =>  $message,
+                'content'   =>  $content
+            ));
+        }
+
+        public function getLogs(){
+            global $wpdb;
+            $tableName = $wpdb->prefix."orderalertifylogs";
+            $query = "SELECT * FROM $tableName";
+            return $wpdb->get_results( $query );
         }
 
         public function prepareStatusSlug(){
@@ -222,13 +249,6 @@ Domain Path: /lang
             $token = get_option('smsJwt', false);
             $baseApiUrl = get_option('smsBaseApiUrl', false);
             $sendSmsEndpoint = get_option('smsSendMessageEndpoint', false);
-
-            if ($token === false || $baseApiUrl === false || $sendSmsEndpoint === false ) {
-                return;
-            }
-
-            $url = $this->editUrlForSms($baseApiUrl, $sendSmsEndpoint);
-
             $smsRuleLength = get_option('smsRuleTemp');
             if ($smsRuleLength === false || json_decode($smsRuleLength) < 2 ) {
                 return;
@@ -243,9 +263,9 @@ Domain Path: /lang
 
             $rule = 'smsRule-'.$validRuleIndex;
 
-            $message = get_option($rule.'-smsMessage', '');
+            $smsMessage = get_option($rule.'-smsMessage', '');
 
-            $message = $this->shortCodesDecryption($message, $order);
+            $smsMessage = $this->shortCodesDecryption($smsMessage, $order);
 
             $smsRecipients = get_option( $rule.'-recipients', false);
 
@@ -254,12 +274,34 @@ Domain Path: /lang
             }
 
             $recipientsList = explode('{|}', $smsRecipients);
+
             array_push($recipientsList, $order->get_data()['billing']['phone']);
 
+            if ($token === false || $baseApiUrl === false || $sendSmsEndpoint === false ) {
+                /* Burada error loglanacak */
+                foreach ($recipientsList as $recipient) {
+                    $this->orderAlertifyLogger(
+                        $type = 'sms' ,
+                        $status = 'fail', 
+                        $message = 'The SMS option is enabled, but the information is missing or incorrect.',
+                        $content = 'Target Phone Number :'.$recipient.' | Message:'.$smsMessage
+                    );
+                }
+                return;
+            }
+
+            $url = $this->editUrlForSms($baseApiUrl, $sendSmsEndpoint);
+
             $smsManager = new SmsManager($token, $url);
-            
+            // Target Phone Number :05372759303 | Message:Bu bir deneme sms\\\\\\\'idir (2)2asdads
             foreach ($recipientsList as $recipient) {
-                $smsManager->sendSMS($message, $recipient);
+                $value = $smsManager->sendSMS($smsRecipients, $recipient); //['apiResponse' => 'null' || cevap, 'message' => $message, 'target' => $target]
+                $this->orderAlertifyLogger(
+                    $type = 'sms' ,
+                    $status = (isset($value['apiResponse']) && $value['apiResponse'] !== 'null') ? 'success' : 'fail', 
+                    $message = (isset($value['apiResponse']) && $value['apiResponse'] !== 'null') ? 'SMS Was Sent Successfully' : 'Probably the information is wrong',
+                    $content = 'Target Phone Number :'.$recipient.' | Message:'.$smsMessage
+                );
             }
         }
 
@@ -267,9 +309,7 @@ Domain Path: /lang
         public function woocommerceListenerTelegram($order_id, $old_status, $new_status, $order){
             $token = get_option('telegramToken');
 
-            if ($token === false || trim($token, ' ') === '') {
-                return;
-            }
+            
 
             $telegramRuleLength = get_option('telegramRuleTemp');
             if ($telegramRuleLength === false ||json_decode($telegramRuleLength) < 2 ) {
@@ -283,9 +323,9 @@ Domain Path: /lang
                 return;
             }
 
-            $message = get_option('telegramRule-'.$validRuleIndex.'-telegramMessage');
+            $telegramMessage = get_option('telegramRule-'.$validRuleIndex.'-telegramMessage');
 
-            $message = $this->shortCodesDecryption($message, $order);
+            $telegramMessage = $this->shortCodesDecryption($telegramMessage, $order);
 
             $activeTelegramUsersIndex = get_option('telegramActiveUsersIndex');
             if ($activeTelegramUsersIndex === false || json_decode($activeTelegramUsersIndex) < 2) {
@@ -299,15 +339,32 @@ Domain Path: /lang
 
                 $user = get_option('telegramUser-'.$i);
                 $user = explode('@', $user);
-                $chat_id = $user[2];//2c değer chatid tutuyor
+                $chat_id = $user[2];//2ci değer chatid tutuyor
                 array_push($activeTelegramUsersChatIdList, $chat_id);
             }
             
+            if ($token === false || trim($token, ' ') === '') {
+                foreach ($activeTelegramUsersChatIdList as $chat_id) {
+                    $this->orderAlertifyLogger(
+                        $type = 'telegram' ,
+                        $status = 'fail', 
+                        $message = 'The Telegram option has been enabled, but telegram\'s token is missing or incorrect',
+                        $content = $telegramMessage
+                    );
+                }
+                return;
+            }
 
             $telegramBot = new TelegramBot($token);
 
             foreach ($activeTelegramUsersChatIdList as $chat_id) {
-                $telegramBot->sendMessage($message, $chat_id);
+                $value = $telegramBot->sendMessage($telegramMessage, $chat_id);
+                $this->orderAlertifyLogger(
+                    $type = 'telegram' ,
+                    $status = (isset($value['ok']) && $value['ok'] === true) ? 'success' : 'fail', 
+                    $message = (isset($value['ok']) && $value['ok'] === true) ? 'Telegram Message Was Sent Successfully' : ((isset($value['description'])) ? $value['description'] : 'Error'),
+                    $content = $telegramMessage
+                );
             }
         }
 
@@ -340,7 +397,13 @@ Domain Path: /lang
             array_push($recipients, $order->get_data()['billing']['email']);
 
             foreach ($recipients as $recipient){
-                wp_mail( $recipient, $mailSubject, $mailContent, array('Content-Type: text/html; charset=UTF-8') );
+                $value = wp_mail( $recipient, $mailSubject, $mailContent, array('Content-Type: text/html; charset=UTF-8'));
+                $this->orderAlertifyLogger(
+                    $type = 'mail' ,
+                    $status = ($value === true) ? 'success' : 'fail', 
+                    $message = ($value === true) ? 'E-Mail Was Sent Successfully' : 'There is probably an error in the settings', 
+                    $content = $mailSubject.'<br>'.$mailContent
+                );
             }
         }
 
@@ -886,6 +949,11 @@ Domain Path: /lang
                         }
 
                         break;
+                    case 'getLogs';
+                        $response['status'] = true;
+                        $response['message'] = __('Records were brought', 'orderAlertifyTextDomain');
+                        $response['data'] = $this->getLogs();
+                        break;
                     default:
                         $temp = false;
                         break;
@@ -901,5 +969,22 @@ Domain Path: /lang
         $plugin_dir = basename(dirname(__FILE__));
         load_plugin_textdomain( 'orderAlertifyTextDomain', false, $plugin_dir . '/lang' );
         $orderPlugin = new OrderAlertifyPlugin();
+    });
+
+    register_activation_hook( __FILE__, function(){
+        global $wpdb;
+
+        $charset_collate = $wpdb->get_charset_collate();
+        $tableName = $wpdb->prefix . "orderalertifylogs"; 
+        $sql = "CREATE TABLE  $tableName(
+        id mediumint(9) NOT NULL AUTO_INCREMENT,
+        type varchar(8) NOT NULL,
+        status varchar(7) DEFAULT 'success' NOT NULL,
+        message varchar(255) NOT NULL,
+        content varchar(255) NOT NULL,
+        PRIMARY KEY  (id)
+        ) $charset_collate;";
+        require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+        dbDelta( $sql );
     });
 ?>

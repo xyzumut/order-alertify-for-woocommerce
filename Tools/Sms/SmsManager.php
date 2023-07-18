@@ -27,23 +27,67 @@
                 )),
             );
 
-            $response = wp_remote_post($this->url, $requestOptions);
+            $response = wp_remote_post($this->url, (object)$requestOptions);
 
-            if (is_wp_error($response)) {
-                // İstek hatası oluştu
-                $error_message = $response->get_error_message();
-                print_r($error_message);
-                echo '<br>';
-            } 
-            else {
-                $response_code = wp_remote_retrieve_response_code($response);
-                $response_body = wp_remote_retrieve_body($response);
+            $response =  json_decode( wp_remote_retrieve_body( $response ), true);
                 
-                // İstek başarılı, yanıtı işleme
-                print_r($response_code);
-                print_r($response_body);
-                echo '<br>';
+            if ($response['Result']['message'] === 'Unauthorized User') {
+                
+                $refreshResponse = $this->refreshToken();
+
+                if ($refreshResponse['status'] === true) {
+                    return $this->sendSMS($message, $target);
+                }
+
+                return ['apiResponse' => 'null', 'apiMessage' => $message, 'target' => $target];
             }
+
+            return  ['apiResponse' => $response, 'apiMessage' => $message, 'target' => $target];
+        }
+
+        public function refreshToken() {
+
+            $username = get_option('smsLoginUsername', false);
+            $password = get_option('smsLoginPassword', false);
+            $baseUrl = get_option('smsBaseApiUrl', false);
+            $loginEndpoint = get_option('smsLoginEndpoint', false);
+
+
+            if ($username === false || $password === false) {
+                return;
+            }
+
+            $requestOptions = array(
+                'method' => 'POST',
+                'headers' => array(
+                    'Accept' => 'application/json',
+                    'Content-Type' => 'application/json',
+                ),
+                'body' => wp_json_encode(array(
+                    'username' => $username,
+                    'password' => $password
+                )),
+            );
+
+            $response = wp_remote_post($baseUrl.$loginEndpoint, (object)$requestOptions);
+
+            $response =  json_decode( wp_remote_retrieve_body( $response ), true);
+
+            $return = array(
+                'status' => false,
+                'token' => null,
+            );
+
+
+            if (isset($response['JwtToken'])){
+                update_option('smsJwt', $response['JwtToken']);
+                $this->token = $response['JwtToken'];
+                $return['status'] = true;
+                $return['token'] = $response['JwtToken'];
+                return $return;
+            }
+
+            return $return;
         }
     }
 ?>

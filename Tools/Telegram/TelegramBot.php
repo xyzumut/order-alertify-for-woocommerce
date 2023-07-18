@@ -27,6 +27,8 @@
             $response = wp_remote_post($url, (object)$options);
 
             $response =  json_decode( wp_remote_retrieve_body( $response ), true);
+
+            return  $response;
         }
     }
 ?>

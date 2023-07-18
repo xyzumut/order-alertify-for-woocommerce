@@ -33,6 +33,9 @@
             <div id="orderAlertifyGeneralSettingsContainer" buttonText="<?php _e('Order Alertify', 'orderAlertifyTextDomain'); ?>" class="ou_body_right_item">
                 <?php include (__DIR__.'/sub-partials/').'orderAlertifyGeneral.php'; ?>
             </div>
+            <div id="orderAlertifyGeneralLogsContainer" buttonText="<?php _e('All Logs', 'orderAlertifyTextDomain'); ?>" class="ou_body_right_item">
+                <?php include (__DIR__.'/sub-partials/').'orderAlertifyGeneralLogs.php'; ?>
+            </div>
         </div>
 
     </div>
