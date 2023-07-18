@@ -1,8 +1,6 @@
 <?php 
 namespace OrderAlertifyView;
 
-// TODO Genel Ayarlar Sayfası Tasarlanacak
-
     final class GeneralSettingsView{
 
         public function __construct(){

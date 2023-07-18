@@ -971,7 +971,10 @@ Domain Path: /lang
         $orderPlugin = new OrderAlertifyPlugin();
     });
 
-    register_activation_hook( __FILE__, function(){
+    register_activation_hook( __FILE__, function() {
+
+        // TODO Veritabanının silinme işlemi kaldı
+
         global $wpdb;
 
         $charset_collate = $wpdb->get_charset_collate();
