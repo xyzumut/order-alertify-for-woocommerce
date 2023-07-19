@@ -973,13 +973,7 @@ Domain Path: /lang
         }
     }
 
-    register_uninstall_hook(__FILE__, 'deleteAction');
 
-    function deleteAction () {
-        global $wpdb;
-        $tableName = $wpdb->prefix . "orderalertifylogs"; 
-        $wpdb->query( "DROP TABLE IF EXISTS $tableName" );
-    }
 
     add_action( 'plugins_loaded', function(){
         $plugin_dir = basename(dirname(__FILE__));
