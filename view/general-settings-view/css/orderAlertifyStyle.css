@@ -126,3 +126,18 @@ input:checked + .slider:before {
 .accordion-button:after{
     display: none !important;
 }
+#logFilterOptionsContainer{
+    width: 800px;
+    display: flex;
+    justify-content: flex-start;
+}
+.filterOption{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 20px;
+    margin-right: 20px;
+}
+.filterOption input{
+    margin: 0 10px 0 0;
+}

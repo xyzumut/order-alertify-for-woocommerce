@@ -124,6 +124,7 @@ Domain Path: /lang
                 'removeText' => __('Remove', 'orderAlertifyTextDomain'),
                 'deleteRuleText' => __('Delete Rule', 'orderAlertifyTextDomain'),
                 'goRuleText' => __('Go Rule', 'orderAlertifyTextDomain'),
+                'noLogText' => __('There is no log yet', 'orderAlertifyTextDomain'),
             ];  
         }
 
@@ -249,6 +250,7 @@ Domain Path: /lang
             $token = get_option('smsJwt', false);
             $baseApiUrl = get_option('smsBaseApiUrl', false);
             $sendSmsEndpoint = get_option('smsSendMessageEndpoint', false);
+            $smsLoginEndpoint = get_option('smsLoginEndpoint', false);
             $smsRuleLength = get_option('smsRuleTemp');
             if ($smsRuleLength === false || json_decode($smsRuleLength) < 2 ) {
                 return;
@@ -291,15 +293,16 @@ Domain Path: /lang
             }
 
             $url = $this->editUrlForSms($baseApiUrl, $sendSmsEndpoint);
+            $refreshUrl = $this->editUrlForSms($baseApiUrl, $smsLoginEndpoint);
 
-            $smsManager = new SmsManager($token, $url);
-            // Target Phone Number :05372759303 | Message:Bu bir deneme sms\\\\\\\'idir (2)2asdads
+            $smsManager = new SmsManager($token, $url, $refreshUrl);
+
             foreach ($recipientsList as $recipient) {
                 $value = $smsManager->sendSMS($smsRecipients, $recipient); //['apiResponse' => 'null' || cevap, 'message' => $message, 'target' => $target]
                 $this->orderAlertifyLogger(
                     $type = 'sms' ,
                     $status = (isset($value['apiResponse']) && $value['apiResponse'] !== 'null') ? 'success' : 'fail', 
-                    $message = (isset($value['apiResponse']) && $value['apiResponse'] !== 'null') ? 'SMS Was Sent Successfully' : 'Probably the information is wrong',
+                    $message = (isset($value['apiResponse']) && $value['apiResponse'] !== 'null') ? 'SMS Was Sent Successfully' : $value['apiMessage'],
                     $content = 'Target Phone Number :'.$recipient.' | Message:'.$smsMessage
                 );
             }
@@ -308,8 +311,6 @@ Domain Path: /lang
 
         public function woocommerceListenerTelegram($order_id, $old_status, $new_status, $order){
             $token = get_option('telegramToken');
-
-            
 
             $telegramRuleLength = get_option('telegramRuleTemp');
             if ($telegramRuleLength === false ||json_decode($telegramRuleLength) < 2 ) {
@@ -952,7 +953,14 @@ Domain Path: /lang
                     case 'getLogs';
                         $response['status'] = true;
                         $response['message'] = __('Records were brought', 'orderAlertifyTextDomain');
-                        $response['data'] = $this->getLogs();
+                        $response['data'] = [
+                            'logs' => $this->getLogs(),
+                            'logTypes' => [
+                                'mail',
+                                'sms',
+                                'telegram',
+                            ]
+                        ];
                         break;
                     default:
                         $temp = false;

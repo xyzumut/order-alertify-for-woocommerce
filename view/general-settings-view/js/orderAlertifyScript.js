@@ -1,16 +1,20 @@
 window.addEventListener('load', () => {
-
+    // orderAlertifyGeneralScript.noLogText
     class GeneralSettings{
         
         mailToggleInput;
         smsToggleInput;
         telegramToggleInput;
         logs;
+        logTypes;
+        logContainer;
+        filterSelectedInit = 'none';
 
         constructor(){
             this.telegramToggleInput = document.getElementById('telegramToggle');
             this.mailToggleInput     = document.getElementById('mailToggle');
             this.smsToggleInput      = document.getElementById('smsToggle');
+            this.logContainer        = document.getElementById('logRowsContainer');
         }
         
         getLogs = async () => {
@@ -24,25 +28,50 @@ window.addEventListener('load', () => {
             const response = await request.json();
             return response
         } 
+        renderLogFilters = () => {
 
-        renderLogs = ({filter = null} = {}) => {
+            document.getElementById('logsMainContainer').insertAdjacentHTML('afterbegin', '<div id="logFilterOptionsContainer"><div class="filterOption"><h4>Filter</h4></div></div>');
+            this.logTypes.forEach( (logType) => {
+                let render = '<div class="filterOption"><input class="logRadios" type="radio" id="filter'+logType+'" view="'+logType+'" name="filterOption" value="'+logType+'"><label for="filter'+logType+'">'+logType.toUpperCase()+'</label></div>';
+                document.getElementById('logFilterOptionsContainer').insertAdjacentHTML('beforeend', render);
+            });
 
-            // TODO Loglara filterleme eklenecek
+            let selected = this.filterSelectedInit;
+
+            document.querySelectorAll('.logRadios').forEach(radio => {
+                radio.addEventListener('click', () => {
+                    if (selected === radio.getAttribute('view')) {
+                        selected = this.filterSelectedInit;
+                        radio.checked = false;
+                    }
+                    else{
+                        selected = radio.getAttribute('view');
+                    }
+                    this.renderLogs({filter:selected});
+                });
+            });
+
+        }
+        renderLogs = ({filter = this.filterSelectedInit} = {}) => {
+
+            this.logContainer.innerHTML = ''
 
             if (this.logs.length < 1) {
+                let render = '<div class="accordion-item alert alert-info"><h2 class="accordion-header">';
+                render = render + '<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDefault" aria-expanded="true" aria-controls="collapseDefault">';
+                render = render + (orderAlertifyGeneralScript.noLogText) + '</button></h2><div id="collapseDefault" class="accordion-collapse collapse " data-bs-parent="#accordionExample">';
+                render = render + '<div class="accordion-body">'+(orderAlertifyGeneralScript.noLogText)+'</div></div></div>';
+                this.logContainer.insertAdjacentHTML('beforeend', render);
                 return;
             }
 
-            const target = document.getElementById('logRowsContainer'); 
-            target.innerHTML = '';
-
-            this.logs.data.filter(log => filter !== null ? filter === log.type : true ).forEach( log => {
+            this.logs.filter(log => filter !== this.filterSelectedInit ? filter === log.type : true ).reverse().forEach( log => {
 
                 let render = '<div class="accordion-item alert '+(log.status === 'fail' ? 'alert-danger' : 'alert-success')+'"><h2 class="accordion-header">';
-                render = render + '<button class="accordion-button text-white '+( log.status === 'fail' ?  ' bg-danger' : 'bg-success')+'" type="button" data-bs-toggle="collapse"'+log.id+' data-bs-target="#collapse'+log.id+'" aria-expanded="true" aria-controls="collapsecollapse'+log.id+'">';
+                render = render + '<button class="accordion-button text-white '+( log.status === 'fail' ?  ' bg-danger' : 'bg-success')+'" type="button" data-bs-toggle="collapse" data-bs-target="#collapse'+log.id+'" aria-expanded="true" aria-controls="collapsecollapse'+log.id+'">';
                 render = render + (log.type + ' - ' + log.message) + '</button></h2><div id="collapse'+log.id+'" class="accordion-collapse collapse " data-bs-parent="#accordionExample">';
                 render = render + '<div class="accordion-body" log-id="'+log.id+'"></div></div></div>';
-                target.innerHTML = target.innerHTML + render;
+                this.logContainer.innerHTML = this.logContainer.innerHTML + render;
                 
                 document.querySelectorAll('.accordion-body').forEach( element => {
                     if (Number(element.getAttribute('log-id')) === Number(log.id)) {
@@ -64,9 +93,10 @@ window.addEventListener('load', () => {
             });
             const response = await request.json();
 
-            this.logs = await this.getLogs()
-
-            console.log('loglar :', this.logs)
+            const logResponse = await this.getLogs(); 
+            console.log('logResponse : ', logResponse);
+            this.logs = logResponse.data.logs;
+            this.logTypes = logResponse.data.logTypes;
 
             modalClose(modalData)
             
@@ -111,8 +141,8 @@ window.addEventListener('load', () => {
                     sendNotification('success', response.message);
                 })
             })
-
             this.renderLogs();
+            this.renderLogFilters();
 
         }
     }

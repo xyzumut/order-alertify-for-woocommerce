@@ -5,10 +5,12 @@
         
         public $token;
         public $url;
+        public $refreshUrl;
 
-        public function __construct($token, $url){
+        public function __construct($token, $url, $refreshUrl){
             $this->token = $token;
             $this->url = $url;
+            $this->refreshUrl = $refreshUrl;
         }
 
         public function sendSMS($message, $target){
@@ -31,6 +33,7 @@
 
             $response =  json_decode( wp_remote_retrieve_body( $response ), true);
                 
+
             if ($response['Result']['message'] === 'Unauthorized User') {
                 
                 $refreshResponse = $this->refreshToken();
@@ -39,7 +42,7 @@
                     return $this->sendSMS($message, $target);
                 }
 
-                return ['apiResponse' => 'null', 'apiMessage' => $message, 'target' => $target];
+                return ['apiResponse' => 'null', 'apiMessage' => $response['Result']['message'], 'target' => $target];
             }
 
             return  ['apiResponse' => $response, 'apiMessage' => $message, 'target' => $target];
@@ -49,8 +52,6 @@
 
             $username = get_option('smsLoginUsername', false);
             $password = get_option('smsLoginPassword', false);
-            $baseUrl = get_option('smsBaseApiUrl', false);
-            $loginEndpoint = get_option('smsLoginEndpoint', false);
 
 
             if ($username === false || $password === false) {
@@ -69,7 +70,7 @@
                 )),
             );
 
-            $response = wp_remote_post($baseUrl.$loginEndpoint, (object)$requestOptions);
+            $response = wp_remote_post($this->refreshUrl, (object)$requestOptions);
 
             $response =  json_decode( wp_remote_retrieve_body( $response ), true);
 
@@ -77,7 +78,6 @@
                 'status' => false,
                 'token' => null,
             );
-
 
             if (isset($response['JwtToken'])){
                 update_option('smsJwt', $response['JwtToken']);
