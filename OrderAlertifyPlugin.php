@@ -280,13 +280,12 @@ Domain Path: /lang
             array_push($recipientsList, $order->get_data()['billing']['phone']);
 
             if ($token === false || $baseApiUrl === false || $sendSmsEndpoint === false ) {
-                /* Burada error loglanacak */
                 foreach ($recipientsList as $recipient) {
                     $this->orderAlertifyLogger(
                         $type = 'sms' ,
                         $status = 'fail', 
-                        $message = 'The SMS option is enabled, but the information is missing or incorrect.',
-                        $content = 'Target Phone Number :'.$recipient.' | Message:'.$smsMessage
+                        $message = 'The SMS option is enabled, but the information is missing or incorrect. - '.$recipient,
+                        $content = 'Target Phone Number :'.$recipient.' | Message:'.'Y'.$smsMessage
                     );
                 }
                 return;
@@ -298,16 +297,17 @@ Domain Path: /lang
             $smsManager = new SmsManager($token, $url, $refreshUrl);
 
             foreach ($recipientsList as $recipient) {
-                $value = $smsManager->sendSMS($smsRecipients, $recipient); //['apiResponse' => 'null' || cevap, 'message' => $message, 'target' => $target]
-                $this->orderAlertifyLogger(
-                    $type = 'sms' ,
-                    $status = (isset($value['apiResponse']) && $value['apiResponse'] !== 'null') ? 'success' : 'fail', 
-                    $message = (isset($value['apiResponse']) && $value['apiResponse'] !== 'null') ? 'SMS Was Sent Successfully' : $value['apiMessage'],
-                    $content = 'Target Phone Number :'.$recipient.' | Message:'.$smsMessage
-                );
+                if ($recipient!=='') {
+                    $value = $smsManager->sendSMS($smsMessage, $recipient); //['apiResponse' => 'null' || cevap, 'message' => $message, 'target' => $target]
+                    $this->orderAlertifyLogger(
+                        $type = 'sms' ,
+                        $status = (isset($value['apiResponse']) && $value['apiResponse'] !== 'null') ? 'success' : 'fail', 
+                        $message = (isset($value['apiResponse']) && $value['apiResponse'] !== 'null') ? 'SMS Was Sent Successfully - '.$recipient : $value['apiMessage'].' - '.$recipient,
+                        $content = 'Target Phone Number :'.$recipient.' | Message:'.$smsMessage.'X'
+                    );
+                }
             }
         }
-
 
         public function woocommerceListenerTelegram($order_id, $old_status, $new_status, $order){
             $token = get_option('telegramToken');
@@ -335,7 +335,6 @@ Domain Path: /lang
 
             $activeTelegramUsersIndex = json_decode($activeTelegramUsersIndex);
             $activeTelegramUsersChatIdList = [];
-
             for ($i = 1; $i < $activeTelegramUsersIndex ; $i++){   
 
                 $user = get_option('telegramUser-'.$i);
@@ -402,7 +401,7 @@ Domain Path: /lang
                 $this->orderAlertifyLogger(
                     $type = 'mail' ,
                     $status = ($value === true) ? 'success' : 'fail', 
-                    $message = ($value === true) ? 'E-Mail Was Sent Successfully' : 'There is probably an error in the settings', 
+                    $message = ($value === true) ? 'E-Mail Was Sent Successfully. - '.$recipient : 'There is probably an error in the settings. - '.$recipient, 
                     $content = $mailSubject.'<br>'.$mailContent
                 );
             }
@@ -973,6 +972,14 @@ Domain Path: /lang
             wp_send_json($response);
         }
     }
+
+
+    register_uninstall_hook(__FILE__, function(){
+        global $wpdb;
+        $tableName = $wpdb->prefix . "orderalertifylogs"; 
+        $wpdb->query( "DROP TABLE IF EXISTS $tableName" );
+    });
+
     add_action( 'plugins_loaded', function(){
         $plugin_dir = basename(dirname(__FILE__));
         load_plugin_textdomain( 'orderAlertifyTextDomain', false, $plugin_dir . '/lang' );

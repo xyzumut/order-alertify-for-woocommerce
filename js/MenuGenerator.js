@@ -21,7 +21,6 @@ class MenuGenerator{
         this.oaBodyRightElement = oaBodyRightElement;
     }
 
-
     render = () => {
         let renderButton = '';
         let buttonIdArray = [];
